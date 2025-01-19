@@ -1,8 +1,20 @@
 import React from "react";
 import { FcGoogle } from "react-icons/fc";
 import CommonBtn from "../button/CommonBtn.jsx";
+import { useNavigate } from "react-router-dom";
 
 const CommonForm = ({ heading, pageName, fields }) => {
+
+  const navigate = useNavigate()
+  
+  const signInOrSignOut = ()=>{
+    if(pageName=== "LOG IN"){
+      navigate("/signup")
+    }else{
+      navigate('/login')
+    }
+  }
+
   return (
     <div className="bg-white w-full max-w-md flex-col pt-6 rounded-3xl shadow-lg m-3">
       {/* Welcome Heading */}
@@ -32,12 +44,12 @@ const CommonForm = ({ heading, pageName, fields }) => {
       {pageName === "LOG IN" ? (
         <p className="text-center pb-6">
           Don't Have an Account?{" "}
-          <span className="text-blue-700 cursor-pointer">Sign Up</span>
+          <span className="text-blue-700 cursor-pointer" onClick={signInOrSignOut}>Sign Up</span>
         </p>
       ) : (
         <p className="text-center pb-6">
           Already Have an Account?{" "}
-          <span className="text-blue-700 cursor-pointer">Sign In</span>
+          <span className="text-blue-700 cursor-pointer" onClick={signInOrSignOut}>Sign In</span>
         </p>
       )}
     </div>

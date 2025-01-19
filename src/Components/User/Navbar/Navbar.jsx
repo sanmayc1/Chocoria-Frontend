@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { UserRound, Search, Heart, ShoppingCart, Menu, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 //   for mobile size menu Open or Close
@@ -11,7 +13,7 @@ const Navbar = () => {
 
 // for Account or SignIn Navigate 
 const redirectToAccountOrSignIn =()=>{
-    
+    navigate("/login")
 }
 
   return (
@@ -47,7 +49,7 @@ const redirectToAccountOrSignIn =()=>{
 
         {/* Nav Centre */}
         <div className="w-full md:w-1/3 h-16 md:h-full flex md:items-end items-center justify-center order-first md:order-none">
-          <img className="w-32 md:w-52" src="./logo.png" alt="Logo" />
+          <img  className="w-32 md:w-52" src="./logo.png" alt="Logo" />
         </div>
 
         {/* Nav Right */}

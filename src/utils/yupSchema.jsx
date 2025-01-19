@@ -9,13 +9,18 @@ const yupSchema = object({
   phone: string()
     .matches(/^[987]\d{9}$/, "Enter a valid phone number")
     .required("Phone Number is required"),
-  email: string().required("Email is required").matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,"Enter a valid email"),
+  email: string()
+    .matches(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      "Enter a valid email"
+    )
+    .required("Email is required"),
   password: string()
     .matches(
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
       "Password must have a letter, number, & symbol"
     )
-    .min(8,"Minimum 8 Characters")
+    .min(8, "Minimum 8 Characters")
     .required("Password is required"),
   confirmPassword: string()
     .required("Confirm password is required")

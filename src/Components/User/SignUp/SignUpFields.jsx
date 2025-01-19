@@ -28,18 +28,23 @@ const SignUpFields = () => {
       setErr((prev) => ({ ...prev, [name]: "" }));
     } catch (error) {
       setErr((prev) => ({ ...prev, [name]: error.message }));
-     
     }
   };
 
   // handle submit
 
-  const handeSubmit = async(e) => {
+  const handeSubmit = async (e) => {
     e.preventDefault();
     try {
-        await yupSchema.validate(formData,{abortEarly:false})
+      await yupSchema.validate(formData, { abortEarly: false });
     } catch (error) {
-        console.log(error.inner[1].path)
+      const validationErr = {};
+      error.inner.forEach((err) => {
+        const { path, message } = err;
+        validationErr[path] = message;
+      });
+      setErr(validationErr);
+      console.log(err);
     }
   };
   return (
@@ -53,7 +58,9 @@ const SignUpFields = () => {
           name={"fullName"}
         />
         {err.fullName && (
-          <span className="text-xs text-red-500 px-14 ">{err.fullName}</span>
+          <span className="text-xs text-red-500 sm:px-14 px-7 ">
+            {err.fullName}
+          </span>
         )}
         {/* Phone */}
         <SingleInputField
@@ -63,7 +70,9 @@ const SignUpFields = () => {
           name={"phone"}
         />
         {err.phone && (
-          <span className="text-xs text-red-500 px-14 ">{err.phone}</span>
+          <span className="text-xs text-red-500 sm:px-14 px-7 ">
+            {err.phone}
+          </span>
         )}
         {/* Email */}
         <SingleInputField
@@ -73,7 +82,9 @@ const SignUpFields = () => {
           name={"email"}
         />
         {err.email && (
-          <span className="text-xs text-red-500 px-14 ">{err.email}</span>
+          <span className="text-xs text-red-500 sm:px-14 px-7 ">
+            {err.email}
+          </span>
         )}
         {/* Password */}
         <SingleInputField
@@ -83,7 +94,9 @@ const SignUpFields = () => {
           name={"password"}
         />
         {err.password && (
-          <span className="text-xs text-red-500 px-14">{err.password}</span>
+          <span className="text-xs text-red-500 sm:px-14 px-7">
+            {err.password}
+          </span>
         )}
         {/* confirm password */}
         <SingleInputField
@@ -92,7 +105,7 @@ const SignUpFields = () => {
           handleChange={handleChange}
           name={"confirmPassword"}
         />
-        <span className="text-xs text-red-500 px-14">
+        <span className="text-xs text-red-500 sm:px-14 px-7">
           {err.confirmPassword}
         </span>
       </div>

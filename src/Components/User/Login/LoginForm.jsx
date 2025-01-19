@@ -4,8 +4,11 @@ import LoginFields from "./LoginFields.jsx";
 const LoginForm = () => {
   return (
     <>
-      <CommonForm heading={"Welcome Back!"} pageName={"LOG IN"} fields={<LoginFields />} />
-      
+      <CommonForm
+        heading={"Welcome Back!"}
+        pageName={"LOG IN"}
+        fields={<LoginFields />}
+      />
     </>
   );
 };
