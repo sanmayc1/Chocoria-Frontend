@@ -3,6 +3,7 @@ import Navbar from "../Components/User/Navbar/Navbar.jsx";
 import CardListingHeading from "../Components/User/CardListingHeading/CardListingHeading.jsx";
 
 import ProductCard from "../Components/User/ProductCard/ProductCard.jsx";
+import CardListing from "../Components/User/CardListing/CardListing.jsx";
 
 const Home = () => {
   return (
@@ -10,17 +11,9 @@ const Home = () => {
       <Navbar />
       <Banner />
       <CardListingHeading heading={"Products"} viewMore />
-      <div className="overflow-x-auto xl:pt-10 pt-5">
-        <div className="flex md:space-x-4 space-x-2 xl:px-10 px-4 w-max md:px-10 xl:space-x-5 pb-2">
-        <ProductCard/>
-        <ProductCard/>
-        <ProductCard/>
-        <ProductCard/>
-        <ProductCard/>
-        <ProductCard/>
-        </div>
-      </div>
+      <CardListing products={[1,2,3,4,5,6]}/>
       <CardListingHeading heading={"Product"} />
+      <ProductCard/>
     </>
   );
 };
