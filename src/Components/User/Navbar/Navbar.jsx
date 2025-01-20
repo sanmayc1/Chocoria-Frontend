@@ -17,7 +17,7 @@ const redirectToAccountOrSignIn =()=>{
 }
 
   return (
-    <div className="w-full h-auto md:h-24 flex justify-center items-end fixed">
+    <div className="w-full h-auto md:h-24 flex justify-center items-end fixed z-50">
       <div className="bg-white w-full md:w-4/5 min-h-16 md:h-2/3 rounded-none md:rounded-full shadow-sm flex flex-col md:flex-row relative">
         {/* Mobile Menu Button */}
         <button

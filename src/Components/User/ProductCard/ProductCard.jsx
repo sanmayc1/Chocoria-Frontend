@@ -3,8 +3,9 @@ import { Star } from "lucide-react";
 const ProductCard = ({ price, productTitle, rating, imageUrl }) => {
   return (
     <>
-      <div className="bg-white shadow-md md:min-h-[280px] md:max-h-[220px] md:min-w-[200px] md:max-w-[180px] xl:min-h-[334px] xl:max-h-[334px] min-h-[200px] max-h-40 min-w-[150px] max-w-32 xl:min-w-[235px] xl:max-w-[235px]  rounded-3xl">
-        <div className="flex flex-col justify-between h-full">
+      <div className="shadow-md w-fit rounded-3xl flex flex-col">
+        {/* Price image rating container */}
+        <div className="bg-white max-h-40 min-h-[200px] min-w-[150px] max-w-32 md:min-h-[218px] md:max-h-[218px] md:min-w-[200px] md:max-w-[180px] xl:min-h-[250px] xl:max-h-[250px] xl:min-w-[235px] xl:max-w-[235px] rounded-3xl md:rounded-b-none flex flex-col justify-between ">
           {/* Card Image */}
 
           <div className="w-full overflow-hidden flex justify-center p-4 ">
@@ -18,10 +19,12 @@ const ProductCard = ({ price, productTitle, rating, imageUrl }) => {
           {/* Product tittle */}
 
           <p className="px-3 xl:px-6 font-semibold text-xs xl:text-sm break-words">
-            {productTitle?.length < 63
+            {productTitle?.length < 45
               ? productTitle
-              : `${productTitle?.slice(0, 63)}....`}
+              : `${productTitle?.slice(0, 45)}....`}
           </p>
+
+          {/* Price and rating container */}
 
           <div className="flex items-center justify-between pb-1 xl:px-4 md:px-3 px-4">
             {/* Price */}
@@ -39,11 +42,10 @@ const ProductCard = ({ price, productTitle, rating, imageUrl }) => {
               </div>
             </div>
           </div>
-          {/* Add to cart Button */}
-          <button className="bg-orange-950 md:h-12 w-full xl:h-14 xl:text-lg  text-white font-semibold rounded-b-3xl hidden md:block hover:bg-orange-900 xl:mt-2 transition-colors">
-            Add to cart
-          </button>
         </div>
+        <button className="bg-orange-950 md:h-12 w-full xl:h-14 xl:text-lg  text-white font-semibold rounded-b-3xl hidden md:block hover:bg-orange-900  transition-colors">
+          Add to cart
+        </button>
       </div>
     </>
   );
