@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { UserRound, Search, Heart, ShoppingCart, Menu, X } from "lucide-react";
+import { UserRound, Search, Heart, ShoppingCart, Menu, X, ShoppingCartIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
@@ -23,10 +23,14 @@ const redirectToAccountOrSignIn =()=>{
         {/* Mobile Menu Button */}
         <button
           onClick={toggleMenu}
-          className="absolute top-4 right-4 md:hidden"
+          className="absolute top-4 left-4 md:hidden"
         >
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
+
+        <div  className="absolute top-4 right-4 md:hidden" >
+          <ShoppingCartIcon/>
+        </div>
 
         {/* Nav Left */}
         <div
@@ -63,7 +67,7 @@ const redirectToAccountOrSignIn =()=>{
             <Search className="cursor-pointer hover:text-gray-600" width={20} />
             <Heart className="cursor-pointer hover:text-gray-600" width={20} />
             <ShoppingCart
-              className="cursor-pointer hover:text-gray-600"
+              className="cursor-pointer hover:text-gray-600 hidden md:block"
               width={20}
             />
             {/* User login or Account */}
