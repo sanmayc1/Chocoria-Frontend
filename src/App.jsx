@@ -4,6 +4,7 @@ import SignUpForm from "./Components/User/SignUp/SignUpForm.jsx";
 import Navbar from "./Components/User/Navbar/Navbar.jsx";
 import {Route,Routes } from "react-router-dom";
 import Home from "./Pages/Home.jsx";
+import Trail from "./Pages/Trail.jsx";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/login" element={<LoginForm/>}/>
           <Route path="/signup" element={<SignUpForm/>}/>
           <Route path="/" element={<Home/>}/>
+          <Route path="/productdetailed" element={<Trail/>}/>
         </Routes>
         
         {/* <LoginForm/> */}

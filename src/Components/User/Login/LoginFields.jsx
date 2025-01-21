@@ -34,13 +34,13 @@ const LoginFields = () => {
       {/* forget password */}
       <div className="w-full flex justify-center">
         <div className="w-full max-w-xs">
-          <p className="text-end text-xs font-semibold pt-3 hover:text-gray-600 cursor-pointer">
+          <p className="text-end text-xs font-semibold pt-3 hover:text-gray-600 cursor-pointer select-none">
             Forget Password?
           </p>
         </div>
       </div>
       {/* login button */}
-      <div className="w-full flex justify-center py-6">
+      <div className="w-full flex justify-center py-6 select-none">
         <CommonBtn btnName={"LOG IN"} />
       </div>
     </form>

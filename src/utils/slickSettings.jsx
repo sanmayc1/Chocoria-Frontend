@@ -1,12 +1,8 @@
 
 const settings = {
-    speed: 500,
+    speed: 400,
     slidesToShow: 5.001, // Number of items to show at a time
     slidesToScroll: 1,
-    autoplay:false,
-    autoplaySpeed:3000,
-    pauseOnHover:true,
-    swipe:true,
     swipeToSlide:true,
     responsive: [
       {
@@ -30,6 +26,16 @@ const settings = {
       },
     ],
   };
+
+  export const settingsForProductView ={
+    speed: 400,
+    slidesToShow: 1,
+    Infinity:false, // Number of items to show at a time
+    slidesToScroll: 1,
+    swipeToSlide:true,
+    dots:true
+
+  }
 
 
   export default settings

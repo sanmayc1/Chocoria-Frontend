@@ -17,6 +17,7 @@ const redirectToAccountOrSignIn =()=>{
 }
 
   return (
+    <>
     <div className="w-full h-auto md:h-24 flex justify-center items-end fixed z-50">
       <div className="bg-white w-full md:w-4/5 min-h-16 md:h-2/3 rounded-none md:rounded-full shadow-sm flex flex-col md:flex-row relative">
         {/* Mobile Menu Button */}
@@ -35,13 +36,13 @@ const redirectToAccountOrSignIn =()=>{
         >
           <div className="flex flex-col md:flex-row w-full md:w-3/4 h-full items-center justify-center md:justify-between md:pl-10 space-y-4 md:space-y-0 py-4 md:py-0 sm:text-xs xl:text-base">
 
-            <h4 className="font-medium text-gray-700 hover:text-gray-900 cursor-pointer">
+            <h4 className="font-medium text-gray-700 hover:text-gray-900 cursor-pointer select-none">
               Shop
             </h4>
-            <h4 className="font-medium text-gray-700 hover:text-gray-900 cursor-pointer">
+            <h4 className="font-medium text-gray-700 hover:text-gray-900 cursor-pointer select-none ">
               Best Deals
             </h4>
-            <h4 className="font-medium text-gray-700 hover:text-gray-900 cursor-pointer  md:hidden lg:block">
+            <h4 className="font-medium text-gray-700 hover:text-gray-900 cursor-pointer  md:hidden lg:block select-none">
               Brands
             </h4>
           </div>
@@ -75,6 +76,8 @@ const redirectToAccountOrSignIn =()=>{
         </div>
       </div>
     </div>
+    <div className="w-full sm:h-36 h-20 "></div>
+    </>
   );
 };
 

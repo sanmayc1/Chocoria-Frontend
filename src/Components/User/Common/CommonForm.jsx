@@ -23,7 +23,7 @@ const CommonForm = ({ heading, pageName, fields }) => {
       </div>
 
       {/* Google SignIn */}
-      <div className="w-full flex justify-center py-6 px-4">
+      <div className="w-full flex justify-center py-6 px-4 select-none">
         <CommonBtn
           btnName={
             <>
@@ -42,12 +42,12 @@ const CommonForm = ({ heading, pageName, fields }) => {
       {fields}
 
       {pageName === "LOG IN" ? (
-        <p className="text-center pb-6">
+        <p className="text-center pb-6 select-none">
           Don't Have an Account?{" "}
           <span className="text-blue-700 cursor-pointer" onClick={signInOrSignOut}>Sign Up</span>
         </p>
       ) : (
-        <p className="text-center pb-6">
+        <p className="text-center pb-6 select-none">
           Already Have an Account?{" "}
           <span className="text-blue-700 cursor-pointer" onClick={signInOrSignOut}>Sign In</span>
         </p>
