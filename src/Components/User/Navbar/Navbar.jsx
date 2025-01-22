@@ -65,7 +65,7 @@ const redirectToAccountOrSignIn =()=>{
         >
           <div className="flex w-full md:w-2/4 justify-center md:justify-between space-x-6 md:space-x-4">
             <Search className="cursor-pointer hover:text-gray-600" width={20} />
-            <Heart className="cursor-pointer hover:text-gray-600" width={20} />
+            <Heart className="cursor-pointer hover:text-gray-600" width={20} onClick={()=>navigate('/admin')} />
             <ShoppingCart
               className="cursor-pointer hover:text-gray-600 hidden md:block"
               width={20}
