@@ -11,9 +11,19 @@ import {
 import Home from "./Pages/Home.jsx";
 import ProductDetailedPage from "./Pages/ProductDetailedPage.jsx";
 import AdminLayout from "./Components/Admin/AdminLayout/AdminLayout.jsx";
-import ProductSection from "./Components/Admin/ProductSection/ProductSection.jsx";
+import ProductSection from "./Components/Admin/AllSections/ProductSection/ProductSection.jsx";
 import Dashboard from "./Components/Admin/AdminDashboard/DashboardContent.jsx";
-import CustomerSection from "./Components/Admin/CustomerSection/CoustomerSection.jsx";
+import CustomerSection from "./Components/Admin/AllSections/CustomerSection/CoustomerSection.jsx";
+import CategorySection from "./Components/Admin/AllSections/CategorySection/CategorySection.jsx";
+import OrderSection from "./Components/Admin/AllSections/OrderSection/OrderSection.jsx";
+import OfferSection from "./Components/Admin/AllSections/OffersSection/OffersSection.jsx";
+import ReviewSection from "./Components/Admin/AllSections/ReviewSection/ReviewSection.jsx";
+import NotificationSection from "./Components/Admin/AllSections/NotificationSection/NotificationSection.jsx";
+import ContactUsSection from "./Components/Admin/AllSections/ContactUs/ContactUs.jsx";
+import CouponSection from "./Components/Admin/AllSections/CouponSection/CouponSection.jsx";
+import BannerManagementSection from "./Components/Admin/AllSections/BannerManagementSection/BannerManagementSection.jsx";
+import AdminLogin from "./Components/Admin/Login/Login.jsx";
+import AddProduct from "./Components/Admin/AllSections/ProductSection/Add&EditProduct/Add-Edit-Form.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -33,21 +43,64 @@ function App() {
       path: "/productdetailed",
       element: <ProductDetailedPage />,
     },
+    // Admin side paths
+
+    {
+path:"/admin/login",
+element:<AdminLogin/>
+    },
     {
       path: "/admin",
       element: <AdminLayout />,
+      // child components
       children: [
         {
-          path:"/admin/dashboard",
-          element:<Dashboard/>
+          path: "/admin/dashboard",
+          element: <Dashboard />,
         },
         {
           path: "/admin/product",
           element: <ProductSection />,
         },
         {
-          path:"/admin/customers",
-          element:<CustomerSection/>
+          path: "/admin/customers",
+          element: <CustomerSection />,
+        },
+        {
+          path: "/admin/category",
+          element: <CategorySection />,
+        },
+        {
+          path: "/admin/orders",
+          element: <OrderSection />,
+        },
+        {
+          path: "/admin/offers",
+          element: <OfferSection />,
+        },
+        {
+          path: "/admin/reviews",
+          element: <ReviewSection />,
+        },
+        {
+          path:"/admin/notification",
+          element:<NotificationSection/>
+        },
+        {
+          path:"/admin/contact-us",
+          element:<ContactUsSection/>
+        },
+        {
+          path:"/admin/coupon",
+          element:<CouponSection/>
+        },
+        {
+          path:"/admin/banner-management",
+          element:<BannerManagementSection/>
+        },
+        {
+          path:"/admin/product/add-product",
+          element:<AddProduct/>
         }
       ],
     },

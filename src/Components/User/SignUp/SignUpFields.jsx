@@ -1,6 +1,6 @@
 import { useState } from "react";
 import CommonBtn from "../button/CommonBtn.jsx";
-import SingleInputField from "../Common/SingleInputField.jsx";
+import SingleInputField from "../../HelperComponents/InputFiled/SingleInputField.jsx";
 import yupSchema from "../../../utils/yupSchema.jsx";
 
 const SignUpFields = () => {
@@ -58,7 +58,7 @@ const SignUpFields = () => {
           name={"fullName"}
         />
         {err.fullName && (
-          <span className="text-xs text-red-500 sm:px-14 px-7 ">
+          <span className="text-xs text-red-500 sm:px-14 px-10 ">
             {err.fullName}
           </span>
         )}
@@ -70,7 +70,7 @@ const SignUpFields = () => {
           name={"phone"}
         />
         {err.phone && (
-          <span className="text-xs text-red-500 sm:px-14 px-7 ">
+          <span className="text-xs text-red-500 sm:px-14 px-10">
             {err.phone}
           </span>
         )}
@@ -82,7 +82,7 @@ const SignUpFields = () => {
           name={"email"}
         />
         {err.email && (
-          <span className="text-xs text-red-500 sm:px-14 px-7 ">
+          <span className="text-xs text-red-500 sm:px-14 px-10 ">
             {err.email}
           </span>
         )}
@@ -94,7 +94,7 @@ const SignUpFields = () => {
           name={"password"}
         />
         {err.password && (
-          <span className="text-xs text-red-500 sm:px-14 px-7">
+          <span className="text-xs text-red-500 sm:px-14 px-10">
             {err.password}
           </span>
         )}
@@ -105,7 +105,7 @@ const SignUpFields = () => {
           handleChange={handleChange}
           name={"confirmPassword"}
         />
-        <span className="text-xs text-red-500 sm:px-14 px-7">
+        <span className="text-xs text-red-500 sm:px-14 px-10">
           {err.confirmPassword}
         </span>
       </div>

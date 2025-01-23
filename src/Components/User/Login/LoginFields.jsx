@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import CommonBtn from "../button/CommonBtn.jsx";
-import SingleInputField from "../Common/SingleInputField.jsx";
+import SingleInputField from "../../HelperComponents/InputFiled/SingleInputField.jsx";
 
 const LoginFields = () => {
   const [formData, setFormData] = useState({

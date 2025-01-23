@@ -1,31 +1,12 @@
 import  { useState } from "react";
-import QuickStatCard from "./QuickCard.jsx";
-import { AddCircleOutline } from "@mui/icons-material";
-import {
-  Search,
-  Archive,
-  Tag,
-  Package,
-  MoreVertical,
-  Eye,
-} from "lucide-react";
-import {
-    Button,
-    IconButton,
-    Menu,
-    MenuItem,
-    Pagination,
-    Switch,
-  } from "@mui/material";
+import { Search, Filter, MoreVertical, Users } from "lucide-react";
+import QuickStatCard from "../../HelperComponents/QuickCard";
+import { IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
 
-
-
-
-
-const ProductSection = () => {
-
+const CustomerSection = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState("all");
+  const [ch, setch] = useState(true);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -35,24 +16,28 @@ const ProductSection = () => {
     setAnchorEl(null);
   };
 
-  const products = [
+  const customers = [
     {
       id: 1,
-      name: "Ferrero",
-      category: "Milk Chocolate",
-      price: 599.0,
-      stock: 45,
-      image: "/placeholder.svg",
-      deleted: false,
+      name: "Sarah Wilson",
+      email: "sarah.w@example.com",
+      phone: "+1 (555) 123-4567",
+      location: "New York, USA",
+      totalOrders: 28,
+      totalSpent: 2890,
+      lastOrder: "2024-01-15",
+      status: "Active",
     },
     {
       id: 2,
-      name: "Willgoten",
-      category: "Dark Chocolate",
-      price: 513.0,
-      stock: 50,
-      image: "/placeholder.svg",
-      deleted: false,
+      name: "Michael Chen",
+      email: "michael.c@example.com",
+      phone: "+1 (555) 234-5678",
+      location: "Los Angeles, USA",
+      totalOrders: 15,
+      totalSpent: 1750,
+      lastOrder: "2024-01-10",
+      status: "Active",
     },
   ];
 
@@ -60,34 +45,17 @@ const ProductSection = () => {
     <div className="p-4 sm:p-6 space-y-6">
       {/* Quick Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <QuickStatCard
-          icon={<Package className="text-blue-500" />}
-          title="Total Products"
-          value="486"
-        />
-        <QuickStatCard
-          icon={<Archive className="text-green-500" />}
-          title="In Stock"
-          value="385"
-        />
-        <QuickStatCard
-          icon={<Tag className="text-yellow-500" />}
-          title="Categories"
-          value="12"
-        />
-        <QuickStatCard
-          icon={<Package className="text-red-500" />}
-          title="Low Stock"
-          value="15"
-        />
+        <QuickStatCard title="Total Customers" value="1,234" icon={<Users />} />
+        <QuickStatCard title="Active Customers" value="1,089" />
+        <QuickStatCard title="New This Month" value="145" />
       </div>
 
-      {/* Product Table */}
+      {/* Main Customer List Card */}
       <div className="bg-white rounded-lg shadow">
         {/* Header */}
         <div className="p-4 sm:p-6 border-b">
           <div className="flex flex-col sm:flex-row justify-start gap-4">
-            <h2 className="text-lg font-semibold">Products</h2>
+            <h2 className="text-lg font-semibold">Customers</h2>
           </div>
 
           {/* Filters */}
@@ -104,18 +72,18 @@ const ProductSection = () => {
               />
             </div>
             <div className="flex flex-col sm:flex-row gap-2">
-              <button className="px-4 py-2 border rounded-lg bg-white flex items-center justify-center gap-2 hover:bg-black hover:text-white transition-colors">
-                <AddCircleOutline />
-                <span>Add Product</span>
-              </button>
+              <div className="px-4 py-2 border rounded-lg bg-white flex items-center justify-center gap-2 ">
+                <Filter size={16} />
+                <span>Filter</span>
+              </div>
               <select
                 className="px-4 py-2 border rounded-lg bg-white"
                 value={selectedFilter}
                 onChange={(e) => setSelectedFilter(e.target.value)}
               >
-                <option value="all">All Product</option>
-                <option value="active">In Stock</option>
-                <option value="inactive">Out of Stock</option>
+                <option value="all">All Customers</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
               </select>
             </div>
           </div>
@@ -127,25 +95,19 @@ const ProductSection = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  image
+                  Customer
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
-                  Product name
+                  Phone
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
-                  Category
+                  Block
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Price
+                  Status
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-                  Stock
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-                  Variant
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-                  Disable
+                  Last Login
                 </th>
                 <th className="px-6 py-3 relative">
                   <span className="sr-only">Actions</span>
@@ -153,53 +115,56 @@ const ProductSection = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50">
-                  {/* Image */}
+              {customers.map((customer) => (
+                <tr key={customer.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <img
-                      src="/Product.png"
-                      alt=""
-                      className="w-12 h-12 object-scale-down rounded"
-                    />
+                    <div className="flex items-center">
+                      <div className="h-10 w-10 flex-shrink-0">
+                        <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                          <span className="text-sm font-medium text-gray-600">
+                            {customer.name.charAt(0)}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">
+                          {customer.name}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {customer.email}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
+                    <div className="text-sm text-gray-900">
+                      {customer.phone}
+                    </div>
                   </td>
 
-                  {/* Product Name */}
-                  <td className="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
-                    <div className="text-sm font-medium text-gray-900">
-                      {product.name}
-                    </div>
-                  </td>
-                  {/* Category */}
-                  <td className="px-6 py-4 whitespace-nowrap hidden md:table-cell">
-                    <div className="text-sm text-gray-900">Milkchocolate</div>
-                  </td>
-                  {/* Price */}
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">&#8377; 344</div>
-                  </td>
-                  {/* Stock */}
-                  <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
-                    <div className="text-sm text-gray-900 ">
-                      <span className="pl-2">34</span>
-                    </div>
-                  </td>
-                  {/* Varient */}
-                  <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
-                    <div className="text-sm hover:bg-gray-200 w-1/6 ml-4">
-                      <Eye size={18}  />
-                    </div>
-                  </td>
-                  {/* Disable */}
                   <td className="pl-4">
                     <Switch
                       color="error"
-                      //   checked={true}
-                      //   onChange={handleChange}
-                      //   inputProps={{ "aria-label": "controlled" }}
+                      checked={ch}
+                      onChange={() => setch(!ch)}
                     />
                   </td>
-
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        customer.status === "Active"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {customer.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
+                    <div className="text-sm text-gray-900">
+                      {customer.lastOrder}
+                    </div>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <IconButton
                       size="large"
@@ -226,7 +191,6 @@ const ProductSection = () => {
                       open={Boolean(anchorEl)}
                       onClose={handleClose}
                     >
-                      <MenuItem onClick={handleClose}>Edit</MenuItem>
                       <MenuItem onClick={handleClose}>Delete</MenuItem>
                     </Menu>
                   </td>
@@ -236,13 +200,12 @@ const ProductSection = () => {
           </table>
         </div>
       </div>
-
       {/* Pagination */}
-      <div className="flex justify-center w-full">
+      <div className="flex justify-center">
         <Pagination count={10} />
       </div>
     </div>
   );
 };
 
-export default ProductSection;
+export default CustomerSection;
