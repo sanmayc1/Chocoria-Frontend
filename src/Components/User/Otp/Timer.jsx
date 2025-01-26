@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { resend_Otp } from "../../../Services/api/api";
 
-const Timer = () => {
+const Timer = ({id}) => {
   const [timeLeft, setTimeLef] = useState(70);
   // timer
   useEffect(() => {
@@ -17,9 +18,14 @@ const Timer = () => {
     const second = timeLeft % 60;
     return `${minute} : ${second}`;
   };
-  const resendOtp = () => {
+
+  const resendOtp = async() => {
+  const response = await resend_Otp({id})
+  if(response?.data?.success)
     setTimeLef(70);
   };
+
+
   return timeLeft > 0 ? (
     <p className="font-bold text-sm">{formatTime(timeLeft)}</p>
   ) : (

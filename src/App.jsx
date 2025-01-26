@@ -23,17 +23,24 @@ import ContactUsSection from "./Components/Admin/AllSections/ContactUs/ContactUs
 import CouponSection from "./Components/Admin/AllSections/CouponSection/CouponSection.jsx";
 import BannerManagementSection from "./Components/Admin/AllSections/BannerManagementSection/BannerManagementSection.jsx";
 import AdminLogin from "./Components/Admin/Login/Login.jsx";
-import AddProduct from "./Components/Admin/AllSections/ProductSection/Add&EditProduct/Add-Edit-Form.jsx";
+import AddProduct from "./Components/Admin/AllSections/ProductSection/Add&EditProduct/AddProduct.jsx";
+import SignUpPage from "./Pages/SingnUpPage.jsx";
+import LoginPage from "./Pages/LoginPage.jsx";
+import OtpPage from "./Pages/OtpPage.jsx";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/login",
-      element: <LoginForm />,
+      element: <LoginPage/>,
     },
     {
       path: "/signup",
-      element: <SignUpForm />,
+      element: <SignUpPage/>,
+    },
+    {
+      path:"/otp/:id",
+      element:<OtpPage/>
     },
     {
       path: "/",
@@ -105,9 +112,11 @@ element:<AdminLogin/>
       ],
     },
   ]);
+  
   return (
     <>
       <RouterProvider router={router} />
+      
       {/*      
         <Routes>
           <Route path="/login" element={<LoginForm/>}/>

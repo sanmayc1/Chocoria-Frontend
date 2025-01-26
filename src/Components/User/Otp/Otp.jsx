@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import SquareBlack from "../button/SquareBlack.jsx";
 import Timer from "./Timer.jsx";
+import { otp_verify } from "../../../Services/api/api.js";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 
-const Otp = () => {
+const Otp = ({id}) => {
   const [otp, setOtp] = useState(Array(4).fill(""));
-
+ const navigate = useNavigate()
   // handle the input filed changes
   const handleChange = (e, index) => {
     const value = e.target.value;
@@ -22,7 +25,22 @@ const Otp = () => {
     }
   };
 
-  useEffect(() => {});
+  const handleSubmit = async()=>{
+    const otpJoin = otp.join('')
+    const response = await otp_verify({id,otp:otpJoin})
+    if(response.status !== 200){
+      toast.error(response.response.data.message,{position:"top-center"})
+      return
+    }
+    toast.success(response.data.message,{position:"top-center",autoClose:1000})
+    setTimeout(()=>{
+      navigate('/login')
+    },2500)
+    
+    
+
+
+  }
 
   return (
     <>
@@ -47,13 +65,14 @@ const Otp = () => {
           })}
         </div>
         <div className="w-full flex justify-center pt-7 pb-2">
-          <SquareBlack btnName={"Confirm"} />
+          <SquareBlack btnName={"Confirm"} clickEvent={handleSubmit} />
         </div>
         {/* Timer */}
         <div className="flex justify-center pt-1">
-          <Timer  />
+          <Timer id={id}  />
         </div>
       </div>
+      <ToastContainer/>
     </>
   );
 };

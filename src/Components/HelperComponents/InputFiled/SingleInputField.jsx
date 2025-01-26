@@ -1,6 +1,6 @@
 
 
-const SingleInputField = ({ placeholder, value, handleChange, name }) => {
+const SingleInputField = ({ placeholder, value, handleChange, name,filedType }) => {
   return (
     <>
       <div className="flex justify-center">
@@ -10,7 +10,8 @@ const SingleInputField = ({ placeholder, value, handleChange, name }) => {
           value={value}
           onChange={handleChange}
           name={name}
-          type="text"
+          type={filedType?filedType:'text'}
+          
         />
       
       </div>

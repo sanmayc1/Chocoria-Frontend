@@ -1,7 +1,7 @@
 import { object, ref, string } from "yup";
 
 const yupSchema = object({
-  fullName: string()
+  username: string()
     .trim()
     .min(2, "Enter a valid name")
     .matches(/^[a-zA-Z\s'-]+$/, "Name contains invalid characters")

@@ -2,10 +2,13 @@ import { useState } from "react";
 import CommonBtn from "../button/CommonBtn.jsx";
 import SingleInputField from "../../HelperComponents/InputFiled/SingleInputField.jsx";
 import yupSchema from "../../../utils/yupSchema.jsx";
+import { sign_up } from "../../../Services/api/api.js";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const SignUpFields = () => {
   const [formData, setFormData] = useState({
-    fullName: "",
+    username: "",
     phone: "",
     email: "",
     password: "",
@@ -13,6 +16,7 @@ const SignUpFields = () => {
   });
 
   const [err, setErr] = useState({});
+  const navigate = useNavigate()
 
   //   handle changes
   const handleChange = async (e) => {
@@ -36,15 +40,38 @@ const SignUpFields = () => {
   const handeSubmit = async (e) => {
     e.preventDefault();
     try {
+      // on submit validation
       await yupSchema.validate(formData, { abortEarly: false });
+      setErr({});
+      //  if validation is verified send data to backend
+      const response = await sign_up(formData);
+
+      if (response.status !== 200) {
+        if (response.response.data?.validationErr) {
+          setErr(response.response.data.validationErr);
+          return;
+        }
+        if (response.status === 409) {
+          setErr({ email: response.response.data.message });
+          return;
+        }
+
+        toast.error(response?.response.data.message, {
+          position: "top-center",
+        });
+        return;
+      }
+
+      navigate(`/otp/${response.data.id}`)
+
     } catch (error) {
       const validationErr = {};
-      error.inner.forEach((err) => {
+      error?.inner.forEach((err) => {
         const { path, message } = err;
         validationErr[path] = message;
       });
       setErr(validationErr);
-      console.log(err);
+      
     }
   };
   return (
@@ -53,13 +80,13 @@ const SignUpFields = () => {
         {/* Name */}
         <SingleInputField
           placeholder={"Full Name"}
-          value={formData.fullName}
+          value={formData.username}
           handleChange={handleChange}
-          name={"fullName"}
+          name={"username"}
         />
-        {err.fullName && (
+        {err.username && (
           <span className="text-xs text-red-500 sm:px-14 px-10 ">
-            {err.fullName}
+            {err.username}
           </span>
         )}
         {/* Phone */}
@@ -90,6 +117,7 @@ const SignUpFields = () => {
         <SingleInputField
           placeholder={"Password"}
           value={formData.password}
+          filedType={"password"}
           handleChange={handleChange}
           name={"password"}
         />
@@ -103,6 +131,7 @@ const SignUpFields = () => {
           placeholder={"Confirm Password"}
           value={formData.confirmPassword}
           handleChange={handleChange}
+          filedType={"password"}
           name={"confirmPassword"}
         />
         <span className="text-xs text-red-500 sm:px-14 px-10">

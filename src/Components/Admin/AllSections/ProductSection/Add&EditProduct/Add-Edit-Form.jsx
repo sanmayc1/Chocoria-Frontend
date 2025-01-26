@@ -5,10 +5,9 @@ import Modal from "../../../../HelperComponents/InputFiled/Modal"
 import ImageCropper from "../ImageCroper"
 import { Crop } from "lucide-react"
 import { useRef } from "react"
-const AddProduct = ({image,setImages}) => {
-  const [images, setImages] = useState([])
+const AddEditForm = ({images,setImages,variants, setVariants}) => {
+  
   const [holdImage,setHoldImage] = useState(null)
-  const [variants, setVariants] = useState([{ id: "1", size: "", color: "", price: "", quantity: "" }])
   const [editImageid,setEditImageId] = useState(null)
   const [isOpen,setIsOpen]= useState(false)
   const inputFileRef = useRef(null)
@@ -28,9 +27,7 @@ const AddProduct = ({image,setImages}) => {
     setIsOpen(true)
   }
 
-
-
-  ///////////////////
+// Clear the input filed  
 
   const inputFileClear = ()=>{
     inputFileRef.current.value = null
@@ -281,5 +278,5 @@ const AddProduct = ({image,setImages}) => {
   )
 }
 
-export default AddProduct
+export default AddEditForm
 
