@@ -2,9 +2,11 @@ import Banner from "../Components/User/Banner/Banner.jsx";
 import Navbar from "../Components/User/Navbar/Navbar.jsx";
 import CardListingHeading from "../Components/User/CardListingHeading/CardListingHeading.jsx";
 import CardListing from "../Components/User/CardListing/CardListing.jsx";
-import ProductCard from "../Components/User/ProductCard/ProductCard.jsx";
+import { useSelector } from "react-redux";
+
 
 const Home = () => {
+  
   return (
     <>
       <Navbar />

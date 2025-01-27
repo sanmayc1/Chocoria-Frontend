@@ -10,6 +10,7 @@ const CardListing = ({ products }) => {
         {products?.map((product) => {
           return (
             <ProductCard
+              key={Math.random()}
               productTitle={
                 "Hersheys Dark White Chocolate mkakke rtro  clear this  and saddg"
               }

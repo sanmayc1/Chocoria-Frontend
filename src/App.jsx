@@ -22,25 +22,30 @@ import NotificationSection from "./Components/Admin/AllSections/NotificationSect
 import ContactUsSection from "./Components/Admin/AllSections/ContactUs/ContactUs.jsx";
 import CouponSection from "./Components/Admin/AllSections/CouponSection/CouponSection.jsx";
 import BannerManagementSection from "./Components/Admin/AllSections/BannerManagementSection/BannerManagementSection.jsx";
-import AdminLogin from "./Components/Admin/Login/Login.jsx";
 import AddProduct from "./Components/Admin/AllSections/ProductSection/Add&EditProduct/AddProduct.jsx";
 import SignUpPage from "./Pages/SingnUpPage.jsx";
 import LoginPage from "./Pages/LoginPage.jsx";
 import OtpPage from "./Pages/OtpPage.jsx";
+import AuthGuard from "./Components/GuardComponent/AuthGuard.jsx";
+import AccountPage from "./Pages/AccountPage.jsx";
+import { ToastContainer } from "react-toastify";
+import AdminLoginPage from "./Pages/AdminPages/LoginPage.jsx";
+import AdminAuthGuard from "./Components/GuardComponent/AdminAuthGuard.jsx";
+import AdminLoginGuard from "./Components/GuardComponent/AdminLoginGuard.jsx";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/login",
-      element: <LoginPage/>,
+      element: <LoginPage />,
     },
     {
       path: "/signup",
-      element: <SignUpPage/>,
+      element: <SignUpPage />,
     },
     {
-      path:"/otp/:id",
-      element:<OtpPage/>
+      path: "/otp/:id",
+      element: <OtpPage />,
     },
     {
       path: "/",
@@ -50,20 +55,28 @@ function App() {
       path: "/productdetailed",
       element: <ProductDetailedPage />,
     },
+    {
+      path: "/account",
+      element: (
+        <AuthGuard>
+          <AccountPage/>
+        </AuthGuard>
+      ),
+    },
     // Admin side paths
 
     {
-path:"/admin/login",
-element:<AdminLogin/>
+      path: "/admin/login",
+      element:<AdminLoginGuard><AdminLoginPage/></AdminLoginGuard> ,
     },
     {
       path: "/admin",
-      element: <AdminLayout />,
+      element:<AdminAuthGuard> <AdminLayout /></AdminAuthGuard>,
       // child components
       children: [
         {
           path: "/admin/dashboard",
-          element: <Dashboard />,
+          element:<Dashboard />,
         },
         {
           path: "/admin/product",
@@ -90,43 +103,35 @@ element:<AdminLogin/>
           element: <ReviewSection />,
         },
         {
-          path:"/admin/notification",
-          element:<NotificationSection/>
+          path: "/admin/notification",
+          element: <NotificationSection />,
         },
         {
-          path:"/admin/contact-us",
-          element:<ContactUsSection/>
+          path: "/admin/contact-us",
+          element: <ContactUsSection />,
         },
         {
-          path:"/admin/coupon",
-          element:<CouponSection/>
+          path: "/admin/coupon",
+          element: <CouponSection />,
         },
         {
-          path:"/admin/banner-management",
-          element:<BannerManagementSection/>
+          path: "/admin/banner-management",
+          element: <BannerManagementSection />,
         },
         {
-          path:"/admin/product/add-product",
-          element:<AddProduct/>
-        }
+          path: "/admin/product/add-product",
+          element: <AddProduct />,
+        },
       ],
     },
   ]);
-  
+
   return (
     <>
+      <ToastContainer/>
       <RouterProvider router={router} />
-      
-      {/*      
-        <Routes>
-          <Route path="/login" element={<LoginForm/>}/>
-          <Route path="/signup" element={<SignUpForm/>}/>
-          <Route path="/" element={<Home/>}/>
-          <Route path="/productdetailed" element={<ProductDetailedPage/>}/>
-          <Route path="/admin" element={<AdminDashboard/>} children={path:"/" element:<ProductSection/>}  />
-        </Routes> */}
-
-      {/* <LoginForm/> */}
+    
+     
     </>
   );
 }

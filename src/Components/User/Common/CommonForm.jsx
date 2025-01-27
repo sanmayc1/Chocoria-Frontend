@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { googleAuth } from "../../../Services/api/api.js";
 import { toast, ToastContainer } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { SET_AUTH } from "../../../Store/Slice/authSlice.jsx";
 
 const CommonForm = ({ heading, pageName, fields }) => {
   const navigate = useNavigate();
-
+ const dispatch = useDispatch()
   // sign in or signOut navigate
 
   const signInOrSignOut = () => {
@@ -19,6 +21,10 @@ const CommonForm = ({ heading, pageName, fields }) => {
     }
   };
 
+  const redirectToHome = () => {
+    navigate("/");
+  }
+
   // google login get the access token
 
   const login = useGoogleLogin({
@@ -26,15 +32,17 @@ const CommonForm = ({ heading, pageName, fields }) => {
     onSuccess: async (tokenResponse) => {
       try {
         const response = await googleAuth(tokenResponse.access_token);
-        if (response.data.success) {
+        if (response?.data?.success) {
+          dispatch(SET_AUTH(response.data))
           navigate("/");
+          return
         } else {
           toast.error(response.response.data.message, {
             position: "top-center",
           });
+          return
         }
-      } catch (error) {
-        console.error('Login error:', error);
+      } catch (error) {;
         toast.error("Something went wrong")
       }
     },
@@ -71,7 +79,7 @@ const CommonForm = ({ heading, pageName, fields }) => {
         {fields}
 
         {pageName === "LOG IN" ? (
-          <p className="text-center pb-6 select-none">
+          <p className="text-center  select-none">
             Don't Have an Account?{" "}
             <span
               className="text-blue-700 cursor-pointer"
@@ -81,7 +89,7 @@ const CommonForm = ({ heading, pageName, fields }) => {
             </span>
           </p>
         ) : (
-          <p className="text-center pb-6 select-none">
+          <p className="text-center  select-none">
             Already Have an Account?{" "}
             <span
               className="text-blue-700 cursor-pointer"
@@ -90,7 +98,9 @@ const CommonForm = ({ heading, pageName, fields }) => {
               Sign In
             </span>
           </p>
+          
         )}
+        <p className="text-center pb-6 pt-2 cursor-pointer text-sm font-semibold " onClick={redirectToHome}>Back to Home</p>
       </div>
       <ToastContainer />
     </>

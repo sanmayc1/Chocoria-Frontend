@@ -1,17 +1,36 @@
 import { Star } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 
 const ProductCard = ({ price, productTitle, rating, imageUrl }) => {
-  const navigate = useNavigate()
-  const navigateToProductDetailedPage = ()=>{
-    navigate('/productdetailed')
+  const navigate = useNavigate();
+  const auth = useSelector((state) => state.auth.auth);
+ useEffect(() => {}, [auth]);
+
+  const navigateToProductDetailedPage = () => {
+    navigate("/productdetailed");
+  };
+
+  const addToCard = () => {
+
+    if (!auth) {
+      navigate("/login");
+      return;
+    }else{
+      toast.success("Product added to cart", { position: "top-center",autoClose: 1000 });
+    }
     
-  }
+  };
   return (
     <>
       <div className="shadow-md w-fit rounded-3xl flex flex-col">
         {/* Price image rating container */}
-        <div className="bg-white max-h-40 min-h-[200px] min-w-[150px] max-w-32 md:min-h-[218px] md:max-h-[218px] md:min-w-[200px] md:max-w-[180px] xl:min-h-[250px] xl:max-h-[250px] xl:min-w-[235px] xl:max-w-[235px] rounded-3xl md:rounded-b-none flex flex-col justify-between " onClick={navigateToProductDetailedPage} >
+        <div
+          className="bg-white max-h-40 min-h-[200px] min-w-[150px] max-w-32 md:min-h-[218px] md:max-h-[218px] md:min-w-[200px] md:max-w-[180px] xl:min-h-[250px] xl:max-h-[250px] xl:min-w-[235px] xl:max-w-[235px] rounded-3xl md:rounded-b-none flex flex-col justify-between "
+          onClick={navigateToProductDetailedPage}
+        >
           {/* Card Image */}
 
           <div className="w-full overflow-hidden flex justify-center p-4 ">
@@ -49,10 +68,14 @@ const ProductCard = ({ price, productTitle, rating, imageUrl }) => {
             </div>
           </div>
         </div>
-        <button className="bg-orange-950 md:h-12 w-full xl:h-14 xl:text-lg  text-white font-semibold rounded-b-3xl hidden md:block hover:bg-orange-900  transition-colors">
+        <button
+          className="bg-orange-950 md:h-12 w-full xl:h-14 xl:text-lg  text-white font-semibold rounded-b-3xl hidden md:block hover:bg-orange-900  transition-colors"
+          onClick={addToCard}
+        >
           Add to cart
         </button>
       </div>
+      
     </>
   );
 };

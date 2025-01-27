@@ -1,12 +1,69 @@
-import  { useState } from "react";
-import { Search, Filter, MoreVertical, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Search, Filter, MoreVertical, Users, RefreshCwIcon } from "lucide-react";
 import QuickStatCard from "../../HelperComponents/QuickCard";
 import { IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
+import { block_user, delete_user, fetch_users } from "../../../../Services/api/adminApi.js";
+import { toast } from "react-toastify";
 
 const CustomerSection = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState("all");
-  const [ch, setch] = useState(true);
+  const [update, setUpdate] = useState(false);
+  const [customers, setCustomers] = useState([]);
+
+  useEffect(() => {
+    fetch_users()
+      .then((res) => {
+        setCustomers(res.data.users);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message, {
+          position: "top-center",
+          autoClose: 2000,
+        });
+      });
+  }, [update]);
+
+  //  handle block
+  const handleBlock = async(e,id) => {
+    
+   const response =  await block_user(id);
+
+    if(response.status === 200){
+      setUpdate(!update)
+      toast.success(response.data.message, {
+        position: "top-center",
+        autoClose: 1000,
+      });
+    }else{
+      toast.error(response.response.data.message, {
+        position: "top-center",
+        autoClose: 2000,
+      });
+    }
+
+  };
+
+  // delete the user
+  const deleteUser = async(id) => {
+    setAnchorEl(null);
+   const response =  await delete_user(id)
+   if(response.status === 200){
+    setUpdate(!update)
+    toast.success(response.data.message, {
+      position: "top-center",
+      autoClose: 1000,
+    });
+  }else{
+    toast.error(response.response.data.message, {
+      position: "top-center",
+      autoClose: 2000,
+    });
+  }
+
+    
+  };
+  // setCustomers(customers)
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -16,38 +73,13 @@ const CustomerSection = () => {
     setAnchorEl(null);
   };
 
-  const customers = [
-    {
-      id: 1,
-      name: "Sarah Wilson",
-      email: "sarah.w@example.com",
-      phone: "+1 (555) 123-4567",
-      location: "New York, USA",
-      totalOrders: 28,
-      totalSpent: 2890,
-      lastOrder: "2024-01-15",
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Michael Chen",
-      email: "michael.c@example.com",
-      phone: "+1 (555) 234-5678",
-      location: "Los Angeles, USA",
-      totalOrders: 15,
-      totalSpent: 1750,
-      lastOrder: "2024-01-10",
-      status: "Active",
-    },
-  ];
-
   return (
     <div className="p-4 sm:p-6 space-y-6">
       {/* Quick Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <QuickStatCard title="Total Customers" value="1,234" icon={<Users />} />
-        <QuickStatCard title="Active Customers" value="1,089" />
-        <QuickStatCard title="New This Month" value="145" />
+        <QuickStatCard title="Total Customers" value={customers.length} icon={<Users />} />
+        <QuickStatCard title="Active Customers" value={customers.filter((customer)=>customer.is_Blocked !== true).length} />
+        {/* <QuickStatCard title="New This Month" value="1" /> */}
       </div>
 
       {/* Main Customer List Card */}
@@ -86,6 +118,11 @@ const CustomerSection = () => {
                 <option value="inactive">Inactive</option>
               </select>
             </div>
+            <div className="px-4 py-2 border rounded-lg bg-white flex items-center justify-center gap-2 cursor-pointer" onClick={()=>setUpdate(!update)}>
+                <RefreshCwIcon size={16} />
+                
+              </div>
+           
           </div>
         </div>
 
@@ -116,19 +153,19 @@ const CustomerSection = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {customers.map((customer) => (
-                <tr key={customer.id} className="hover:bg-gray-50">
+                <tr key={customer._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="h-10 w-10 flex-shrink-0">
                         <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
                           <span className="text-sm font-medium text-gray-600">
-                            {customer.name.charAt(0)}
+                            {customer.username.charAt(0)}
                           </span>
                         </div>
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">
-                          {customer.name}
+                          {customer.username}
                         </div>
                         <div className="text-sm text-gray-500">
                           {customer.email}
@@ -145,24 +182,24 @@ const CustomerSection = () => {
                   <td className="pl-4">
                     <Switch
                       color="error"
-                      checked={ch}
-                      onChange={() => setch(!ch)}
+                      checked={customer.is_Blocked}
+                      onChange={(e)=>handleBlock(e, customer._id)}
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        customer.status === "Active"
+                        customer.is_Blocked === false
                           ? "bg-green-100 text-green-800"
                           : "bg-gray-100 text-gray-800"
                       }`}
                     >
-                      {customer.status}
+                      {customer.is_Blocked === false ? "Active" : "Blocked"}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
                     <div className="text-sm text-gray-900">
-                      {customer.lastOrder}
+                      {customer.last_login ? customer.last_login : "N/A"}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -191,7 +228,7 @@ const CustomerSection = () => {
                       open={Boolean(anchorEl)}
                       onClose={handleClose}
                     >
-                      <MenuItem onClick={handleClose}>Delete</MenuItem>
+                      <MenuItem onClick={()=>deleteUser(customer._id)}>Delete</MenuItem>
                     </Menu>
                   </td>
                 </tr>
@@ -202,7 +239,7 @@ const CustomerSection = () => {
       </div>
       {/* Pagination */}
       <div className="flex justify-center">
-        <Pagination count={10} />
+        {customers.length > 5 && <Pagination count={Math.max(customers.length/5)} />}
       </div>
     </div>
   );

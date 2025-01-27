@@ -5,31 +5,28 @@ import {
   ShoppingCart,
   Users,
   Gift,
-  Cookie,
   Bell,
   MessageCircle,
   Ticket,
   ImagePlus,
   FolderTree,
-  ChevronUp,
-  ChevronDown,
-  Search,
   LogOut,
   Menu,
   X,
   Star,
 } from "lucide-react";
 import SidebarItem from "../HelperComponents/SidebarItems.jsx";
-import ProductSection from "../AllSections/ProductSection/ProductSection.jsx";
-import CustomerSection from "../AllSections/CustomerSection/CoustomerSection.jsx";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { user_logout } from "../../../Services/api/api.js";
+import { auth_False } from "../../../Store/Slice/authSlice.jsx";
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const [select, setSelect] = useState("");
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   useEffect(() => {
     setSelect(location.pathname);
   }, [location.pathname]);
@@ -67,6 +64,11 @@ const AdminLayout = () => {
       status: "Rejected",
     },
   ];
+
+  const logout = async() => {
+   await user_logout()
+   dispatch(auth_False())
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -177,7 +179,7 @@ const AdminLayout = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-y-hidden overflow-x-hidden">
+      <div className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden">
         {/* Header */}
         <header className="bg-white p-4 shadow-sm">
           <div className="flex  items-center justify-between lg:justify-end gap-4">
@@ -185,7 +187,7 @@ const AdminLayout = () => {
               <Menu size={24} />
             </button>
 
-            <button className="px-4 py-2 bg-black text-white rounded-lg flex items-center gap-2" onClick={()=>navigate('/admin/login')} >
+            <button className="px-4 py-2 bg-black text-white rounded-lg flex items-center gap-2" onClick={logout} >
               <LogOut size={20} />
               <span className="hidden sm:inline">Log out</span>
             </button>

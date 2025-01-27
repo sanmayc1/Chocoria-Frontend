@@ -5,7 +5,7 @@ import Modal from "../../../../HelperComponents/InputFiled/Modal"
 import ImageCropper from "../ImageCroper"
 import { Crop } from "lucide-react"
 import { useRef } from "react"
-const AddEditForm = ({images,setImages,variants, setVariants}) => {
+const AddEditForm = ({images,setImages,variants, setVariants,title,productDetails,handleChange,handleSubmit}) => {
   
   const [holdImage,setHoldImage] = useState(null)
   const [editImageid,setEditImageId] = useState(null)
@@ -73,7 +73,7 @@ const AddEditForm = ({images,setImages,variants, setVariants}) => {
    <div className="w-full h-full overflow-y-scroll xl:p-10 ">
      <div className="w-full max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
-        <h2 className="text-2xl font-semibold text-gray-800">Add product</h2>
+        <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
 
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -96,6 +96,9 @@ const AddEditForm = ({images,setImages,variants, setVariants}) => {
               <select
                 id="brand"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                name="brand"
+                onChange={handleChange}
+                value={productDetails.brand}
               >
                 <option value="">Select brand</option>
                 <option value="nike">Nike</option>
@@ -113,6 +116,9 @@ const AddEditForm = ({images,setImages,variants, setVariants}) => {
             <select
               id="category"
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              name="category"
+              onChange={handleChange}
+              value={productDetails.category}
             >
               <option value="">Select category</option>
               <option value="shoes">Shoes</option>
@@ -243,6 +249,9 @@ const AddEditForm = ({images,setImages,variants, setVariants}) => {
               <textarea
                 id="description"
                 rows="4"
+                name="description"
+                onChange={handleChange}
+                value={productDetails.description}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter product description"
               ></textarea>
@@ -252,6 +261,9 @@ const AddEditForm = ({images,setImages,variants, setVariants}) => {
                 Ingredients
               </label>
               <textarea
+              name="ingredients"
+              onChange={handleChange}
+              value={productDetails.ingredients}
                 id="ingredients"
                 rows="4"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
@@ -264,6 +276,7 @@ const AddEditForm = ({images,setImages,variants, setVariants}) => {
             <button
               type="submit"
               className="px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              onClick={handleSubmit}
             >
               Add Product
             </button>

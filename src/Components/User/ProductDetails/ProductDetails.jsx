@@ -1,9 +1,31 @@
 import { Star } from "lucide-react";
 import ProductQuantity from "../ProductQuantity/ProductQuantity.jsx";
 import Varients from "../Varients/Varients.jsx";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 
 const ProductDetails = () => {
+  const auth = useSelector((state) => state.auth.auth);
+  const navigate = useNavigate();
+  const addToCart = () => {
+    if (!auth) {
+      alert("Please Login First");
+      navigate("/login");
+      
+      return;
+    }
+    alert("Product added to cart");
+  };
+  const buyNow = () => {
+    if (!auth) {  
+      alert("Please Login First");
+      navigate("/login");
+      return;
+    }
+    alert("Buy Now");
+  }
   return (
     <div className="sm:mx-0 mx-5 flex flex-col w-[100%] ">
       {/* Brand Name */}
@@ -44,10 +66,10 @@ const ProductDetails = () => {
       <p className=" font-semibold pt-5 text-sm text-green-700">15 Units in Stock</p>
       {/* Cart and buynow */}
       <div className="pt-9 lg:pt-3 xl:pt-5 grid lg:grid-flow-col gap-3 w-full ">
-        <button className="bg-orange-950 md:h-12  xl:h-14 xl:text-lg h-14  text-white font-semibold rounded-3xl hover:bg-orange-900  transition-colors">
+        <button className="bg-orange-950 md:h-12  xl:h-14 xl:text-lg h-14  text-white font-semibold rounded-3xl hover:bg-orange-900  transition-colors" onClick={addToCart} >
           Add to cart
         </button>
-        <button className="bg-orange-950 md:h-12 xl:h-14 xl:text-lg h-14  text-white font-semibold rounded-3xl hover:bg-orange-900  transition-colors">
+        <button className="bg-orange-950 md:h-12 xl:h-14 xl:text-lg h-14  text-white font-semibold rounded-3xl hover:bg-orange-900  transition-colors" onClick={buyNow} >
           Buy Now
         </button>
       </div>

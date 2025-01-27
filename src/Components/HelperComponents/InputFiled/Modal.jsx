@@ -9,13 +9,9 @@ const Modal = ({ isOpen, onClose, children }) => {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-lg p-6 md:w-[50%] w-[96%]"
+        className="bg-white rounded-lg shadow-lg p-6 md:w-[50%] w-[96%] xl:w-[30%]"
         onClick={(e) => e.stopPropagation()}
       >
-      
-          
-        
-        
         {children}
       </div>
     </div>
