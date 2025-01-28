@@ -4,13 +4,13 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
-const ProductCard = ({ price, productTitle, rating, imageUrl }) => {
+const ProductCard = ({ price, productTitle, rating, imageUrl,id }) => {
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth.auth);
  useEffect(() => {}, [auth]);
 
   const navigateToProductDetailedPage = () => {
-    navigate("/productdetailed");
+    navigate(`/productdetailed/${id}`);
   };
 
   const addToCard = () => {

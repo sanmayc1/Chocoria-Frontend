@@ -9,34 +9,61 @@ import ProductDescription from "../Components/User/ProductDescription/ProductDes
 import CardListingHeading from "../Components/User/CardListingHeading/CardListingHeading.jsx";
 import CardListing from "../Components/User/CardListing/CardListing.jsx";
 import Footer from "../Components/User/Footer/Footer.jsx";
+import { get_product_user } from "../Services/api/productApi.js";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import { baseUrl } from "../Services/api/constants.js";
+import { useParams } from "react-router-dom";
 
 const ProductDetailedPage = () => {
-  const products = [
-    { id: 1, src: "product1.jpg", alt: "Product 1" },
-    { id: 2, src: "product2.jpg", alt: "Product 2" },
-    { id: 3, src: "product3.jpg", alt: "Product 3" },
-    { id: 4, src: "product3.jpg", alt: "Product 3" },
-  ];
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [recommendation,setRecommendation] = useState([])
+  const [selectedImage, setSelectedImage] = useState(null);
+  useEffect(() => {
+    async function fetch_All_Products() {
+      const response = await get_product_user(id);
+      if (response.status === 200) {
+        setProduct(response.data.product);
+        setRecommendation(response.data.recomendation)
+        return;
+      }
+
+      toast.error(response.response.data.message, {
+        position: "top-center",
+      });
+    }
+    fetch_All_Products();
+  }, []);
+
+
+  if (!product) {
+    return <div>Loading...</div>; // Display loading while products are being fetched
+  }
   return (
     <>
-      <Navbar />
-      <Breadcrumbs productName={"Hershy's Dark"} category={"Milk Chocolate"} />
+      <Navbar/>
+      <Breadcrumbs productName={product.name} category={"Milk Chocolate"} />
 
       {/* Product detailed container */}
       <ProductImageViewMobile imageUrl={"./Product.png"} />
       <div className="flex md:mx-16 lg:mx-16 xl:mx-20 mt-10 lg:h-[360px] xl:h-[450px] gap-7 ">
         {/* All images */}
-        <ProductImages products={products} />
+        <ProductImages
+          selectedImage={selectedImage}
+          setSelectedImage={setSelectedImage}
+          images={product?.images}
+        />
         {/* image view area */}
-        <ProductImageView imageUrl={"./Product.png"} />
+        <ProductImageView imageUrl={`${baseUrl}${selectedImage}`} />
         {/* product details */}
-        <ProductDetails />
+        <ProductDetails brand={product.brand} productName={product.name} price={product.variants[0].price} stock={product.variants[0].quantity} />
       </div>
-      <ProductDescription/>
+      <ProductDescription description={product.description} ingredients={product.ingredients} />
       <CustomerReviews />
-      <CardListingHeading heading={"Recommendation"}/>
-      <CardListing products={[1,2,3,4,5,6]}/>
-      <Footer/>
+      <CardListingHeading heading={"Recommendation"} />
+      <CardListing products={recommendation}/>
+      <Footer />
     </>
   );
 };

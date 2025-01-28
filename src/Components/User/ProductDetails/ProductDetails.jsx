@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 
-const ProductDetails = () => {
+const ProductDetails = ({brand,productName,price,stock}) => {
   const auth = useSelector((state) => state.auth.auth);
   const navigate = useNavigate();
   const addToCart = () => {
@@ -31,12 +31,12 @@ const ProductDetails = () => {
       {/* Brand Name */}
 
       <h1 className="xl:text-3xl md:text-xl md:font-bold font-semibold">
-        HERSHEY'S{" "}
+        {brand}{" "}
       </h1>
       {/* Product Name */}
 
       <h2 className="xl:text-xl md:py-3 py-2 xl:py-5 ">
-        HERSHEY'S EXOTIC DARKRaspberry & Goji Flavor
+        {productName}
       </h2>
       {/* Rating */}
 
@@ -47,7 +47,7 @@ const ProductDetails = () => {
       {/* Price */}
 
       <h1 className="font-bold xl:text-3xl text-2xl pt-5 xl:pt-7 flex gap-2 items-center">
-        ₹520{" "}
+        ₹{price}{" "}
         <span className="text-gray-700 line-through font-normal text-xl ">
           ₹600
         </span>
@@ -63,7 +63,7 @@ const ProductDetails = () => {
         {/* Quantitty */}
         <ProductQuantity />
       </div>
-      <p className=" font-semibold pt-5 text-sm text-green-700">15 Units in Stock</p>
+      <p className=" font-semibold pt-5 text-sm text-green-700">{stock.length > 0 ? `${stock} In stock`:""}</p>
       {/* Cart and buynow */}
       <div className="pt-9 lg:pt-3 xl:pt-5 grid lg:grid-flow-col gap-3 w-full ">
         <button className="bg-orange-950 md:h-12  xl:h-14 xl:text-lg h-14  text-white font-semibold rounded-3xl hover:bg-orange-900  transition-colors" onClick={addToCart} >

@@ -52,7 +52,7 @@ function App() {
       element: <Home />,
     },
     {
-      path: "/productdetailed",
+      path: "/productdetailed/:id",
       element: <ProductDetailedPage />,
     },
     {

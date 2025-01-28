@@ -1,9 +1,9 @@
 
 const settings = {
     speed: 400,
-    slidesToShow: 5.001, // Number of items to show at a time
+    slidesToShow: 5,
+    infinite: false, // Number of items to show at a time
     slidesToScroll: 1,
-    swipeToSlide:true,
     responsive: [
       {
         breakpoint: 1024,

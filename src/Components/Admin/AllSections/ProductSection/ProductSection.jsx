@@ -1,61 +1,88 @@
-import  { useState } from "react";
-import QuickStatCard from "../../HelperComponents/QuickCard";
+import { useEffect, useState } from "react";
+import QuickStatCard from "../../HelperComponents/QuickCard.jsx";
 import { AddCircleOutline } from "@mui/icons-material";
-import {
-  Search,
-  Archive,
-  Tag,
-  Package,
-  MoreVertical,
-  Eye,
-} from "lucide-react";
-import {
-    IconButton,
-    Menu,
-    MenuItem,
-    Pagination,
-    Switch,
-  } from "@mui/material";
+import { Search, Archive, Tag, Package, MoreVertical, Eye } from "lucide-react";
+import { IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
-
-
-
-
+import { delete_Product, get_product, soft_Delete_Product } from "../../../../Services/api/productApi.js";
+import { toast } from "react-toastify";
+import { baseUrl } from "../../../../Services/api/constants.js";
 const ProductSection = () => {
-
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState("all");
-  const navigate = useNavigate()
+  const [products, setProducts] = useState([]);
+  const [selectedProduct,setSelectedProduct] = useState(null)
+  const [update,setUpdate]= useState(false)
+  const navigate = useNavigate();
 
-  const handleMenu = (event) => {
+  useEffect(() => {
+    async function fetch_All_Products() {
+      const response = await get_product();
+      if (response.status === 200) {
+        setProducts(response.data.products);
+        return;
+      }
+
+      toast.error(response.response.data.message);
+    }
+    fetch_All_Products();
+  }, [update]);
+
+  const handleChange = async (e, id) => {
+    const response = await soft_Delete_Product({id});
+
+    if (response.status === 200) {
+      setUpdate(!update);
+      toast.success(response.data.message, {
+        position: "top-center",
+        autoClose: 1000,
+      });
+    } else {
+      toast.error(response.response.data.message, {
+        position: "top-center",
+        autoClose: 2000,
+      });
+    }
+  };
+
+  const handleMenu = (event,product) => {
     setAnchorEl(event.currentTarget);
+    setSelectedProduct(product)
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const products = [
-    {
-      id: 1,
-      name: "Ferrero",
-      category: "Milk Chocolate",
-      price: 599.0,
-      stock: 45,
-      image: "/placeholder.svg",
-      deleted: false,
-    },
-    {
-      id: 2,
-      name: "Willgoten",
-      category: "Dark Chocolate",
-      price: 513.0,
-      stock: 50,
-      image: "/placeholder.svg",
-      deleted: false,
-    },
-  ];
+  const stock= (variants)=>{
+
+    return variants.reduce((acc,cur)=>{
+         return acc =+ cur.quantity
+         
+    },0)
+
+
+  }
+
+  const deleteProduct =async ()=>{
+    setAnchorEl(null);
+     const response = await delete_Product(selectedProduct._id);
+    
+        if (response.status === 200) {
+          toast.success(response.data.message, {
+            position: "top-center",
+            autoClose: 1000,
+          });
+          setUpdate(!update);
+    
+          return null;
+        }
+    
+        toast.error(response.response.data.message, {
+          position: "top-center",
+          autoClose: 1000,
+        });
+  }
 
   return (
     <div className="p-4 sm:p-6 space-y-6">
@@ -64,9 +91,9 @@ const ProductSection = () => {
         <QuickStatCard
           icon={<Package className="text-blue-500" />}
           title="Total Products"
-          value="486"
+          value={products.length}
         />
-        <QuickStatCard
+        {/* <QuickStatCard
           icon={<Archive className="text-green-500" />}
           title="In Stock"
           value="385"
@@ -80,7 +107,7 @@ const ProductSection = () => {
           icon={<Package className="text-red-500" />}
           title="Low Stock"
           value="15"
-        />
+        /> */}
       </div>
 
       {/* Product Table */}
@@ -105,7 +132,10 @@ const ProductSection = () => {
               />
             </div>
             <div className="flex flex-col sm:flex-row gap-2">
-              <button className="px-4 py-2 border rounded-lg bg-white flex items-center justify-center gap-2 hover:bg-black hover:text-white transition-colors" onClick={()=> navigate('/admin/product/add-product')} >
+              <button
+                className="px-4 py-2 border rounded-lg bg-white flex items-center justify-center gap-2 hover:bg-black hover:text-white transition-colors"
+                onClick={() => navigate("/admin/product/add-product")}
+              >
                 <AddCircleOutline />
                 <span>Add Product</span>
               </button>
@@ -152,11 +182,11 @@ const ProductSection = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50">
+                <tr key={product._id} className="hover:bg-gray-50">
                   {/* Image */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <img
-                      src="/Product.png"
+                      src={`${baseUrl}${product.images[0]}`}
                       alt=""
                       className="w-12 h-12 object-scale-down rounded"
                     />
@@ -179,17 +209,16 @@ const ProductSection = () => {
                   {/* Stock */}
                   <td className="px-6 py-4 whitespace-nowrap table-cell">
                     <div className="text-sm text-gray-900 ">
-                      <span className="pl-2">34</span>
+                      <span className="pl-2">{stock(product.variants)}</span>
                     </div>
                   </td>
-               
+
                   {/* Disable */}
                   <td className="pl-4">
                     <Switch
                       color="error"
-                      //   checked={true}
-                      //   onChange={handleChange}
-                      //   inputProps={{ "aria-label": "controlled" }}
+                      checked={product.is_deleted}
+                      onChange={(e) => handleChange(e, product._id)}
                     />
                   </td>
 
@@ -199,7 +228,7 @@ const ProductSection = () => {
                       aria-label="account of current user"
                       aria-controls="menu-appbar"
                       aria-haspopup="true"
-                      onClick={handleMenu}
+                      onClick={(e)=>handleMenu(e,product)}
                       color="inherit"
                     >
                       <MoreVertical size={20} />
@@ -220,7 +249,7 @@ const ProductSection = () => {
                       onClose={handleClose}
                     >
                       <MenuItem onClick={handleClose}>Edit</MenuItem>
-                      <MenuItem onClick={handleClose}>Delete</MenuItem>
+                      <MenuItem onClick={deleteProduct}>Delete</MenuItem>
                     </Menu>
                   </td>
                 </tr>

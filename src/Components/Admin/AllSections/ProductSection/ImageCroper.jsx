@@ -10,26 +10,30 @@ const ImageCropper = ({ src, setCroppedImage,onClose,id,setId }) => {
 
   const handleCrop = () => {
     const cropper = cropperRef.current.cropper;
-    //   cropper.getCroppedCanvas().toBlob((blob) => {
-    //     setCroppedImage(blob); // Blob representation of the cropped image
-    //     // You can upload the blob to your server here
-    //   });
-    const croppedDataUrl = cropper.getCroppedCanvas().toDataURL();
-    if(id){
-        setCroppedImage((prev)=>(
-            prev.map((image)=>{
-              if(id===image.id){
-                return{id,url:croppedDataUrl}
-              }
-              return image
-            })
-        ))
-        setId(null)
-        onClose()
-    }else{
-        setCroppedImage((prev)=>([...prev,{id:uuid(),url:croppedDataUrl}]));
-        onClose()
-    }
+    
+      cropper.getCroppedCanvas().toBlob((blob) => {
+        if(id){
+          setCroppedImage((prev)=>(
+              prev.map((image)=>{
+                if(id===image.id){
+                  return{id,img:blob}
+                }
+                return image
+              })
+          ))
+          setId(null)
+          onClose()
+      }else{
+          setCroppedImage((prev)=>([...prev,{id:uuid(),img:blob}]));
+          onClose()
+      }
+        
+         // Blob representation of the cropped image
+        // You can upload the blob to your server here
+      });
+    // const croppedDataUrl = cropper.getCroppedCanvas().toDataURL();
+
+
     
   };
 

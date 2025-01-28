@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
 
-const ProductDescription = () => {
+const ProductDescription = ({description,ingredients}) => {
   const [activeTab, setActiveTab] = useState('details');
 
-  const details = {
-    manufacturer: 'FERRERO INDUSTRIALE ITALIA S.r.l.',
-    location: 'P.LEP FERRERO 1,I-12051, ALBA, ITALY',
-    packedBy: 'FERRERO INDUSTRIALE ITALIA S.r.l.',
-    packedLocation: 'P.LEP FERRERO 1,I-12051, ALBA, ITALY',
-    importedBy: 'Cocosart Ventures Private Limited',
-    dimensions: '18*1*17.5 cm'
-  };
-
+ 
   return (
     <div className="w-full my-20 xl:my-40">
       {/* Tabs */}
@@ -44,14 +36,14 @@ const ProductDescription = () => {
       <div className="space-y-3 text-sm text-gray-600 lg:px-36 xl:px-52 xl:text-lg px-16">
         {activeTab === 'details' && (
           <>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium placeat enim, eveniet hic laborum natus, aperiam illo laboriosam quibusdam architecto necessitatibus facere. Esse ex ipsa obcaecati voluptatum consequuntur, sunt possimus.</p>
+            <p>{description}</p>
           </>
         )}
         
         {activeTab === 'ingredients' && (
           <div className="py-4">
             {/* Placeholder for ingredients content */}
-            <p>Product ingredients information would go here.</p>
+            <p>{ingredients}</p>
           </div>
         )}
       </div>
