@@ -63,6 +63,11 @@ const ProductSection = () => {
 
 
   }
+  // edit product
+  const editProduct = () => {
+    setAnchorEl(null);
+    navigate(`/admin/product/edit-product/${selectedProduct._id}`);
+  }
 
   const deleteProduct =async ()=>{
     setAnchorEl(null);
@@ -248,7 +253,7 @@ const ProductSection = () => {
                       open={Boolean(anchorEl)}
                       onClose={handleClose}
                     >
-                      <MenuItem onClick={handleClose}>Edit</MenuItem>
+                      <MenuItem onClick={editProduct}>Edit</MenuItem>
                       <MenuItem onClick={deleteProduct}>Delete</MenuItem>
                     </Menu>
                   </td>

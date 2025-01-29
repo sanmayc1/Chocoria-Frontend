@@ -32,6 +32,7 @@ import { ToastContainer } from "react-toastify";
 import AdminLoginPage from "./Pages/AdminPages/LoginPage.jsx";
 import AdminAuthGuard from "./Components/GuardComponent/AdminAuthGuard.jsx";
 import AdminLoginGuard from "./Components/GuardComponent/AdminLoginGuard.jsx";
+import EditProduct from "./Components/Admin/AllSections/ProductSection/Add&EditProduct/editProduct.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -122,6 +123,10 @@ function App() {
           path: "/admin/product/add-product",
           element: <AddProduct />,
         },
+        {
+          path: "/admin/product/edit-product/:id",
+          element: <EditProduct/>,
+        }
       ],
     },
   ]);

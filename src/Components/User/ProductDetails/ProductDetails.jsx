@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 
-const ProductDetails = ({brand,productName,price,stock}) => {
+const ProductDetails = ({brand,productName,price,stock,varients,setSelectedVariant,selectedVariant}) => {
   const auth = useSelector((state) => state.auth.auth);
   const navigate = useNavigate();
   const addToCart = () => {
@@ -58,12 +58,12 @@ const ProductDetails = ({brand,productName,price,stock}) => {
       <div className="flex gap-4 xl:pt-5">
         {/* Varients */}
 
-        <Varients />
+        <Varients varients={varients} setSelectedVariant={setSelectedVariant} selectedVariant={selectedVariant} />
 
         {/* Quantitty */}
-        <ProductQuantity />
+        <ProductQuantity selectedVariant={selectedVariant} />
       </div>
-      <p className=" font-semibold pt-5 text-sm text-green-700">{stock.length > 0 ? `${stock} In stock`:""}</p>
+      {stock > 0 ? <p className=" font-semibold pt-5 text-sm text-green-700">{`${stock} In stock`}</p>:<p className=" font-semibold pt-5 text-sm text-red-700">{`Out of stock`}</p>}
       {/* Cart and buynow */}
       <div className="pt-9 lg:pt-3 xl:pt-5 grid lg:grid-flow-col gap-3 w-full ">
         <button className="bg-orange-950 md:h-12  xl:h-14 xl:text-lg h-14  text-white font-semibold rounded-3xl hover:bg-orange-900  transition-colors" onClick={addToCart} >

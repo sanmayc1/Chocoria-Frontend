@@ -60,11 +60,36 @@ export const get_products_user = async () => {
   }
 };
 
-// one product details
+// one product details user side
 
 export const get_product_user = async (id) => {
   try {
     const res = await chocoriaBackEnd.get(`/user/products/${id}`,);
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const get_product_details = async (id) => {
+  try {
+    const res = await chocoriaBackEnd.get(`/admin/products/${id}`);
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+
+// edit product
+
+export const edit_product = async (data,id) => {
+  try {
+    const res = await chocoriaBackEnd.patch(`/admin/products/${id}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return res;
   } catch (error) {
     return error;

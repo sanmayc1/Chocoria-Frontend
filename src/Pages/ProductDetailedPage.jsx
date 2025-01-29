@@ -18,14 +18,16 @@ import { useParams } from "react-router-dom";
 const ProductDetailedPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [recommendation,setRecommendation] = useState([])
+  const [recommendation, setRecommendation] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedVariant,setSelectedVariant]=useState(null)
   useEffect(() => {
     async function fetch_All_Products() {
       const response = await get_product_user(id);
       if (response.status === 200) {
         setProduct(response.data.product);
-        setRecommendation(response.data.recomendation)
+        setRecommendation(response.data.recomendation);
+        window.scrollTo(0, 0);
         return;
       }
 
@@ -34,15 +36,15 @@ const ProductDetailedPage = () => {
       });
     }
     fetch_All_Products();
-  }, []);
-
-
+  }, [location.pathname]);
+ 
+ 
   if (!product) {
     return <div>Loading...</div>; // Display loading while products are being fetched
   }
   return (
     <>
-      <Navbar/>
+      <Navbar />
       <Breadcrumbs productName={product.name} category={"Milk Chocolate"} />
 
       {/* Product detailed container */}
@@ -57,12 +59,23 @@ const ProductDetailedPage = () => {
         {/* image view area */}
         <ProductImageView imageUrl={`${baseUrl}${selectedImage}`} />
         {/* product details */}
-        <ProductDetails brand={product.brand} productName={product.name} price={product.variants[0].price} stock={product.variants[0].quantity} />
+        <ProductDetails
+          brand={product.brand}
+          productName={product.name}
+          price={selectedVariant?.price}
+          stock={selectedVariant?.quantity}
+          varients={product.variants}
+          selectedVariant={selectedVariant}
+          setSelectedVariant={setSelectedVariant}
+        />
       </div>
-      <ProductDescription description={product.description} ingredients={product.ingredients} />
+      <ProductDescription
+        description={product.description}
+        ingredients={product.ingredients}
+      />
       <CustomerReviews />
       <CardListingHeading heading={"Recommendation"} />
-      <CardListing products={recommendation}/>
+      <CardListing products={recommendation} />
       <Footer />
     </>
   );

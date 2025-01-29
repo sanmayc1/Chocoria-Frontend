@@ -64,7 +64,7 @@ const CategorySection = () => {
   };
   // add new category
   const categoryAdd = async () => {
-    const response = await add_category({ name });
+    const response = await add_category({ name: name.trim() });
 
     if (response.status === 200) {
       toast.success(response.data.message, {
@@ -162,7 +162,7 @@ const CategorySection = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <QuickStatCard
             title="Total Category"
-            value="1,234"
+            value={categories.length}
             icon={<FolderTree />}
           />
         </div>
