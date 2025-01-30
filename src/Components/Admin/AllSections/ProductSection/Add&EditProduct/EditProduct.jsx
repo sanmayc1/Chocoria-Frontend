@@ -151,7 +151,8 @@ const EditProduct = () => {
         setImages={setImages}
         variants={variants}
         setVariants={setVariants}
-        title={"Add Product"}
+        title={"Edit Product"}
+        submit_button_name={"Update"}
         productDetails={productDetails}
         handleChange={handleChange}
         handleSubmit={handleSubmit}

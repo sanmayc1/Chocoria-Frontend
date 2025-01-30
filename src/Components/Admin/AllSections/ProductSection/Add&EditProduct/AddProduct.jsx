@@ -111,6 +111,7 @@ const AddProduct = () => {
         setImages={setImages}
         variants={variants}
         setVariants={setVariants}
+        submit_button_name={"Add product"}
         title={"Add Product"}
         productDetails={productDetails}
         handleChange={handleChange}

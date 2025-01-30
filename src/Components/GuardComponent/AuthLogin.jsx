@@ -3,20 +3,17 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-const AuthGuard = ({ children }) => {
+const AuthLoginGuard = ({ children }) => {
   const [loading, setLoading] = useState(true); // Add loading state
   const auth = useSelector((state) => state.auth.auth);
   const role = useSelector((state) => state.auth.role);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!auth && !role) {
-      navigate("/login");
-    } else if(auth && role !== "user"){
-      navigate("/login");
-       // Set loading to false once user is authenticated
-    }else{
-      setLoading(false);
+    if (auth && role === "user") {
+      navigate("/");
+    } else {
+        setLoading(false);
     }
   }, [auth,role, navigate]);
 
@@ -28,4 +25,4 @@ const AuthGuard = ({ children }) => {
   return children;
 };
 
-export default AuthGuard;
+export default AuthLoginGuard;

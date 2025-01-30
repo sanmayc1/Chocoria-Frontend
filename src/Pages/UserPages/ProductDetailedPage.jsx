@@ -1,19 +1,18 @@
-import Navbar from "../Components/User/Navbar/Navbar.jsx";
-import Breadcrumbs from "../Components/User/Breadcrumbs/Breadcrumbs.jsx";
-import ProductImages from "../Components/User/ProductImages/ProductImages.jsx";
-import ProductImageView from "../Components/User/ProductImageView/ProductImageView.jsx";
-import ProductImageViewMobile from "../Components/User/ProductImageView/ProductImageViewMobile.jsx";
-import ProductDetails from "../Components/User/ProductDetails/ProductDetails.jsx";
-import CustomerReviews from "../Components/User/CustomerReview/CustomerReview.jsx";
-import ProductDescription from "../Components/User/ProductDescription/ProductDescription.jsx";
-import CardListingHeading from "../Components/User/CardListingHeading/CardListingHeading.jsx";
-import CardListing from "../Components/User/CardListing/CardListing.jsx";
-import Footer from "../Components/User/Footer/Footer.jsx";
-import { get_product_user } from "../Services/api/productApi.js";
+import Breadcrumbs from "../../Components/User/Breadcrumbs/Breadcrumbs.jsx";
+import ProductImages from "../../Components/User/ProductImages/ProductImages.jsx";
+import ProductImageView from "../../Components/User/ProductImageView/ProductImageView.jsx";
+import ProductImageViewMobile from "../../Components/User/ProductImageView/ProductImageViewMobile.jsx";
+import ProductDetails from "../../Components/User/ProductDetails/ProductDetails.jsx";
+import CustomerReviews from "../../Components/User/CustomerReview/CustomerReview.jsx";
+import ProductDescription from "../../Components/User/ProductDescription/ProductDescription.jsx";
+import CardListingHeading from "../../Components/User/CardListingHeading/CardListingHeading.jsx";
+import CardListing from "../../Components/User/CardListing/CardListing.jsx";
+import { get_product_user } from "../../Services/api/productApi.js";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
-import { baseUrl } from "../Services/api/constants.js";
+import { baseUrl } from "../../Services/api/constants.js";
 import { useParams } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const ProductDetailedPage = () => {
   const { id } = useParams();
@@ -44,7 +43,12 @@ const ProductDetailedPage = () => {
   }
   return (
     <>
-      <Navbar />
+          <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+     
+    >
       <Breadcrumbs productName={product.name} category={"Milk Chocolate"} />
 
       {/* Product detailed container */}
@@ -76,7 +80,7 @@ const ProductDetailedPage = () => {
       <CustomerReviews />
       <CardListingHeading heading={"Recommendation"} />
       <CardListing products={recommendation} />
-      <Footer />
+      </motion.div>
     </>
   );
 };

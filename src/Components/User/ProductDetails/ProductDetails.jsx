@@ -4,6 +4,7 @@ import Varients from "../Varients/Varients.jsx";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 
 const ProductDetails = ({brand,productName,price,stock,varients,setSelectedVariant,selectedVariant}) => {
@@ -48,10 +49,18 @@ const ProductDetails = ({brand,productName,price,stock,varients,setSelectedVaria
 
       <h1 className="font-bold xl:text-3xl text-2xl pt-5 xl:pt-7 flex gap-2 items-center">
         ₹{price}{" "}
+        <motion.div
+        className="w-32   rounded-xl flex items-center justify-center text-white text-xl font-bold"
+        initial={{ x: -70, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 1, ease: "easeOut" }}
+      >
         <span className="text-gray-700 line-through font-normal text-xl ">
           ₹600
         </span>
         <span className="font-normal text-base text-orange-700">(10% OFF)</span>
+      </motion.div>
+      
       </h1>
       <p className=" font-semibold pt-1 text-sm">inclusive of all taxes</p>
       {/* quantity and varient container */}

@@ -10,7 +10,7 @@ const ProductCard = ({ price, productTitle, rating, imageUrl,id }) => {
  useEffect(() => {}, [auth]);
 
   const navigateToProductDetailedPage = () => {
-    navigate(`/productdetailed/${id}`);
+    navigate(`/product/${id}`);
   };
 
   const addToCard = () => {

@@ -15,6 +15,7 @@ const AddEditForm = ({
   productDetails,
   handleChange,
   handleSubmit,
+  submit_button_name
 }) => {
   const [holdImage, setHoldImage] = useState(null);
   const [editImageid, setEditImageId] = useState(null);
@@ -339,7 +340,7 @@ const AddEditForm = ({
                   className="px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   onClick={handleSubmit}
                 >
-                  Add Product
+                  {submit_button_name}
                 </button>
               </div>
             </div>

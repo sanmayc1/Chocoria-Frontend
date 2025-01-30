@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom"
-import Otp from "../Components/User/Otp/Otp.jsx"
+import Otp from "../../Components/User/Otp/Otp.jsx"
 
 
 const OtpPage = ()=>{

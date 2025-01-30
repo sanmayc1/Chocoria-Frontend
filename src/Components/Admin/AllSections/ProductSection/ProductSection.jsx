@@ -209,7 +209,7 @@ const ProductSection = () => {
                   </td>
                   {/* Price */}
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">&#8377; 344</div>
+                    <div className="text-sm text-gray-900">&#8377; {product.variants[0].price}</div>
                   </td>
                   {/* Stock */}
                   <td className="px-6 py-4 whitespace-nowrap table-cell">

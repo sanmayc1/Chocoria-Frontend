@@ -13,7 +13,7 @@ const Navbar = () => {
 
 // for Account or SignIn Navigate 
 const redirectToAccountOrSignIn =()=>{
-    navigate("/account")
+    navigate("/user/account-overview")
 }
 
   return (
