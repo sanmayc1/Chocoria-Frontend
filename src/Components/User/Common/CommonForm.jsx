@@ -102,7 +102,7 @@ const CommonForm = ({ heading, pageName, fields }) => {
         )}
         <p className="text-center pb-6 pt-2 cursor-pointer text-sm font-semibold " onClick={redirectToHome}>Back to Home</p>
       </div>
-      <ToastContainer />
+      
     </>
   );
 };

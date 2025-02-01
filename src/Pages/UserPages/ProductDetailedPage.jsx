@@ -13,13 +13,14 @@ import { useEffect, useState } from "react";
 import { baseUrl } from "../../Services/api/constants.js";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { CircularProgress } from "@mui/material";
 
 const ProductDetailedPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [recommendation, setRecommendation] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedVariant,setSelectedVariant]=useState(null)
+  const [selectedVariant, setSelectedVariant] = useState(null);
   useEffect(() => {
     async function fetch_All_Products() {
       const response = await get_product_user(id);
@@ -36,50 +37,52 @@ const ProductDetailedPage = () => {
     }
     fetch_All_Products();
   }, [location.pathname]);
- 
- 
+
   if (!product) {
-    return <div>Loading...</div>; // Display loading while products are being fetched
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <CircularProgress color="inherit" size={40} />
+      </div>
+    );
   }
   return (
     <>
-          <motion.div
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-     
-    >
-      <Breadcrumbs productName={product.name} category={"Milk Chocolate"} />
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Breadcrumbs productName={product.name} category={"Milk Chocolate"} />
 
-      {/* Product detailed container */}
-      <ProductImageViewMobile imageUrl={"./Product.png"} />
-      <div className="flex md:mx-16 lg:mx-16 xl:mx-20 mt-10 lg:h-[360px] xl:h-[450px] gap-7 ">
-        {/* All images */}
-        <ProductImages
-          selectedImage={selectedImage}
-          setSelectedImage={setSelectedImage}
-          images={product?.images}
+        {/* Product detailed container */}
+        <ProductImageViewMobile imageUrl={"./Product.png"} />
+        <div className="flex md:mx-16 lg:mx-16 xl:mx-20 mt-10 lg:h-[360px] xl:h-[450px] gap-7 ">
+          {/* All images */}
+          <ProductImages
+            selectedImage={selectedImage}
+            setSelectedImage={setSelectedImage}
+            images={product?.images}
+          />
+          {/* image view area */}
+          <ProductImageView imageUrl={`${baseUrl}${selectedImage}`} />
+          {/* product details */}
+          <ProductDetails
+            brand={product.brand}
+            productName={product.name}
+            price={selectedVariant?.price}
+            stock={selectedVariant?.quantity}
+            varients={product.variants}
+            selectedVariant={selectedVariant}
+            setSelectedVariant={setSelectedVariant}
+          />
+        </div>
+        <ProductDescription
+          description={product.description}
+          ingredients={product.ingredients}
         />
-        {/* image view area */}
-        <ProductImageView imageUrl={`${baseUrl}${selectedImage}`} />
-        {/* product details */}
-        <ProductDetails
-          brand={product.brand}
-          productName={product.name}
-          price={selectedVariant?.price}
-          stock={selectedVariant?.quantity}
-          varients={product.variants}
-          selectedVariant={selectedVariant}
-          setSelectedVariant={setSelectedVariant}
-        />
-      </div>
-      <ProductDescription
-        description={product.description}
-        ingredients={product.ingredients}
-      />
-      <CustomerReviews />
-      <CardListingHeading heading={"Recommendation"} />
-      <CardListing products={recommendation} />
+        <CustomerReviews />
+        <CardListingHeading heading={"Recommendation"} />
+        <CardListing products={recommendation} />
       </motion.div>
     </>
   );

@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { get_user } from "../../../../Services/api/api.js";
 import { toast } from "react-toastify";
 import yupSchema from "../../../../utils/yupSchema.jsx";
+import { update_profile } from "../../../../Services/api/userApi.js";
 
 const AccountOverview = () => {
   const [user, setUser] = useState({});
+  const [updateBtn, setUpdateBtn] = useState(false);
   useEffect(() => {
     const fetchUser = async () => {
       const response = await get_user();
@@ -18,6 +20,7 @@ const AccountOverview = () => {
   },[]);
 // handlechange
 const handlechange = (e) => {
+  setUpdateBtn(true)
   setUser({ ...user, [e.target.name]: e.target.value });
 }
 // handle update
@@ -35,8 +38,9 @@ const handleUpdate = async () => {
     return;
     
   }
+console.log(user);
 
-  const response = await update_user(user);
+  const response = await update_profile(user);
   if (response.status === 200) {
     toast.success(response.data.message, {
       position: "top-center",
@@ -109,9 +113,9 @@ const handleUpdate = async () => {
     </div>
 
     <div className="mt-6 flex justify-end">
-      <button className="w-full md:w-auto px-6 py-2 bg-black text-white rounded-md hover:bg-gray-900" onClick={handleUpdate}>
+     {updateBtn && <button className="w-full md:w-auto px-6 py-2 bg-black text-white rounded-md hover:bg-gray-900" onClick={handleUpdate}>
         Update
-      </button>
+      </button>}
     </div>
     </>
   );

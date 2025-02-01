@@ -40,7 +40,7 @@ const redirectToAccountOrSignIn =()=>{
         >
           <div className="flex flex-col md:flex-row w-full md:w-3/4 h-full items-center justify-center md:justify-between md:pl-10 space-y-4 md:space-y-0 py-4 md:py-0 sm:text-xs xl:text-base">
 
-            <h4 className="font-medium text-gray-700 hover:text-gray-900 cursor-pointer select-none">
+            <h4 className="font-medium text-gray-700 hover:text-gray-900 cursor-pointer select-none" onClick={() => navigate("/")}>
               Shop
             </h4>
             <h4 className="font-medium text-gray-700 hover:text-gray-900 cursor-pointer select-none ">

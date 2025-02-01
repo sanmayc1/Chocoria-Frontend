@@ -18,7 +18,8 @@ chocoriaBackEnd.interceptors.response.use(
   async (error) => {
     if (
       error.status === 403 &&
-      error.response.data.message === "Token Expired"
+      (error.response.data.message === "Token Expired" ||
+        error.response.data.message === "Unauthorized")
     ) {
       await user_logout();
       store.dispatch(auth_False());

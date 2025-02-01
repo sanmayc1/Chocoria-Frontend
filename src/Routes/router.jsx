@@ -25,7 +25,8 @@ import UserLayout from "../Components/User/UserLayout/UserLayout.jsx";
 import AuthLoginGuard from "../Components/GuardComponent/AuthLogin.jsx";
 import { createBrowserRouter } from "react-router-dom";
 import AccountOverview from "../Components/User/UserProfile/AccountOverView/AccountOverview.jsx";
-import ProfileLayout from "../Components/User/UserProfile/AccountOverView/ProfileLayout/ProfileLayout.jsx";
+import ProfileLayout from "../Components/User/UserProfile/ProfileLayout/ProfileLayout.jsx";
+import ManageAddress from "../Components/User/UserProfile/ManageAddress/ManageAddress.jsx";
 
 
   const router = createBrowserRouter([
@@ -71,7 +72,7 @@ import ProfileLayout from "../Components/User/UserProfile/AccountOverView/Profil
          } ,
          {
           path: "/user/manage-address",
-          element: <div className="flex items-center justify-center h-full">Manage Address</div>
+          element: <ManageAddress/>
          },
          {
           path: "/user/wallet",

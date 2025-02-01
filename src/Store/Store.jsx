@@ -4,13 +4,12 @@ import persistedReducer from './PersistReducer.jsx';
 
 
 const store = configureStore({
-    reducer:{
-        auth: persistedReducer,
-    } ,
-    middleware:(getDefaultMiddleware) => getDefaultMiddleware({
+    reducer: persistedReducer, 
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false,
     }),
 });
+
 const persistor = persistStore(store);
 
 export { store, persistor };

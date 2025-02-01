@@ -4,8 +4,8 @@ import SideNavigation from "./SideNavigation.jsx";
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { get_user, user_logout } from "../../../../../Services/api/api.js";
-import { auth_False } from "../../../../../Store/Slice/authSlice.jsx";
+import { get_user, user_logout } from "../../../../Services/api/api.js";
+import { auth_False } from "../../../../Store/Slice/authSlice.jsx";
 import { toast } from "react-toastify";
 
 

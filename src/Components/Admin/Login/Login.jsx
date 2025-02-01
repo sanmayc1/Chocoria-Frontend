@@ -59,8 +59,12 @@ const AdminLogin = () => {
 
       {/* fields */}
       <div className="pt-12 space-y-4">
+      <div className="flex justify-center ">
       <SingleInputField name={"email"} placeholder={"Email"} handleChange={handleChange}  />
+      </div>
+      <div className="flex justify-center">
       <SingleInputField name={"password"} handleChange={handleChange} placeholder={"Password"} value={formData.password} filedType={"password"} />
+      </div>
       </div>
       {err && <p className="text-red-500 text-xs pl-16 ml-2 pt-1">{err}</p>}
 

@@ -78,42 +78,49 @@ const SignUpFields = () => {
     <form className="w-full px-4" onSubmit={handeSubmit}>
       <div className="space-y-3 w-full">
         {/* Name */}
+        <div className="flex justify-center">
         <SingleInputField
           placeholder={"Full Name"}
           value={formData.username}
           handleChange={handleChange}
           name={"username"}
         />
+        </div>
         {err.username && (
           <span className="text-xs text-red-500 sm:px-14 px-10 ">
             {err.username}
           </span>
         )}
         {/* Phone */}
+        <div className="flex justify-center">
         <SingleInputField
           placeholder={"Phone Number"}
           value={formData.phone}
           handleChange={handleChange}
           name={"phone"}
         />
+        </div>
         {err.phone && (
           <span className="text-xs text-red-500 sm:px-14 px-10">
             {err.phone}
           </span>
         )}
         {/* Email */}
+        <div className="flex justify-center">
         <SingleInputField
           placeholder={"Email address"}
           value={formData.email}
           handleChange={handleChange}
           name={"email"}
         />
+        </div>
         {err.email && (
           <span className="text-xs text-red-500 sm:px-14 px-10 ">
             {err.email}
           </span>
         )}
         {/* Password */}
+        <div className="flex justify-center">
         <SingleInputField
           placeholder={"Password"}
           value={formData.password}
@@ -121,12 +128,14 @@ const SignUpFields = () => {
           handleChange={handleChange}
           name={"password"}
         />
+        </div>
         {err.password && (
           <span className="text-xs text-red-500 sm:px-14 px-10">
             {err.password}
           </span>
         )}
         {/* confirm password */}
+        <div className="flex justify-center">
         <SingleInputField
           placeholder={"Confirm Password"}
           value={formData.confirmPassword}
@@ -134,6 +143,7 @@ const SignUpFields = () => {
           filedType={"password"}
           name={"confirmPassword"}
         />
+        </div>
         <span className="text-xs text-red-500 sm:px-14 px-10">
           {err.confirmPassword}
         </span>

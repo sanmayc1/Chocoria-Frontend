@@ -72,7 +72,7 @@ const Otp = ({id}) => {
           <Timer id={id}  />
         </div>
       </div>
-      <ToastContainer/>
+      
     </>
   );
 };

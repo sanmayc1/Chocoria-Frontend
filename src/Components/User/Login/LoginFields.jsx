@@ -6,6 +6,8 @@ import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SET_AUTH } from "../../../Store/Slice/authSlice.jsx";
+
+
 const LoginFields = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -24,6 +26,11 @@ const LoginFields = () => {
 
   const handeSubmit = async (e) => {
     e.preventDefault();
+    if(!formData.email.trim() || !formData.password.trim()){
+      setErr("Please Enter Email and Password")
+      return
+    }
+    setErr("")
     const response = await auth_login(formData);
     if (response.status !== 200) {
       if (response.status === 401) {
@@ -31,7 +38,7 @@ const LoginFields = () => {
        return
       }
      
-      if(response.status ===403){
+      if(response.status ===403 && response.response.data.message==="Account not verified.Redirect to verification page"){
         toast.error(response.response.data.message, {
           position: "top-center",
           autoClose: 2000,
@@ -61,13 +68,17 @@ const LoginFields = () => {
       <form className="w-full px-4">
         <div className="space-y-4 w-full">
           {/* Email */}
+          <div className="flex justify-center">
           <SingleInputField
             placeholder={"Email Address"}
             value={formData.email}
             handleChange={handleChange}
             name={"email"}
           />
+          </div>
+         
           {/* Password */}
+          <div className="flex justify-center">
           <SingleInputField
             placeholder={"Password"}
             value={formData.password}
@@ -75,6 +86,7 @@ const LoginFields = () => {
             name={"password"}
             filedType={"password"}
           />
+          </div>
         </div>
         {err && <p className="pl-14 pt-1 w-fit text-red-500 text-sm">{err}</p>}
         {/* forget password */}
@@ -90,7 +102,7 @@ const LoginFields = () => {
           <CommonBtn btnName={"LOG IN"} clickEvent={handeSubmit} />
         </div>
       </form>
-      <ToastContainer />
+      
     </>
   );
 };

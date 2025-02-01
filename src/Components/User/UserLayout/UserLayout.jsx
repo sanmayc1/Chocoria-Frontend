@@ -9,15 +9,17 @@ const UserLayout = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 500); // Simulate loading delay
+    const timer = setTimeout(() => setIsLoading(false), 1000); // Simulate loading delay
     return () => clearTimeout(timer);
   }, [location]);
 
   return (
     <>
+    
       <Navbar />
       <Outlet /> {/* Child routes render here */}
       {!isLoading && <Footer />} {/* Render Footer only after loading */}
+
     </>
   );
 };

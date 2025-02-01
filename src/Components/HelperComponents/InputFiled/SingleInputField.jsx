@@ -1,20 +1,18 @@
 
 
-const SingleInputField = ({ placeholder, value, handleChange, name,filedType }) => {
+const SingleInputField = ({ placeholder, value, handleChange, name,filedType,noLimitWidth }) => {
   return (
     <>
-      <div className="flex justify-center">
         <input
-          className="p-3 w-full max-w-xs bg-gray-200 rounded-lg focus:outline-gray-500 transition-all"
+          className={`p-3 w-full  bg-gray-200 rounded-lg focus:outline-gray-500 transition-all ${noLimitWidth?"":"max-w-xs"}`}
           placeholder={placeholder}
           value={value}
           onChange={handleChange}
           name={name}
           type={filedType?filedType:'text'}
-          
+      
         />
       
-      </div>
     </>
   );
 };
