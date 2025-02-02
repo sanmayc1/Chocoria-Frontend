@@ -21,7 +21,7 @@ const SideNavigation = ({handleLogout}) => {
           My Orders
         </button>
         <button className={`w-full text-left px-3 py-2 rounded-2xl hover:bg-gray-200 font-medium ${active === "/user/manage-address" ? "bg-gray-200" : ""}`} onClick={() => {navigate("/user/manage-address")}}>
-          Manage Address
+          Saved Address
         </button>
         <button className={`w-full text-left px-3 py-2 rounded-2xl hover:bg-gray-200 font-medium ${active === "/user/wallet" ? "bg-gray-200" : ""}`} onClick={() => {navigate("/user/wallet")}}>
           Wallet

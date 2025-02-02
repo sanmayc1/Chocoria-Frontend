@@ -38,7 +38,6 @@ const handleUpdate = async () => {
     return;
     
   }
-console.log(user);
 
   const response = await update_profile(user);
   if (response.status === 200) {
@@ -46,6 +45,7 @@ console.log(user);
       position: "top-center",
       autoClose: 1000,
     });
+    setUpdateBtn(false);
     return;
   }
   toast.error(response.response.data.message, {

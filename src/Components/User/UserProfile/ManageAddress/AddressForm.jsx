@@ -2,47 +2,23 @@ import GpsFixedIcon from "@mui/icons-material/GpsFixed";
 import SingleInputField from "../../../HelperComponents/InputFiled/SingleInputField.jsx";
 import { useState } from "react";
 import { Building, Home } from "lucide-react";
-import CommonBtn from "../../button/CommonBtn.jsx";
 import { addressFetch } from "../../../../Services/api/thirdPartyApi.js";
 import addressSchema from "../../../../utils/yupAddressSchema.jsx";
 import { toast } from "react-toastify";
+import { add_address } from "../../../../Services/api/userApi.js";
 
-const AddAddressForm = () => {
-  const [selectedAddressType, setSelectedAddressType] = useState("Home");
+
+const AddressForm = ({errors,setErrors,handleSubmit,selectedAddressType,setSelectedAddressType,address,setAddress,title,btnName}) => {
+  
   const [locationLoading, setLocationLoading] = useState(false);
-  const [address, setAddress] = useState({
-    name: "",
-    address: "",
-    pincode: "",
-    phone: "",
-    city: "",
-    state: "",
-    landmark: "",
-    buildingName: "",
-  });
-  const [errors, setErrors] = useState({});
 
+  
   // Handle radio button change
   const handleChange = (event) => {
     setSelectedAddressType(event.target.value);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await addressSchema.validate(address, { abortEarly: false });
-    } catch (error) {
-      if (error.inner) {
-        setErrors(
-          error.inner.reduce(
-            (acc, err) => ({ ...acc, [err.path]: err.message }),
-            {}
-          )
-        );
-      }
-      return;
-    }
-  };
+
   // handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -60,15 +36,15 @@ const AddAddressForm = () => {
       const { latitude, longitude } = position.coords;
       const res = await addressFetch( latitude, longitude );
       if (res.status === 200) {
-        const { city, postcode, state, formatted, address_line1, street } =
+        const { city, postcode, state, formatted,  street } =
           res.data.features[0].properties;
+    
         setAddress((prev) => ({
           ...prev,
           city,
           pincode: postcode,
           state,
-          buildingName: formatted,
-          address: address_line1,
+          detailed_address: formatted,
           landmark: street,
         }));
         setErrors((prev)=>({name:prev.name,phone:prev.phone }));
@@ -87,7 +63,7 @@ const AddAddressForm = () => {
   return (
     <>
       <h2 className="text-xl font-semibold text-center mb-4">
-        Add New Address
+        {title}
       </h2>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-3">
@@ -179,12 +155,12 @@ const AddAddressForm = () => {
             <SingleInputField
               placeholder={"House No. Building Name"}
               noLimitWidth
-              value={address.buildingName || ""}
+              value={address.detailed_address || ""}
               handleChange={handleInputChange}
-              name="buildingName"
+              name="detailed_address"
             />
-            {errors.buildingName && (
-              <p className="text-red-500 text-xs px-1">{errors.buildingName}</p>
+            {errors.detailed_address && (
+              <p className="text-red-500 text-xs px-1">{errors.detailed_address}</p>
             )}
           </div>
 
@@ -233,7 +209,7 @@ const AddAddressForm = () => {
             type="submit"
             className="w-full  h-9 bg-black rounded-2xl flex items-center justify-center text-white text-sm hover:bg-gray-800 transition-colors py-7 "
           >
-            Add Address
+            {btnName}
           </button>
         </div>
       </form>
@@ -241,4 +217,4 @@ const AddAddressForm = () => {
   );
 };
 
-export default AddAddressForm;
+export default AddressForm;

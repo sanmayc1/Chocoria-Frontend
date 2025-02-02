@@ -3,6 +3,7 @@ import { baseUrl } from "./constants.js";
 import { auth_False } from "../../Store/Slice/authSlice.jsx";
 import {store} from "../../Store/Store.jsx"
 import { toast } from "react-toastify";
+import { io } from "socket.io-client";
 export const chocoriaBackEnd = axios.create({
   baseURL: baseUrl,
   headers: {
@@ -24,6 +25,8 @@ chocoriaBackEnd.interceptors.response.use(
       await user_logout();
       store.dispatch(auth_False());
       toast.error("Session Expired Please Login again",{position:"top-center"})
+      io.disconnect();
+      
      
      
     }

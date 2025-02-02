@@ -27,6 +27,7 @@ import { createBrowserRouter } from "react-router-dom";
 import AccountOverview from "../Components/User/UserProfile/AccountOverView/AccountOverview.jsx";
 import ProfileLayout from "../Components/User/UserProfile/ProfileLayout/ProfileLayout.jsx";
 import ManageAddress from "../Components/User/UserProfile/ManageAddress/ManageAddress.jsx";
+import Cart from "../Components/User/Cart/Cart.jsx";
 
 
   const router = createBrowserRouter([
@@ -79,6 +80,10 @@ import ManageAddress from "../Components/User/UserProfile/ManageAddress/ManageAd
           element: <div className="flex items-center justify-center h-full">Wallet</div>
          }
         ]
+       }
+       ,{
+        path: "/user/cart",
+        element: <Cart/>
        }
       ]
      },

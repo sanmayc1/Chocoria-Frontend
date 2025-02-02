@@ -69,6 +69,7 @@ const redirectToAccountOrSignIn =()=>{
             <ShoppingCart
               className="cursor-pointer hover:text-gray-600 hidden md:block"
               width={20}
+              onClick={()=>navigate('/user/cart')}
             />
             {/* User login or Account */}
             <UserRound
