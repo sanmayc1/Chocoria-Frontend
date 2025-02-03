@@ -55,7 +55,7 @@ const ProductDetailedPage = () => {
         <Breadcrumbs productName={product.name} category={"Milk Chocolate"} />
 
         {/* Product detailed container */}
-        <ProductImageViewMobile imageUrl={"./Product.png"} />
+        <ProductImageViewMobile images={product?.images} />
         <div className="flex md:mx-16 lg:mx-16 xl:mx-20 mt-10 lg:h-[360px] xl:h-[450px] gap-7 ">
           {/* All images */}
           <ProductImages
@@ -74,6 +74,7 @@ const ProductDetailedPage = () => {
             varients={product.variants}
             selectedVariant={selectedVariant}
             setSelectedVariant={setSelectedVariant}
+            id={product._id}
           />
         </div>
         <ProductDescription

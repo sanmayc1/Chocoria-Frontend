@@ -19,6 +19,7 @@ const CardListing = ({ products }) => {
                 imageUrl={`${baseUrl}${product.images[0]}`}
                 rating={"4.0"}
                 id={product._id}
+                variant={product.variants[0]}
               />
             )
           );

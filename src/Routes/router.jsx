@@ -83,7 +83,7 @@ import Cart from "../Components/User/Cart/Cart.jsx";
        }
        ,{
         path: "/user/cart",
-        element: <Cart/>
+        element: <AuthGuard><Cart/></AuthGuard>
        }
       ]
      },

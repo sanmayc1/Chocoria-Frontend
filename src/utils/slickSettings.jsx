@@ -30,9 +30,8 @@ const settings = {
   export const settingsForProductView ={
     speed: 400,
     slidesToShow: 1,
-    Infinity:false, // Number of items to show at a time
+    infinite: false, // Number of items to show at a time
     slidesToScroll: 1,
-    swipeToSlide:true,
     dots:true
 
   }

@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
+import { add_to_cart } from "../../../Services/api/cartApi";
 
-const ProductCard = ({ price, productTitle, rating, imageUrl,id }) => {
+const ProductCard = ({ price, productTitle, rating, imageUrl,id,variant }) => {
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth.auth);
  useEffect(() => {}, [auth]);
@@ -13,13 +14,30 @@ const ProductCard = ({ price, productTitle, rating, imageUrl,id }) => {
     navigate(`/product/${id}`);
   };
 
-  const addToCard = () => {
+  const addToCard = async() => {
 
     if (!auth) {
       navigate("/login");
       return;
     }else{
-      toast.success("Product added to cart", { position: "top-center",autoClose: 1000 });
+      const data = {productId:id,quantity:1,variant}
+      const response = await add_to_cart(data);
+      if (response.status === 200) {
+       if(response.data.message ==="Go to Cart"){
+         return navigate("/user/cart")
+       }
+
+        toast.success(response.data.message, {
+          position: "top-center",
+          autoClose: 1000,
+        });
+        return;
+       }
+
+       toast.error(response.response.data.message, {
+        position: "top-center", 
+        autoClose: 1000,
+      });
     }
     
   };
