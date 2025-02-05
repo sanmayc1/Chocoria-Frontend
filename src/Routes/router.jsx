@@ -28,6 +28,7 @@ import AccountOverview from "../Components/User/UserProfile/AccountOverView/Acco
 import ProfileLayout from "../Components/User/UserProfile/ProfileLayout/ProfileLayout.jsx";
 import ManageAddress from "../Components/User/UserProfile/ManageAddress/ManageAddress.jsx";
 import Cart from "../Components/User/Cart/Cart.jsx";
+import Checkout from "../Components/User/CheckoutPage/Checkout.jsx";
 
 
   const router = createBrowserRouter([
@@ -84,6 +85,10 @@ import Cart from "../Components/User/Cart/Cart.jsx";
        ,{
         path: "/user/cart",
         element: <AuthGuard><Cart/></AuthGuard>
+       },
+       {
+        path: "/user/checkout",
+        element: <AuthGuard><Checkout/></AuthGuard>
        }
       ]
      },

@@ -35,7 +35,9 @@ const AddAddress = ({ closeModel, update, setUpdate,setCurrentPage }) => {
           autoClose: 2000,
         });
         setUpdate(!update);
-        setCurrentPage(1);
+        if(setCurrentPage){
+          setCurrentPage(1);
+        }
         closeModel();
       } else {
         toast.error(response.data.message, {

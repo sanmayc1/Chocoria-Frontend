@@ -7,8 +7,8 @@ const ProductImageViewMobile = ({ images }) => {
     <>
       <div className="block lg:hidden w-[88%] m-auto px-5">
         <Slider {...settingsForProductView} className="h-[350px]">
-          {images.map((image, index) => (
-            <div>
+          {images.map((image) => (
+            <div key={image}>
               <div className="flex justify-center items-center h-[350px]">
                 <img
                   src={`${baseUrl}${image}`}

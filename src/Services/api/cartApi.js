@@ -22,3 +22,25 @@ export const get_cart = async () => {
         return error;
     }
 }
+
+// product quantity update
+
+export const update_quantity = async (data) => {
+    try {
+        const res = await chocoriaBackEnd.patch(`/user/cart`, data);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}
+
+// product delete from cart 
+
+export const delete_cart_item = async (id,variantId) => {
+    try {
+        const res = await chocoriaBackEnd.delete(`/user/cart?productId=${id}&variantId=${variantId}`);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}

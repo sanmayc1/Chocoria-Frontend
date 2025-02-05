@@ -1,44 +1,14 @@
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import CartItem from "./CartItem/CartItem.jsx";
-import { get_cart } from "../../../Services/api/cartApi.js";
+import { get_cart, update_quantity } from "../../../Services/api/cartApi.js";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
- 
   const [cart, setCart] = useState([]);
+  const [update ,setUpdate] =useState(false)
   const navigate = useNavigate();
-  const handleQuantityChange = (action, id,variant_id) => {
-    if (action === "increment") {
-
-     const newCart =  cart.map((item)=>{
-        if(item.productId._id === id && item.variant.id === variant_id){
-          if(item.quantity < item.variant.quantity ){
-            return {...item, quantity: item.quantity + 1}
-          }else{
-            toast.error("Quantity is already at its maximum", {
-              position: "top-center",
-              autoClose: 1000,
-            });
-          }
-        }
-        return item;
-      })
-      setCart(newCart)
-      
-    } else if (action === "decrement" ) {
-      setCart((prev)=> prev.map((item)=>{
-        if(item.productId._id === id && item.variant.id === variant_id){
-          if(item.quantity > 1){
-            return {...item, quantity: item.quantity -1 }
-          }
-          
-        }
-        return item;
-      }))
-    }
-  };
 
   // deleted product
   const deletedProduct = (id) => {
@@ -52,18 +22,35 @@ const Cart = () => {
   const navigateToProductDetailedPage = (id) => {
     navigate(`/product/${id}`);
   };
-  
+
   useEffect(() => {
     async function fetchCart() {
       const response = await get_cart();
       if (response.status === 200) {
-        
         setCart(response.data.cart.products);
+        return
       }
+      toast.error(response.response.data.message, {
+        position: "top-center",
+        autoClose: 1000,
+      });
     }
     fetchCart();
+    
+  }, [update]);
+
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // total price calculator
+
+  const totalPrice = () => {
+    return cart.reduce((acc, cur) => {
+      return (acc += cur.variant.price * cur.quantity);
+    }, 0);
+  };
 
   return (
     <div className="min-h-screen  p-4">
@@ -84,24 +71,28 @@ const Cart = () => {
                         key={item._id}
                         quantity={item.quantity}
                         product={item.productId}
-                        handleQuantityChange={handleQuantityChange}
-                        navigateToProductDetailedPage={navigateToProductDetailedPage}
+                        cart={cart}
+                        update={update}
+                        setUpdate={setUpdate}
+                        navigateToProductDetailedPage={
+                          navigateToProductDetailedPage
+                        }
                         id={item.productId._id}
                         variant={item.variant}
                       />
                     );
-                  }else{
-                    return(
+                  } else {
+                    return (
                       <CartItem
-                      key={item._id}
-                      quantity={0}
-                      product={item.productId}
-                      handleQuantityChange={deletedProduct}
-                      id={item._id}
-                      navigateToProductDetailedPage={deletedProduct}
-                      variant={item.variant}
-                    />
-                    )
+                        key={item._id}
+                        quantity={0}
+                        product={item.productId}
+                        handleQuantityChange={deletedProduct}
+                        id={item._id}
+                        navigateToProductDetailedPage={deletedProduct}
+                        variant={item.variant}
+                      />
+                    );
                   }
                 })
               ) : (
@@ -123,23 +114,23 @@ const Cart = () => {
               {/* Price Details Breakdown */}
               <div className="flex justify-between items-center">
                 <p className="text-base font-semibold">Price ( items)</p>
-                <p className="text-base font-bold">$2333</p>
+                <p className="text-base font-bold">₹{totalPrice()}</p>
               </div>
 
               <div className="flex justify-between items-center">
                 <p className="text-base font-semibold">Delivery Charge</p>
-                <p className="text-base font-bold">$93</p>
+                <p className="text-base font-bold">₹0.00</p>
               </div>
 
               <div className="flex justify-between items-center">
                 <p className="text-base font-semibold">Discount</p>
-                <p className="text-base font-bold">-$ 100</p>
+                <p className="text-base font-bold">-₹0.00</p>
               </div>
             </div>
 
             <div className="flex justify-between items-center px-3 pt-4 border-t border-gray-200">
               <p className="text-base font-bold">Total Amount</p>
-              <p className="text-base font-bold">$2999</p>
+              <p className="text-base font-bold">₹{totalPrice()}</p>
             </div>
 
             <div className="bg-white rounded-2xl pt-4 flex justify-end">
@@ -147,6 +138,7 @@ const Cart = () => {
                 variant="contained"
                 className="!bg-[#7C2D12] !text-white flex items-center group justify-center "
                 size="large"
+                onClick={() => navigate("/user/checkout")}
               >
                 Place Order
               </Button>

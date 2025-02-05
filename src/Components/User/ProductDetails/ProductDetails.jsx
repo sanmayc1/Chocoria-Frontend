@@ -24,7 +24,7 @@ const ProductDetails = ({
   useEffect(() => {
     setQuantity(1);
   }, [selectedVariant]);
-  
+
   const navigate = useNavigate();
 
   // add to cart
@@ -39,12 +39,17 @@ const ProductDetails = ({
 
     const response = await add_to_cart(data);
     if (response.status === 200) {
+      if (response.data.message === "Go to Cart") {
+        navigate("/user/cart");
+        return;
+      }
       toast.success(response.data.message, {
         position: "top-center",
         autoClose: 1000,
       });
       return;
     }
+
     toast.error(response.response.data.message, {
       position: "top-center",
     });

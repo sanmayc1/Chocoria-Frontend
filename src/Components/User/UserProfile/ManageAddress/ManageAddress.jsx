@@ -172,13 +172,13 @@ const ManageAddress = () => {
 
         {/* Pagination */}
         <div className="flex justify-center items-center p-4">
-          {addresses.length > 1 && (
+         
             <Pagination
               count={pageCount}
               page={currentPage}
               onChange={handlePageChange}
             />
-          )}
+         
         </div>
       </div>
       {/* Add Address Model */}
@@ -213,7 +213,7 @@ const ManageAddress = () => {
         isOpen={openDelete}
         onClose={closeDeleteModel}
         children={
-          <DeleteDailog cancel={closeDeleteModel} confirm={handleDelete} />
+          <DeleteDailog cancel={closeDeleteModel} title={"Delete Address"} confirm={handleDelete} message={`Are you sure you want to delete this address ?`} />
         }
       />
     </>
