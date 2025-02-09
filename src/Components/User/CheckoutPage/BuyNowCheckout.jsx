@@ -9,36 +9,41 @@ import { get_cart } from "../../../Services/api/cartApi.js";
 import PaymentOptions from "./PaymentOptions/PaymentOptions.jsx";
 import { toast } from "react-toastify";
 import { place_order } from "../../../Services/api/orders.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { get_product_user } from "../../../Services/api/productApi.js";
 
-const Checkout = () => {
+const CheckoutForBuyNow = () => {
   const [index, setIndex] = useState(1);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedMethod, setSelectedMethod] = useState("COD");
   const [update, setUpdate] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [cart, setCart] = useState([]);
+  const [product, setProduct] = useState([]);
+  const [Recommendation, setRecommendation] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { id, vId } = useParams();
 
   useEffect(() => {
-    async function fetchCart() {
-      const response = await get_cart();
+    async function fetchProduct() {
+      const response = await get_product_user(id);
       if (response.status === 200) {
-        const data = response.data.cart.products.filter(
-          (item) => item.productId !== null
+        const variant = response.data.product.variants.find(
+          (variant) => variant.id === vId
         );
+       
+        const data =[{_id:1,productId:response.data.product,variant,quantity:1}]
 
-        setCart(data);
+        setProduct(data);
         return;
       }
+
       toast.error(response.response.data.message, {
         position: "top-center",
-        autoClose: 1000,
       });
     }
-    fetchCart();
+    fetchProduct();
   }, []);
 
   useEffect(() => {
@@ -99,7 +104,7 @@ const Checkout = () => {
       const data = {
         shippingAddress: selectedAddress,
         paymentMethod: selectedMethod,
-        items: cart,
+        items: product,
       };
       const response = await place_order(data);
       if (response.status === 200) {
@@ -132,7 +137,7 @@ const Checkout = () => {
           {index === 2 && (
             <OrderSummary
               selectedAddress={selectedAddress}
-              cart={cart}
+              cart={product}
               continueToPayment={continueToPayment}
             />
           )}
@@ -161,4 +166,4 @@ const Checkout = () => {
   );
 };
 
-export default Checkout;
+export default CheckoutForBuyNow;

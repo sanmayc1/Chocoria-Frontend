@@ -22,10 +22,10 @@ const Footer = () => {
     const isOpen = openSections[sectionKey];
 
     return (
-      <div className="border-b border-white/20 md:border-none">
+      <div className="border-b border-white/20 md:border-none ">
         {/* Mobile Header (Shown only on small screens) */}
         <div 
-          className="flex justify-between items-center py-4 cursor-pointer md:cursor-default md:py-0"
+          className="flex justify-between items-center py-4 cursor-pointer md:cursor-default md:py-0 "
           onClick={() => toggleSection(sectionKey)}
         >
           <h3 className="text-lg font-medium">{title}</h3>

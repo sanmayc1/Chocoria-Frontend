@@ -93,6 +93,7 @@ const handleUpdate = async () => {
           <input
             type="date"
             name="date_of_birth"
+            max={new Date().toISOString().split("T")[0]}
             className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={user.date_of_birth || ""}
             onChange={handlechange}

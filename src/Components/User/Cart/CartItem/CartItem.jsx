@@ -18,6 +18,7 @@ const CartItem = ({
   update,
   setUpdate,
   cart,
+  deleted,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -37,6 +38,13 @@ const CartItem = ({
 
   // quandity change
   const handleQuantityChange = async (action, id, variant_id) => {
+    if(deleted){
+      toast.error("Product not available", {
+        position: "top-center",
+        autoClose: 1000,
+      });
+      return
+    }
     setLoading(true);
     const product = cart.find(
       (item) => item.productId._id === id && item.variant.id === variant_id
@@ -106,7 +114,7 @@ const CartItem = ({
       <div className="flex flex-col sm:flex-row h-auto sm:h-[150px] sm:justify-between px-3 sm:px-5 border-b   border-gray-200 items-center space-y-4 sm:space-y-0 group relative">
         <Trash2
           size={18}
-          className="text-red-600  cursor-pointer absolute bottom-4 right-2  opacity-0 group-hover:opacity-100 transition-opacity duration-300 "
+          className="text-red-600  cursor-pointer absolute top-4  right-2   opacity-0 group-hover:opacity-100 transition-opacity duration-300 "
           onClick={() => modalOpen(id, variant.id)}
         />
         <div

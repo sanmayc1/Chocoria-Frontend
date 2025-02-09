@@ -46,7 +46,7 @@ const OrderSummary = ({ selectedAddress, cart,continueToPayment }) => {
         </div>
         <div className="space-y-4">
           {cart.map((item) => (
-            <div key={item.id} className="flex gap-4">
+            <div key={item._id} className="flex gap-4">
               <img
                 src={`${baseUrl}${item.productId.images[0]}`}
                 alt={item.name}

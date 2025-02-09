@@ -4,7 +4,7 @@ import CardListingHeading from "../../Components/User/CardListingHeading/CardLis
 import CardListing from "../../Components/User/CardListing/CardListing.jsx";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import {  get_products_user } from "../../Services/api/productApi.js";
+import { getProductsUser } from "../../Services/api/productApi.js";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 const Home = () => {
@@ -12,7 +12,7 @@ const Home = () => {
 
   useEffect(() => {
     async function fetch_All_Products() {
-      const response = await get_products_user();
+      const response = await getProductsUser();
       if (response.status === 200) {
         setProducts(response.data.products);
         return;
@@ -25,18 +25,30 @@ const Home = () => {
     fetch_All_Products();
   }, []);
 
+  useEffect(() => {
+    // Prevent back navigation
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = function () {
+      window.history.pushState(null, "", window.location.href);
+    };
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.onpopstate = null;
+    };
+  }, []);
+  
+
   return (
     <>
-          <motion.div
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-
-    >
-      <Banner />
-      <CardListingHeading heading={"Products"} viewMore />
-      <CardListing products={products} />
-      <CardListingHeading heading={"Product"} />
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Banner />
+        <CardListingHeading heading={"Products"} viewMore />
+        <CardListing products={products} />
+        <CardListingHeading heading={"Product"} />
       </motion.div>
     </>
   );

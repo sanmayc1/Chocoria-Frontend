@@ -1,7 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const Breadcrumbs = ({category,productName}) => {
+const Breadcrumbs = ({second,third}) => {
     const navigate = useNavigate()
     const navigateToHome =()=>{
         navigate('/')
@@ -12,10 +12,10 @@ const Breadcrumbs = ({category,productName}) => {
         <h6 className="xl:text-base  text-sm  flex items-center select-none">
           <span className="cursor-pointer hover:font-medium " onClick={navigateToHome} >Home</span>
           <ChevronRight className="w-4 h-4 inline mx-1" />
-          <span className="cursor-pointer hover:font-medium "> {category}</span>
+          <span className="cursor-pointer hover:font-medium "> {second}</span>
           <ChevronRight className="w-4 h-4 inline mx-1" />
           <span className="cursor-pointer hover:font-medium ">
-           {productName}
+           {third}
           </span>
         </h6>
       </div>

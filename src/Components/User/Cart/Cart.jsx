@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
-  const [update ,setUpdate] =useState(false)
+  const [update, setUpdate] = useState(false);
   const navigate = useNavigate();
 
   // deleted product
@@ -27,18 +27,30 @@ const Cart = () => {
     async function fetchCart() {
       const response = await get_cart();
       if (response.status === 200) {
-        setCart(response.data.cart.products);
-        return
+        const data = response.data.cart.products.filter(
+          (item) =>
+            item.productId !== null && item.productId.is_deleted !== true
+        );
+
+        setCart(data);
+        return;
       }
-      toast.error(response.response.data.message, {
-        position: "top-center",
-        autoClose: 1000,
-      });
     }
     fetchCart();
-    
   }, [update]);
 
+  // handleCheckout
+
+  const handleCheckout = () => {
+    if (cart.length === 0) {
+      return toast.error("Your cart is empty", {
+        position: "top-center",
+        autoClose: 1000,
+        theme: "dark",
+      });
+    }
+    navigate("/user/checkout");
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -64,37 +76,23 @@ const Cart = () => {
           <div className="w-full lg:w-2/3 flex flex-col gap-4">
             <div className="bg-white rounded-2xl border border-gray-200">
               {cart && cart.length > 0 ? (
-                cart.map((item) => {
-                  if (!item.productId.is_deleted) {
-                    return (
-                      <CartItem
-                        key={item._id}
-                        quantity={item.quantity}
-                        product={item.productId}
-                        cart={cart}
-                        update={update}
-                        setUpdate={setUpdate}
-                        navigateToProductDetailedPage={
-                          navigateToProductDetailedPage
-                        }
-                        id={item.productId._id}
-                        variant={item.variant}
-                      />
-                    );
-                  } else {
-                    return (
-                      <CartItem
-                        key={item._id}
-                        quantity={0}
-                        product={item.productId}
-                        handleQuantityChange={deletedProduct}
-                        id={item._id}
-                        navigateToProductDetailedPage={deletedProduct}
-                        variant={item.variant}
-                      />
-                    );
-                  }
-                })
+                cart.map((item) =>
+                  item.productId ? (
+                    <CartItem
+                      key={item._id}
+                      quantity={item.quantity}
+                      product={item.productId}
+                      cart={cart}
+                      update={update}
+                      setUpdate={setUpdate}
+                      navigateToProductDetailedPage={
+                        navigateToProductDetailedPage
+                      }
+                      id={item.productId._id}
+                      variant={item.variant}
+                    />
+                  ) : null
+                )
               ) : (
                 <div className="text-center py-10 text-gray-500">
                   Your cart is empty
@@ -138,7 +136,7 @@ const Cart = () => {
                 variant="contained"
                 className="!bg-[#7C2D12] !text-white flex items-center group justify-center "
                 size="large"
-                onClick={() => navigate("/user/checkout")}
+                onClick={handleCheckout}
               >
                 Place Order
               </Button>

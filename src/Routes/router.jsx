@@ -29,136 +29,188 @@ import ProfileLayout from "../Components/User/UserProfile/ProfileLayout/ProfileL
 import ManageAddress from "../Components/User/UserProfile/ManageAddress/ManageAddress.jsx";
 import Cart from "../Components/User/Cart/Cart.jsx";
 import Checkout from "../Components/User/CheckoutPage/Checkout.jsx";
+import SuccessPage from "../Components/User/CheckoutPage/OrderSuccefull/OrderSuccefull.jsx";
+import CheckoutForBuyNow from "../Components/User/CheckoutPage/BuyNowCheckout.jsx";
+import Orders from "../Components/User/UserProfile/Orders/Orders.jsx";
+import OrderDetailed from "../Components/User/UserProfile/Orders/OrderDetailed/OrderDetailed.jsx";
+import SearchPage from "../Pages/UserPages/SearchPage.jsx";
 
-
-  const router = createBrowserRouter([
-    {
-      path: "/login",
-      element: <AuthLoginGuard> <LoginPage /></AuthLoginGuard> ,
-    },
-    {
-      path: "/signup",
-      element: <SignUpPage />,
-    },
-    {
-      path: "/otp/:id",
-      element: <OtpPage />,
-    },
-     {
-      path: "/",
-      element: <UserLayout />,
-      children: [
-       {
+const router = createBrowserRouter([
+  {
+    path: "/login",
+    element: (
+      <AuthLoginGuard>
+        <LoginPage />
+      </AuthLoginGuard>
+    ),
+  },
+  {
+    path: "/signup",
+    element: <SignUpPage />,
+  },
+  {
+    path: "/otp/:id",
+    element: <OtpPage />,
+  },
+  {
+    path: "/",
+    element: <UserLayout />,
+    children: [
+      {
         path: "/",
         element: <Home />,
-       },
-       {
+      },
+      {
         path: "/product/:id",
         element: <ProductDetailedPage />,
-       },
-       {
+      },
+      {
+        path: "/search",
+        element: <SearchPage />,
+      },
+      {
         path: "/user",
-        element: 
+        element: (
           <AuthGuard>
-            <ProfileLayout/>
+            <ProfileLayout />
           </AuthGuard>
-        ,
+        ),
         children: [
-         {
-          path: "/user/account-overview",
-          element: <AccountOverview/>
-         },
-         {
-          path: "/user/orders",
-          element: <div className="flex items-center justify-center h-full">Orders</div>
-         } ,
-         {
-          path: "/user/manage-address",
-          element: <ManageAddress/>
-         },
-         {
-          path: "/user/wallet",
-          element: <div className="flex items-center justify-center h-full">Wallet</div>
-         }
-        ]
-       }
-       ,{
+          {
+            path: "/user/account-overview",
+            element: <AccountOverview />,
+          },
+          {
+            path: "/user/orders",
+            element: <Orders />,
+          },
+          {
+            path: "/user/order/:id",
+            element: <OrderDetailed />,
+          },
+          {
+            path: "/user/manage-address",
+            element: <ManageAddress />,
+          },
+          {
+            path: "/user/wallet",
+            element: (
+              <div className="flex items-center justify-center h-full">
+                Wallet
+              </div>
+            ),
+          },
+        ],
+      },
+      {
         path: "/user/cart",
-        element: <AuthGuard><Cart/></AuthGuard>
-       },
-       {
+        element: (
+          <AuthGuard>
+            <Cart />
+          </AuthGuard>
+        ),
+      },
+      {
         path: "/user/checkout",
-        element: <AuthGuard><Checkout/></AuthGuard>
-       }
-      ]
-     },
-    
-    // Admin side paths
+        element: (
+          <AuthGuard>
+            <Checkout />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: "/user/checkout/success/:id",
+        element: (
+          <AuthGuard>
+            <SuccessPage />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: "/user/checkout/:id/:vId",
+        element: (
+          <AuthGuard>
+            <CheckoutForBuyNow />
+          </AuthGuard>
+        ),
+      },
+    ],
+  },
 
-    {
-      path: "/admin/login",
-      element:<AdminLoginGuard><AdminLoginPage/></AdminLoginGuard> ,
-    },
-    {
-      path: "/admin",
-      element:<AdminAuthGuard> <AdminLayout /></AdminAuthGuard>,
-      // child components
-      children: [
-        {
-          path: "/admin/dashboard",
-          element:<Dashboard />,
-        },
-        {
-          path: "/admin/product",
-          element: <ProductSection />,
-        },
-        {
-          path: "/admin/customers",
-          element: <CustomerSection />,
-        },
-        {
-          path: "/admin/category",
-          element: <CategorySection />,
-        },
-        {
-          path: "/admin/orders",
-          element: <OrderSection />,
-        },
-        {
-          path: "/admin/offers",
-          element: <OfferSection />,
-        },
-        {
-          path: "/admin/reviews",
-          element: <ReviewSection />,
-        },
-        {
-          path: "/admin/notification",
-          element: <NotificationSection />,
-        },
-        {
-          path: "/admin/contact-us",
-          element: <ContactUsSection />,
-        },
-        {
-          path: "/admin/coupon",
-          element: <CouponSection />,
-        },
-        {
-          path: "/admin/banner-management",
-          element: <BannerManagementSection />,
-        },
-        {
-          path: "/admin/product/add-product",
-          element: <AddProduct />,
-        },
-        {
-          path: "/admin/product/edit-product/:id",
-          element: <EditProduct/>,
-        }
-      ],
-    },
-  ]);
+  // Admin side paths
 
+  {
+    path: "/admin/login",
+    element: (
+      <AdminLoginGuard>
+        <AdminLoginPage />
+      </AdminLoginGuard>
+    ),
+  },
+  {
+    path: "/admin",
+    element: (
+      <AdminAuthGuard>
+        {" "}
+        <AdminLayout />
+      </AdminAuthGuard>
+    ),
+    // child components
+    children: [
+      {
+        path: "/admin/dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "/admin/product",
+        element: <ProductSection />,
+      },
+      {
+        path: "/admin/customers",
+        element: <CustomerSection />,
+      },
+      {
+        path: "/admin/category",
+        element: <CategorySection />,
+      },
+      {
+        path: "/admin/orders",
+        element: <OrderSection />,
+      },
+      {
+        path: "/admin/offers",
+        element: <OfferSection />,
+      },
+      {
+        path: "/admin/reviews",
+        element: <ReviewSection />,
+      },
+      {
+        path: "/admin/notification",
+        element: <NotificationSection />,
+      },
+      {
+        path: "/admin/contact-us",
+        element: <ContactUsSection />,
+      },
+      {
+        path: "/admin/coupon",
+        element: <CouponSection />,
+      },
+      {
+        path: "/admin/banner-management",
+        element: <BannerManagementSection />,
+      },
+      {
+        path: "/admin/product/add-product",
+        element: <AddProduct />,
+      },
+      {
+        path: "/admin/product/edit-product/:id",
+        element: <EditProduct />,
+      },
+    ],
+  },
+]);
 
-  export default router;
+export default router;

@@ -6,6 +6,7 @@ const Navbar = () => {
   const navigate = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+
 //   for mobile size menu Open or Close
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -28,7 +29,7 @@ const redirectToAccountOrSignIn =()=>{
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
-        <div  className="absolute top-4 right-4 md:hidden" >
+        <div  className="absolute top-4 right-4 md:hidden" onClick={()=>navigate('/user/cart')}>
           <ShoppingCartIcon/>
         </div>
 
@@ -64,7 +65,7 @@ const redirectToAccountOrSignIn =()=>{
           } md:flex w-full md:w-1/3 h-full items-center justify-center md:justify-end md:pe-10 pb-4 md:pb-0`}
         >
           <div className="flex w-full md:w-2/4 justify-center md:justify-between space-x-6 md:space-x-4">
-            <Search className="cursor-pointer hover:text-gray-600" width={20} />
+            <Search className="cursor-pointer hover:text-gray-600" width={20} onClick={()=>navigate('/search')} />
             <Heart className="cursor-pointer hover:text-gray-600" width={20} onClick={()=>navigate('/admin')} />
             <ShoppingCart
               className="cursor-pointer hover:text-gray-600 hidden md:block"

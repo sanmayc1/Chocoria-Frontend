@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import { add_to_cart } from "../../../Services/api/cartApi";
+import { baseUrl } from "../../../Services/api/constants";
 
 const ProductCard = ({ price, productTitle, rating, imageUrl,id,variant }) => {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ const ProductCard = ({ price, productTitle, rating, imageUrl,id,variant }) => {
 
           <div className="w-full overflow-hidden flex justify-center p-4 ">
             <img
-              src={imageUrl}
+              src={`${baseUrl}${imageUrl}`}
               alt=""
               className="object-scale-down xl:max-h-[130px] md:max-h-[120px] max-h-20 xl:min-h-[130px] md:min-h-[120px] min-h-20 "
             />

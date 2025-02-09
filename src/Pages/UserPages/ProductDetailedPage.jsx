@@ -58,7 +58,7 @@ const ProductDetailedPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Breadcrumbs productName={product.name} category={"Milk Chocolate"} />
+        <Breadcrumbs second={product.name}  />
 
         {/* Product detailed container */}
         <ProductImageViewMobile images={product?.images} />

@@ -51,7 +51,7 @@ export const delete_Product = async (data) => {
 
 // user side all product fetch 
 
-export const get_products_user = async () => {
+export const getProductsUser = async () => {
   try {
     const res = await chocoriaBackEnd.get("/user/products");
     return res;

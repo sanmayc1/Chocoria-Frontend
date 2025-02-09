@@ -56,11 +56,16 @@ const ProductDetails = ({
   };
   const buyNow = () => {
     if (!auth) {
-      alert("Please Login First");
+      toast.error("Please Login First", {
+        position: "top-center",
+      });
       navigate("/login");
       return;
     }
-    alert("Buy Now");
+
+
+    navigate(`/user/checkout/${id}/${selectedVariant.id}`);
+   
   };
   return (
     <div className="sm:mx-0 mx-5 flex flex-col w-[100%] ">

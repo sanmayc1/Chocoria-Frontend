@@ -3,7 +3,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import settings from "../../../utils/slickSettings.jsx";
-import { baseUrl } from "../../../Services/api/constants.js";
 import "./cardlisting.css";
 const CardListing = ({ products }) => {
   return (
@@ -16,7 +15,7 @@ const CardListing = ({ products }) => {
                 key={product._id}
                 productTitle={product.name}
                 price={product.variants[0].price}
-                imageUrl={`${baseUrl}${product.images[0]}`}
+                imageUrl={product.images[0]}
                 rating={"4.0"}
                 id={product._id}
                 variant={product.variants[0]}
