@@ -95,3 +95,14 @@ export const edit_product = async (data,id) => {
     return error;
   }
 };
+
+// search product
+export const searchProduct = async (data,filterData) => {
+  try {
+   
+    const res = await chocoriaBackEnd.get(`/user/products/search?q=${data}${filterData?`&sortBy=${filterData.sortBy}&rating=${filterData.rating}&category=${filterData.category}`:""}`);
+    return res;
+  } catch (error) {
+    return error;
+  }
+};

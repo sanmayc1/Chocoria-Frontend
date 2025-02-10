@@ -4,12 +4,18 @@ import { useParams } from "react-router-dom";
 import { baseUrl } from "../../../../../Services/api/constants";
 import { Button, CircularProgress } from "@mui/material";
 import OrderProgressBar from "../OrderProgressBar/OrderProgressBar";
+import DeleteDailog from "../../../../HelperComponents/InputFiled/DeleteDailog";
+import Modal from "../../../../HelperComponents/InputFiled/Modal";
+import OrderCancelRequest from "./OrderCancelRequest";
 
 const OrderDetailed = () => {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
   const [orderItems, setOrderItems] = useState(null);
   const [index, setIndex] = useState(0);
+  const [isOpenCancelConfirmation, setIsOpenCancelConfirmation] =
+    useState(false);
+  const [isOpenCancelRequest, setIsOpenCancelRequest] = useState(false);
   useEffect(() => {
     async function fetch_order() {
       const response = await get_order_details(id);
@@ -26,6 +32,13 @@ const OrderDetailed = () => {
     fetch_order();
   }, [id]);
 
+  const confirmCancel = () => {
+    setIsOpenCancelConfirmation(false);
+    setIsOpenCancelRequest(true);
+    
+  }
+
+
   if (!order && !orderItems)
     return (
       <div className="w-full  flex justify-center items-center h-full">
@@ -38,7 +51,9 @@ const OrderDetailed = () => {
         <div className="bg-white rounded-2xl border hover:shadow-md transition-shadow duration-300  border-gray-200">
           <div className="flex items-center gap-4 w-full ">
             <img
-              src={`${baseUrl}${orderItems.productId?.images[0] || orderItems.img}`}
+              src={`${baseUrl}${
+                orderItems.productId?.images[0] || orderItems.img
+              }`}
               className="w-40 h-40 object-contain"
               alt={"Product"}
             />
@@ -65,7 +80,7 @@ const OrderDetailed = () => {
             <OrderProgressBar index={index} />
           </div>
 
-          <div className="p-4 px-7 flex justify-between items-center ">
+          <div className="p-4 px-7 sm:flex-row flex-col flex justify-between sm:items-center gap-5 ">
             <div>
               <h1 className="font-medium text-sm sm:text-lg pb-1 w-full ">
                 Order Details
@@ -106,12 +121,35 @@ const OrderDetailed = () => {
             </div>
           </div>
           <div className="p-4 px-7 flex justify-end ">
-            <Button variant="outlined" color="error">
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => setIsOpenCancelConfirmation(true)}
+            >
               Cancel Order
             </Button>
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={isOpenCancelConfirmation}
+        onClose={() => setIsOpenCancelConfirmation(false)}
+      >
+        <DeleteDailog
+          btnName={"Yes"}
+          rejectBtnName={"No"}
+          title={"Cancel Order"}
+          cancel={() => setIsOpenCancelConfirmation(false)}
+          message={"Are you sure you want to cancel this order?"}
+          confirm={confirmCancel}
+        />
+      </Modal>
+      <Modal
+        isOpen={isOpenCancelRequest}
+        onClose={() => setIsOpenCancelRequest(false)}
+      >
+        <OrderCancelRequest cancel={()=>setIsOpenCancelRequest(false)} confirm={confirm} />
+      </Modal>
     </>
   );
 };

@@ -122,10 +122,10 @@ const ProductDetails = ({
           setQuantity={setQuantity}
         />
       </div>
-      {stock > 0 ? (
-        <p className=" font-semibold pt-5 text-sm text-green-700">{`${stock} In stock`}</p>
+      {stock > 5 ? (
+        <p className=" font-semibold pt-5 text-sm text-green-700">{`In stock`}</p>
       ) : (
-        <p className=" font-semibold pt-5 text-sm text-red-700">{`Out of stock`}</p>
+        <p className=" font-semibold pt-5 text-sm text-red-700">{`Only ${stock} left`}</p>
       )}
       {/* Cart and buynow */}
       <div className="pt-9 lg:pt-3 xl:pt-5 grid lg:grid-flow-col gap-3 w-full ">

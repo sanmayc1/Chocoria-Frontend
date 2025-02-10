@@ -52,3 +52,14 @@ export const soft_delete_category = async (id) => {
     return error;
   }
 };
+
+// get category
+
+export const getCategoriesUserSide = async ()=>{
+  try {
+      const res = await chocoriaBackEnd.get("/user/categories")
+      return res;
+  } catch (error) {
+      return error;
+  }
+}

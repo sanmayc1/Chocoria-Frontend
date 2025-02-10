@@ -1,10 +1,32 @@
 import { Star } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getCategoriesUserSide } from "../../../Services/api/category";
 
-const FilterOptions = () => {
+const FilterOptions = ({ filterData, setFilterData }) => {
   const [toggleSelect, setToggleSelect] = useState(null);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [category, setCategory] = useState([]);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await getCategoriesUserSide();
+        if (res.status === 200) {
+          setCategory(res.data.categories);
+        }
+      } catch (error) {}
+    };
+    fetchCategories();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFilterData({
+      ...filterData,
+      [name]: value,
+    });
+  };
+  console.log(filterData);
   return (
     <>
       {/* Mobile Filter Button */}
@@ -46,27 +68,63 @@ const FilterOptions = () => {
             }`}
           >
             <label htmlFor="popularity" className="cursor-pointer">
-              <input type="radio" name="sort" />
+              <input
+                type="radio"
+                name="sortBy"
+                value="popularity"
+                onChange={handleChange}
+                checked={filterData.sortBy === "popularity"}
+              />
               <span className="pl-2">Popularity</span>
             </label>
-            <label htmlFor="price" className="cursor-pointer">
-              <input type="radio" name="sort" />
+            <label htmlFor="highToLow" className="cursor-pointer">
+              <input
+                type="radio"
+                name="sortBy"
+                value="highToLow"
+                onChange={handleChange}
+                checked={filterData.sortBy === "highToLow"}
+              />
               <span className="pl-2">High to Low</span>
             </label>
-            <label htmlFor="price" className="cursor-pointer">
-              <input type="radio" name="sort" />
+            <label htmlFor="lowToHigh" className="cursor-pointer">
+              <input
+                type="radio"
+                name="sortBy"
+                value="lowToHigh"
+                onChange={handleChange}
+                checked={filterData.sortBy === "lowToHigh"}
+              />
               <span className="pl-2">Low to High</span>
             </label>
             <label htmlFor="newArrival" className="cursor-pointer">
-              <input type="radio" name="sort" />
+              <input
+                type="radio"
+                name="sortBy"
+                value="newArrival"
+                onChange={handleChange}
+                checked={filterData.sortBy === "newArrival"}
+              />
               <span className="pl-2">New Arrival</span>
             </label>
             <label htmlFor="aA-zZ" className="cursor-pointer">
-              <input type="radio" name="sort" />
+              <input
+                type="radio"
+                name="sortBy"
+                value="aA-zZ"
+                onChange={handleChange}
+                checked={filterData.sortBy === "aA-zZ"}
+              />
               <span className="pl-2">A to Z</span>
             </label>
-            <label htmlFor="aA-zZ" className="cursor-pointer">
-              <input type="radio" name="sort" />
+            <label htmlFor="zZ-aA" className="cursor-pointer">
+              <input
+                type="radio"
+                name="sortBy"
+                value="zZ-aA"
+                onChange={handleChange}
+                checked={filterData.sortBy === "zZ-aA"}
+              />
               <span className="pl-2">Z to A</span>
             </label>
           </div>
@@ -93,7 +151,13 @@ const FilterOptions = () => {
                 htmlFor={`${rating}star`}
                 className="flex cursor-pointer"
               >
-                <input type="radio" name="rating" />
+                <input
+                  type="radio"
+                  name="rating"
+                  value={rating}
+                  onChange={handleChange}
+                  checked={filterData.rating == rating}
+                />
                 <span className="pl-2 flex items-center gap-1">
                   {[...Array(5)].map((_, index) => (
                     <Star
@@ -123,10 +187,16 @@ const FilterOptions = () => {
               toggleSelect === "category" ? "flex" : "hidden"
             }`}
           >
-            <label htmlFor="milkChocolate" className="cursor-pointer">
-              <input type="radio" name="sort" />
-              <span className="pl-2">Milk Chocolate</span>
-            </label>
+             <label  htmlFor="milkChocolate" className="cursor-pointer">
+                <input type="radio" name="category" value="" onChange={handleChange} checked={filterData.category === ""} />
+                <span className="pl-2">All Categories</span>
+              </label>
+            {category.map((item) => (
+              <label key={item._id} htmlFor="milkChocolate" className="cursor-pointer">
+                <input type="radio" name="category" value={item._id} onChange={handleChange} checked={filterData.category === item._id} />
+                <span className="pl-2">{item.name}</span>
+              </label>
+            ))}
           </div>
         </div>
 

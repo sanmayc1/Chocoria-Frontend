@@ -44,3 +44,25 @@ export const get_all_orders = async () => {
         return error;
     }
 }
+
+
+// admin side get the order details
+
+export const adminGetOrderDetails = async (id) => {
+    try {
+        const res = await chocoriaBackEnd.get(`admin/orders/${id}`);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}
+
+// admin side update the order status
+export const adminUpdateOrderStatus = async (id,data) => {
+    try {
+        const res = await chocoriaBackEnd.patch(`admin/orders/${id}`,data);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}

@@ -1,72 +1,60 @@
 import { Search } from "lucide-react";
-import FilterOptions from "../../Components/User/FilterOptions/FilterOptions";
-import ProductCard from "../../Components/User/ProductCard/ProductCard";
-import { Pagination } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getProductsUser } from "../../Services/api/productApi";
-import { baseUrl } from "../../Services/api/constants";
-import { Spa } from "@mui/icons-material";
+import { searchProduct } from "../../Services/api/productApi.js";
+import { baseUrl } from "../../Services/api/constants.js";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 
 const SearchPage = () => {
-  const [filterData, setFilterData] = useState(null);
-  const [data, setData] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchSuggestion, setSearchSuggestion] = useState(null);
+  const navigate = useNavigate();
+  const { query } = useParams();
 
   useEffect(() => {
-    const fetchAllProducts = async () => {
-      const response = await getProductsUser();
-      if (response.status === 200) {
-        setData(response.data.products);
-
-        return;
-      }
-
-      toast.error(response.response.data.message, {
-        position: "top-center",
-      });
-    };
-    fetchAllProducts();
-  }, []);
+    if (query) {
+      setSearchTerm(decodeURIComponent(query));
+    }
+  }, [query]);
 
   // handle search input filed
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    if (!value) {
+    if (!value.trim()) {
       setSearchSuggestion(null);
       return;
     }
-    setSearchSuggestion(
-      data.filter(
-        (item) =>
-          item.name.toLowerCase().includes(value.toLowerCase()) ||
-          item.brand.toLowerCase().includes(value.toLowerCase()) 
-      )
-    );
+    const query = encodeURIComponent(value);
+    const response = await searchProduct(query);
+    if (response.status === 200) {
+      const data = response.data.products;
+      if (data.length > 0) {
+        setSearchSuggestion(data.slice(0,3));
+      } else {
+        setSearchSuggestion(null);
+      }
+      return;
+    }
+    setSearchSuggestion(null);
   };
 
   // handle select suggestion
   const handleSelectSuggestion = (suggestion) => {
     setSearchTerm(suggestion);
-    handleSearchSubmit();
+    handleSearchSubmit(suggestion);
   };
 
   // handle search
 
-  const handleSearchSubmit = () => {
-    setFilterData(
-      data.filter((item) =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())||
-        item.brand.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-    const ser = encodeURIComponent(searchTerm);
-    console.log(ser);
-    console.log(decodeURIComponent(ser));
+  const handleSearchSubmit = (suggestion) => {
+    if(!suggestion.trim()){
+      return;
+    }
+    const query = encodeURIComponent(suggestion);
+    navigate(`/search/${query}`);
     setSearchSuggestion(null);
   };
-console.log(searchSuggestion)
+
   return (
     <div className="w-full h-auto min-h-screen">
       {/* Search Bar */}
@@ -82,7 +70,7 @@ console.log(searchSuggestion)
             />
             <button
               className="hover:text-gray-500 transition-colors duration-100"
-              onClick={handleSearchSubmit}
+              onClick={() => handleSearchSubmit(searchTerm)}
             >
               <Search size={18} />
             </button>
@@ -90,7 +78,7 @@ console.log(searchSuggestion)
           {/* suggestion */}
           {searchSuggestion?.length > 0 && (
             <div className="w-full h-auto pb-6">
-              {searchSuggestion.map((item) => (
+              {searchSuggestion?.map((item) => (
                 <div
                   key={item._id}
                   className="w-full h-10 hover:bg-gray-100 flex gap-3 items-center py-6  px-5"
@@ -119,31 +107,8 @@ console.log(searchSuggestion)
       </div>
 
       {/* Main Content */}
-      {filterData && (
-        <div className="w-full flex flex-col lg:flex-row">
-          {/* Filter Section - FilterOptions component handles its own responsiveness */}
-          {filterData && <FilterOptions />}
-          {/* Product Grid */}
-          <div className="w-full lg:w-[80%] px-12 lg:px-20 flex flex-wrap gap-4 lg:gap-4 justify-between md:justify-start ">
-            {/* Products - Using Array to map multiple ProductCards */}
-            {filterData.map((item) => (
-              <div key={item?._id}>
-                <ProductCard
-                  productTitle={item?.name}
-                  price={item?.variants[0]?.price}
-                  rating={"4"}
-                  imageUrl={item?.images[0]}
-                  id={item?._id}
-                  variant={item?.variants[0]}
-                />
-              </div>
-            ))}
-            <div className="w-full flex justify-center items-center py-10">
-              <Pagination />
-            </div>
-          </div>
-        </div>
-      )}
+
+      <Outlet />
     </div>
   );
 };

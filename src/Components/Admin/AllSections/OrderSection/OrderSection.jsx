@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { Search, Filter, RefreshCwIcon, Layers } from "lucide-react";
+import { Search,  RefreshCwIcon, Layers } from "lucide-react";
 import QuickStatCard from "../../HelperComponents/QuickCard";
 import { Pagination } from "@mui/material";
 import { toast } from "react-toastify";
 import { get_all_orders } from "../../../../Services/api/orders.js";
+import { useNavigate } from "react-router-dom";
 
 const OrderSection = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedFilter, setSelectedFilter] = useState("all");
+
   const [update, setUpdate] = useState(false);
   const [orders, setOrders] = useState([]);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     async function fetch_All_Orders() {
@@ -104,9 +106,9 @@ const OrderSection = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {orders.map((order) => (
-                <tr key={order._id} className="hover:bg-gray-50">
+                <tr key={order._id} className="hover:bg-gray-50" onClick={() => navigate(`/admin/order/${order._id}`)}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm  text-gray-900">{order._id}</div>
+                    <div className="text-sm  text-gray-900">#{order._id}</div>
                     <div className="text-sm text-gray-500"></div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
@@ -134,7 +136,7 @@ const OrderSection = () => {
                     <span
                       className={`px-2 inline-flex text-sm leading-5 rounded-full`}
                     >
-                      {order.totalAmount}
+                      ₹{order.totalAmount}
                     </span>
                   </td>
                 </tr>

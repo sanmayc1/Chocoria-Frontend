@@ -48,7 +48,7 @@ const Home = () => {
         <Banner />
         <CardListingHeading heading={"Products"} viewMore />
         <CardListing products={products} />
-        <CardListingHeading heading={"Product"} />
+        
       </motion.div>
     </>
   );

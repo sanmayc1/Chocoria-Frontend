@@ -34,6 +34,8 @@ import CheckoutForBuyNow from "../Components/User/CheckoutPage/BuyNowCheckout.js
 import Orders from "../Components/User/UserProfile/Orders/Orders.jsx";
 import OrderDetailed from "../Components/User/UserProfile/Orders/OrderDetailed/OrderDetailed.jsx";
 import SearchPage from "../Pages/UserPages/SearchPage.jsx";
+import ProductSearchResult from "../Components/User/ProductSearchResult/ProductSearchResult.jsx";
+import OrderDetails from "../Components/Admin/AllSections/OrderSection/OrderDetails.jsx";
 
 const router = createBrowserRouter([
   {
@@ -67,6 +69,12 @@ const router = createBrowserRouter([
       {
         path: "/search",
         element: <SearchPage />,
+        children:[
+          {
+            path:"/search/:query",
+            element:<ProductSearchResult/>
+          }
+        ]
       },
       {
         path: "/user",
@@ -176,6 +184,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/orders",
         element: <OrderSection />,
+      },
+      {
+        path: "/admin/order/:id",
+        element: <OrderDetails />,
       },
       {
         path: "/admin/offers",
