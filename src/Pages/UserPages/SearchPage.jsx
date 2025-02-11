@@ -8,12 +8,13 @@ const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchSuggestion, setSearchSuggestion] = useState(null);
   const navigate = useNavigate();
-  const { query } = useParams();
+  const { query } = useParams() ;
 
   useEffect(() => {
     if (query) {
       setSearchTerm(decodeURIComponent(query));
     }
+    window.scrollTo(0, 0);
   }, [query]);
 
   // handle search input filed
@@ -29,7 +30,7 @@ const SearchPage = () => {
     if (response.status === 200) {
       const data = response.data.products;
       if (data.length > 0) {
-        setSearchSuggestion(data.slice(0,3));
+        setSearchSuggestion(data.slice(0, 3));
       } else {
         setSearchSuggestion(null);
       }
@@ -47,7 +48,7 @@ const SearchPage = () => {
   // handle search
 
   const handleSearchSubmit = (suggestion) => {
-    if(!suggestion.trim()){
+    if (!suggestion.trim()) {
       return;
     }
     const query = encodeURIComponent(suggestion);

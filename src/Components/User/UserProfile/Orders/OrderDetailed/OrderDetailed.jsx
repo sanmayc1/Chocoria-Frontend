@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { get_order_details } from "../../../../../Services/api/orders";
+import {
+  cancelOrder,
+  get_order_details,
+  getCancelRequest,
+} from "../../../../../Services/api/orders";
 import { useParams } from "react-router-dom";
 import { baseUrl } from "../../../../../Services/api/constants";
 import { Button, CircularProgress } from "@mui/material";
@@ -7,6 +11,7 @@ import OrderProgressBar from "../OrderProgressBar/OrderProgressBar";
 import DeleteDailog from "../../../../HelperComponents/InputFiled/DeleteDailog";
 import Modal from "../../../../HelperComponents/InputFiled/Modal";
 import OrderCancelRequest from "./OrderCancelRequest";
+import { toast } from "react-toastify";
 
 const OrderDetailed = () => {
   const { id } = useParams();
@@ -16,6 +21,9 @@ const OrderDetailed = () => {
   const [isOpenCancelConfirmation, setIsOpenCancelConfirmation] =
     useState(false);
   const [isOpenCancelRequest, setIsOpenCancelRequest] = useState(false);
+  const [update, setUpdate] = useState(false);
+  const [cancelRequest, setCancelRequest] = useState(null);
+
   useEffect(() => {
     async function fetch_order() {
       const response = await get_order_details(id);
@@ -30,14 +38,46 @@ const OrderDetailed = () => {
       }
     }
     fetch_order();
-  }, [id]);
+  }, [id, update]);
+
+  useEffect(() => {
+    const fetchCancelRequest = async () => {
+      const response = await getCancelRequest(id);
+      if (response.status === 200) {
+        setCancelRequest(response.data.cancelRequest);
+        return;
+      }
+    };
+    fetchCancelRequest();
+  }, [update]);
 
   const confirmCancel = () => {
     setIsOpenCancelConfirmation(false);
     setIsOpenCancelRequest(true);
-    
-  }
+  };
 
+  const submitCancelRequest = async (reason) => {
+    const data = {
+      reason: reason.reason,
+      explanation: reason.explanation,
+      orderItemId: orderItems._id,
+    };
+
+    const response = await cancelOrder(order._id, data);
+    if (response.status === 200) {
+      setIsOpenCancelRequest(false);
+      setUpdate(!update);
+      toast.success(response.data.message, {
+        position: "top-center",
+        autoClose: 1000,
+      });
+      return;
+    }
+    toast.error(response.response.data.message, {
+      position: "top-center",
+      autoClose: 1000,
+    });
+  };
 
   if (!order && !orderItems)
     return (
@@ -105,7 +145,7 @@ const OrderDetailed = () => {
               </div>
             </div>
             {/* payment details */}
-            <div className=" ">
+            <div>
               <p className="text-xs sm:text-sm pb-2 font-medium ">
                 Payment Details
               </p>
@@ -120,15 +160,50 @@ const OrderDetailed = () => {
               </div>
             </div>
           </div>
-          <div className="p-4 px-7 flex justify-end ">
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={() => setIsOpenCancelConfirmation(true)}
+          {cancelRequest === null ? (
+            <div
+              className={`p-4 px-7 flex ${
+                orderItems.status === "Cancelled"
+                  ? "justify-center"
+                  : "justify-end"
+              } `}
             >
-              Cancel Order
-            </Button>
-          </div>
+              {orderItems.status === "Delivered" ? (
+                <Button variant="outlined" color="inherit">
+                  Rate & Review
+                </Button>
+              ) : orderItems.status === "Cancelled" ? (
+                <p className="text-sm font-medium">Order Cancelled</p>
+              ) : (
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={() => setIsOpenCancelConfirmation(true)}
+                >
+                  Cancel Order
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="px-7 p-4">
+              <h1 className="font-medium text-sm sm:text-lg pb-1 w-full ">
+                Cancel Request
+              </h1>
+              <p className="text-sm font-medium">
+                Reason : {cancelRequest.reason}
+              </p>
+
+              <p className="text-sm font-medium ">
+                Status :{" "}
+                <span className={`font-bold uppercase ${cancelRequest.status === "pending" ? "text-orange-500" : cancelRequest.status === "approved" ? "text-green-500" : "text-red-500"}`}>
+                   {cancelRequest.status}
+                </span>
+              </p>
+
+              <p className="text-sm font-medium">
+                Details : {cancelRequest.response}</p>
+            </div>
+          )}
         </div>
       </div>
       <Modal
@@ -148,7 +223,10 @@ const OrderDetailed = () => {
         isOpen={isOpenCancelRequest}
         onClose={() => setIsOpenCancelRequest(false)}
       >
-        <OrderCancelRequest cancel={()=>setIsOpenCancelRequest(false)} confirm={confirm} />
+        <OrderCancelRequest
+          cancel={() => setIsOpenCancelRequest(false)}
+          confirm={submitCancelRequest}
+        />
       </Modal>
     </>
   );

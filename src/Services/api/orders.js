@@ -1,3 +1,4 @@
+
 import { chocoriaBackEnd } from "./api.js";
 
 
@@ -61,6 +62,49 @@ export const adminGetOrderDetails = async (id) => {
 export const adminUpdateOrderStatus = async (id,data) => {
     try {
         const res = await chocoriaBackEnd.patch(`admin/orders/${id}`,data);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}
+
+// cancel the order
+export const cancelOrder = async (id,data) => {
+    try {
+        const res = await chocoriaBackEnd.post(`/user/order/${id}/cancel`,data);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}
+
+
+// get cancel request
+
+export const getCancelRequest = async (id) => {
+    try {
+        const res = await chocoriaBackEnd.get(`/user/order/${id}/cancel`);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}
+
+
+// get all cancel requests for admin
+export const getAllCancelRequests = async () => {
+    try {
+        const res = await chocoriaBackEnd.get(`/admin/orders/cancel`);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}
+
+// admin side order cancelation request update
+export const updateCancelRequest = async (id,data) => {
+    try {
+        const res = await chocoriaBackEnd.patch(`/admin/orders/${id}/cancel`,data);
         return res;
     } catch (error) {
         return error;

@@ -65,3 +65,21 @@ export const get_address_by_id = async (id)=>{
     }
 }
 
+// forget password
+export const forget_password = async (data)=>{
+    try {
+        const res = await chocoriaBackEnd.post("/user/forget-password",data)
+        return res;
+    } catch (error) {
+        return error;
+    }
+}
+// reset password
+export const resetPassword = async (data)=>{
+    try {
+        const res = await chocoriaBackEnd.patch("/user/reset-password",data)
+        return res;
+    } catch (error) {
+        return error;
+    }
+}

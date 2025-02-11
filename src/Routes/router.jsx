@@ -36,6 +36,9 @@ import OrderDetailed from "../Components/User/UserProfile/Orders/OrderDetailed/O
 import SearchPage from "../Pages/UserPages/SearchPage.jsx";
 import ProductSearchResult from "../Components/User/ProductSearchResult/ProductSearchResult.jsx";
 import OrderDetails from "../Components/Admin/AllSections/OrderSection/OrderDetails.jsx";
+import CancelRequests from "../Components/Admin/AllSections/OrderSection/CancelRequests.jsx";
+import ForgetPasswordPage from "../Pages/UserPages/ForgetPassword.jsx";
+import ResetPasswordPage from "../Pages/UserPages/ResetPasswordPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +56,14 @@ const router = createBrowserRouter([
   {
     path: "/otp/:id",
     element: <OtpPage />,
+  },
+  {
+    path: "/forget-password",
+    element: <ForgetPasswordPage />,
+  },
+  {
+    path:"/reset-password/:id",
+    element:<ResetPasswordPage />
   },
   {
     path: "/",
@@ -188,6 +199,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/order/:id",
         element: <OrderDetails />,
+      },
+      {
+        path: "/admin/orders/cancel",
+        element: <CancelRequests />,
       },
       {
         path: "/admin/offers",

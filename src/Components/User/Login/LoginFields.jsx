@@ -92,7 +92,11 @@ const LoginFields = () => {
         {/* forget password */}
         <div className="w-full flex justify-center">
           <div className="w-full max-w-xs">
-            <p className="text-end text-xs font-semibold pt-3 hover:text-gray-600 cursor-pointer select-none">
+            <p className="text-end text-xs font-semibold pt-3 hover:text-gray-600 cursor-pointer select-none"
+              onClick={() => {
+                navigate("/forget-password");
+              }}
+            >
               Forget Password?
             </p>
           </div>
