@@ -11,9 +11,10 @@ import { get_product_user } from "../../Services/api/productApi.js";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { baseUrl } from "../../Services/api/constants.js";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CircularProgress } from "@mui/material";
+import Varients from "../../Components/User/Varients/Varients.jsx";
 
 
 const ProductDetailedPage = () => {
@@ -22,6 +23,9 @@ const ProductDetailedPage = () => {
   const [recommendation, setRecommendation] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
+  const navigate = useNavigate();
+
+
 
 
   useEffect(() => {
@@ -40,6 +44,13 @@ const ProductDetailedPage = () => {
     }
     fetch_All_Products();
   }, [location.pathname]);
+
+  useEffect(()=>{
+    if(selectedVariant){
+      navigate(`/product/${id}?variant=${selectedVariant?._id}`)
+    }
+   
+  },[selectedVariant])
 
 
 

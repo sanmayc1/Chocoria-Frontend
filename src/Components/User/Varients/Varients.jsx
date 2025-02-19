@@ -1,12 +1,20 @@
 import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const Varients = ({ varients,setSelectedVariant,selectedVariant}) => {
+  
+  const [searchParams] = useSearchParams();
+
   const handleChange = (variant)=>{ 
     setSelectedVariant(variant)
   }
   useEffect(()=>{
-     setSelectedVariant(varients[0])
+    if(searchParams.get('variant')){
+     setSelectedVariant(varients.find((variant)=> variant._id === searchParams.get('variant')))
+    }
   },[varients])
+
+
   return (
     <>
       <div>
@@ -14,9 +22,9 @@ const Varients = ({ varients,setSelectedVariant,selectedVariant}) => {
         <div className="flex gap-2">
           {varients.map((variant) => {
             return (
-              <label key={variant?.id} className="cursor-pointer">
+              <label key={variant?._id} className="cursor-pointer">
                 <input
-                checked={selectedVariant?.id === variant?.id}
+                checked={selectedVariant?._id === variant?._id}
                   type="radio"
                   name="variant"
                   value={variant.weight}

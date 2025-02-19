@@ -10,7 +10,8 @@ const EditProduct = () => {
   const [images, setImages] = useState([]);
   const navigate = useNavigate();
   const [variants, setVariants] = useState([
-    { id: uuid(), weight: "", price: "", quantity: "" },
+    { _id: uuid(), weight: "", price: "", quantity: "" },
+
   ]);
   const [productDetails, setProductDetails] = useState({
     name: "",
@@ -87,7 +88,7 @@ const EditProduct = () => {
     // validating varient fileds
 
     const { weight, price, quantity } = variants[variants.length - 1];
-    if (!weight.trim() || !price || !quantity) {
+    if (!weight.trim() || !price || !quantity.toString().trim()) {
       toast.error("Please fill variant field", {
         position: "top-center",
       });
@@ -131,9 +132,9 @@ const EditProduct = () => {
         position: "top-center",
         autoClose: 1500,
       });
-      setTimeout(() => {
+     
         navigate("/admin/product");
-      }, 2000);
+   
 
       return null;
     }

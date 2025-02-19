@@ -15,6 +15,7 @@ const Home = () => {
       const response = await getProductsUser();
       if (response.status === 200) {
         setProducts(response.data.products);
+        
         return;
       }
 

@@ -47,12 +47,12 @@ const CartItem = ({
     }
     setLoading(true);
     const product = cart.find(
-      (item) => item.productId._id === id && item.variant.id === variant_id
+      (item) => item.productId._id === id && item.variant._id === variant_id
     );
 
     let quantity = product.quantity;
     if (quantity === 1 && action === "decrement") {
-      modalOpen(product.productId._id, product.variant.id);
+      modalOpen(product.productId._id, product.variant._id);
       return;
     }
     if (action === "increment") {
@@ -65,7 +65,7 @@ const CartItem = ({
     const response = await update_quantity({
       productId: product.productId._id,
       quantity,
-      variantId: product.variant.id,
+      variantId: product.variant._id,
     });
     if (response.status === 200) {
       toast.success(response.data.message, {
@@ -115,7 +115,7 @@ const CartItem = ({
         <Trash2
           size={18}
           className="text-red-600  cursor-pointer absolute top-4  right-2   opacity-0 group-hover:opacity-100 transition-opacity duration-300 "
-          onClick={() => modalOpen(id, variant.id)}
+          onClick={() => modalOpen(id, variant._id)}
         />
         <div
           className="flex items-center gap-4 w-full sm:w-2/4"
@@ -138,7 +138,7 @@ const CartItem = ({
           <button
             disabled={loading}
             className="text-xl font-bold w-8 text-center"
-            onClick={() => handleQuantityChange("decrement", id, variant.id)}
+            onClick={() => handleQuantityChange("decrement", id, variant._id)}
           >
             {
               quantity === 1 ? <Trash2 size={15} /> : "-"
@@ -148,7 +148,7 @@ const CartItem = ({
           <button
             disabled={loading}
             className="text-xl font-bold w-8 text-center"
-            onClick={() => handleQuantityChange("increment", id, variant.id)}
+            onClick={() => handleQuantityChange("increment", id, variant._id)}
           >
             +
           </button>
@@ -156,7 +156,7 @@ const CartItem = ({
 
         <p className="font-bold  w-full sm:w-auto sm:ml-2 flex sm:flex-col justify-between text-center">
           <span className="sm:hidden text-sm  text-black">Price</span>
-          <span>₹{variant.price * quantity}</span>
+          <span>₹{variant.price* quantity}</span>
         </p>
       </div>
       <Modal

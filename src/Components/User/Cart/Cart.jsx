@@ -10,13 +10,7 @@ const Cart = () => {
   const [update, setUpdate] = useState(false);
   const navigate = useNavigate();
 
-  // deleted product
-  const deletedProduct = (id) => {
-    toast.error("Product not available", {
-      position: "top-center",
-      autoClose: 1000,
-    });
-  };
+
 
   // navigate to product detailed page
   const navigateToProductDetailedPage = (id) => {
@@ -29,9 +23,9 @@ const Cart = () => {
       if (response.status === 200) {
         const data = response.data.cart.products.filter(
           (item) =>
-            item.productId !== null && item.productId.is_deleted !== true
+            item.productId !== null 
         );
-
+        console.log(response.data.cart.products);
         setCart(data);
         return;
       }
@@ -60,9 +54,10 @@ const Cart = () => {
 
   const totalPrice = () => {
     return cart.reduce((acc, cur) => {
-      return (acc += cur.variant.price * cur.quantity);
+      return (acc += (cur.variant.price * cur.quantity));
     }, 0);
   };
+
 
   return (
     <div className="min-h-screen  p-4">

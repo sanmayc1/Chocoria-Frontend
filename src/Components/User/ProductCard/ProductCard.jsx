@@ -1,4 +1,4 @@
-import { Star } from "lucide-react";
+import { CircleCheckBig, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -6,41 +6,71 @@ import { toast, ToastContainer } from "react-toastify";
 import { add_to_cart } from "../../../Services/api/cartApi";
 import { baseUrl } from "../../../Services/api/constants";
 
-const ProductCard = ({ price, productTitle, rating, imageUrl,id,variant }) => {
+const ProductCard = ({
+  productTitle,
+  rating,
+  imageUrl,
+  id,
+  variants,
+  cart,
+  setUpdate,
+}) => {
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth.auth);
- useEffect(() => {}, [auth]);
+  const [availableVariant, setAvailableVariant] = useState(null);
 
-  const navigateToProductDetailedPage = () => {
-    navigate(`/product/${id}`);
+  const checkItemInCart = () => {
+    if (auth && cart) {
+      const existingItem = cart.find((item) => item.productId._id === id);
+
+      if (existingItem) {
+        return true;
+      }
+    }
+    return false;
   };
 
-  const addToCard = async() => {
+  useEffect(() => {
+    setAvailableVariant(variants.find((item) => item.quantity !== 0));
+  }, [variants]);
 
+  const navigateToProductDetailedPage = () => {
+    navigate(`/product/${id}?variant=${availableVariant ? availableVariant._id :variants[0]._id}`);
+  };
+
+  const addToCard = async () => {
     if (!auth) {
       navigate("/login");
       return;
-    }else{
-      const data = {productId:id,quantity:1,variant}
+    } else {
+      if (!availableVariant) {
+        toast.error("Product is out of stock", {
+          position: "top-center",
+          autoClose: 1000,
+          theme: "dark",
+        });
+        return;
+      }
+      const data = { productId: id, quantity: 1, variant: availableVariant };
       const response = await add_to_cart(data);
       if (response.status === 200) {
-       if(response.data.message ==="Go to Cart"){
-         return navigate("/user/cart")
-       }
+        setUpdate((prev) => !prev);
+        if (response.data.message === "Go to Cart") {
+          return navigate("/user/cart");
+        }
 
         toast.success(response.data.message, {
           position: "top-center",
           autoClose: 1000,
         });
         return;
-       }
+      }
 
-       toast.error(response.response.data.message, {
-        position: "top-center", 
+      toast.error(response.response.data.message, {
+        position: "top-center",
         autoClose: 1000,
       });
     }
-    
   };
   return (
     <>
@@ -73,9 +103,15 @@ const ProductCard = ({ price, productTitle, rating, imageUrl,id,variant }) => {
           <div className="flex items-center justify-between pb-1 xl:px-4 md:px-3 px-4">
             {/* Price */}
 
-            <h5 className="pt-3  font-bold md:text-2xl xl:text-2xl w-2/5 ">
-              &#8377;{price}
-            </h5>
+            {availableVariant ? (
+              <h5 className="pt-3  font-bold md:text-2xl xl:text-2xl w-2/5 ">
+                &#8377;{availableVariant.price}
+              </h5>
+            ) : (
+              <h5 className="pt-3  font-bold text-xs md:text-base xl:text-lg text-red-600  ">
+                Out of Stock
+              </h5>
+            )}
 
             {/* Rating */}
 
@@ -88,13 +124,19 @@ const ProductCard = ({ price, productTitle, rating, imageUrl,id,variant }) => {
           </div>
         </div>
         <button
-          className="bg-orange-950 md:h-12 w-full xl:h-14 xl:text-lg  text-white font-semibold rounded-b-3xl hidden md:block hover:bg-orange-900  transition-colors"
+          className="bg-orange-950 md:h-12 w-full xl:h-14 xl:text-lg   text-white font-semibold rounded-b-3xl hidden md:block hover:bg-orange-900  transition-colors"
           onClick={addToCard}
         >
-          Add to cart
+          {checkItemInCart() ? (
+            <span className="flex items-center gap-2 justify-center ">
+              <CircleCheckBig size={19} />
+              Go to cart
+            </span>
+          ) : (
+            "Add to Cart"
+          )}
         </button>
       </div>
-      
     </>
   );
 };

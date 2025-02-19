@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import React, { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Modal from "../../../../HelperComponents/InputFiled/Modal";
 import ImageCropper from "../ImageCroper";
 import { Crop } from "lucide-react";
@@ -15,7 +15,7 @@ const AddEditForm = ({
   productDetails,
   handleChange,
   handleSubmit,
-  submit_button_name
+  submit_button_name,
 }) => {
   const [holdImage, setHoldImage] = useState(null);
   const [editImageid, setEditImageId] = useState(null);
@@ -75,7 +75,7 @@ const AddEditForm = ({
 
   const addVariant = () => {
     const { weight, price, quantity } = variants[variants.length - 1];
-    if (!weight.trim() || !price || !quantity) {
+    if (!weight.trim() || !price || !quantity.toString().trim()) {
       toast.error("Please fill existing variant field", {
         position: "top-center",
       });
@@ -83,18 +83,18 @@ const AddEditForm = ({
     }
     setVariants((prev) => [
       ...prev,
-      { id: uuidv4(), weight: "", price: "", quantity: "" },
+      { _id: uuidv4(), weight: "", price: "", quantity: "" },
     ]);
   };
 
   const removeVariant = (id) => {
-    setVariants((prev) => prev.filter((variant) => variant.id !== id));
+    setVariants((prev) => prev.filter((variant) => variant._id !== id));
   };
 
   const updateVariant = (id, field, value) => {
     setVariants((prev) =>
       prev.map((variant) =>
-        variant.id === id ? { ...variant, [field]: value } : variant
+        variant._id === id ? { ...variant, [field]: value } : variant
       )
     );
   };
@@ -191,41 +191,54 @@ const AddEditForm = ({
                 <div className="space-y-4">
                   {variants.map((variant, index) => (
                     <div
-                      key={variant.id}
+                      key={variant._id}
                       className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 p-4 border rounded-lg relative"
                     >
-                      <input
-                        type="text"
-                        placeholder="Weight in grams"
-                        value={variant.weight}
-                        onChange={(e) =>
-                          updateVariant(variant.id, "weight", e.target.value)
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                      <input
-                        type="number"
-                        placeholder="Price"
-                        value={variant.price}
-                        onChange={(e) =>
-                          updateVariant(variant.id, "price", e.target.value)
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                      <input
-                        type="number"
-                        placeholder="Quantity"
-                        value={variant.quantity}
-                        onChange={(e) =>
-                          updateVariant(variant.id, "quantity", e.target.value)
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                      />
+                      <label htmlFor="weigth">
+                        <span className="px-1 text-sm">Weight</span>
+                        <input
+                          type="text"
+                          placeholder="Weight in grams"
+                          value={variant.weight}
+                          onChange={(e) =>
+                            updateVariant(variant._id, "weight", e.target.value)
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </label>
+                      <label htmlFor="price">
+                        <span className="px-1 text-sm">Price</span>
+                        <input
+                          type="number"
+                          placeholder="Price"
+                          value={variant.price}
+                          onChange={(e) =>
+                            updateVariant(variant._id, "price", e.target.value)
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </label>
+                      <label htmlFor="quantity">
+                        <span className="px-1  text-sm">Quantity</span>
+                        <input
+                          type="number"
+                          placeholder="Quantity"
+                          value={variant.quantity}
+                          onChange={(e) =>
+                            updateVariant(
+                              variant._id,
+                              "quantity",
+                              e.target.value
+                            )
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </label>
                       <div className="flex justify-end lg:justify-center items-center">
                         {variants.length > 1 && (
                           <button
                             type="button"
-                            onClick={() => removeVariant(variant.id)}
+                            onClick={() => removeVariant(variant._id)}
                             className="text-red-600 hover:text-red-800"
                           >
                             Remove
@@ -347,7 +360,7 @@ const AddEditForm = ({
           </div>
         </div>
       </div>
-      <ToastContainer />
+
       <Modal
         isOpen={isOpen}
         onClose={onClose}

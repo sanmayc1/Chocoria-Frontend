@@ -34,6 +34,14 @@ const ProductDetails = ({
 
       return;
     }
+    if(selectedVariant.quantity === 0){
+      toast.error("Product is out of stock", {
+        position: "top-center",
+        autoClose: 1000,
+        theme:"dark",
+      });
+      return
+    }
 
     const data = { productId: id, quantity, variant: selectedVariant };
 
@@ -46,12 +54,16 @@ const ProductDetails = ({
       toast.success(response.data.message, {
         position: "top-center",
         autoClose: 1000,
+       
       });
       return;
     }
 
     toast.error(response.response.data.message, {
       position: "top-center",
+      autoClose: 1600,
+      style:{width: "100%"},
+      theme:"dark"
     });
   };
   const buyNow = () => {
@@ -62,9 +74,16 @@ const ProductDetails = ({
       navigate("/login");
       return;
     }
+    if(selectedVariant.quantity === 0){
+      toast.error("Product is out of stock", {
+        position: "top-center",
+        autoClose: 1000,
+        theme:"dark",
+      });
+      return
+    }
 
-
-    navigate(`/user/checkout/${id}/${selectedVariant.id}`);
+    navigate(`/user/checkout/${id}/${selectedVariant._id}?quantity=${quantity}`);
    
   };
   return (
@@ -125,7 +144,7 @@ const ProductDetails = ({
       {stock > 5 ? (
         <p className=" font-semibold pt-5 text-sm text-green-700">{`In stock`}</p>
       ) : (
-        <p className=" font-semibold pt-5 text-sm text-red-700">{`Only ${stock} left`}</p>
+        <p className=" font-semibold pt-5 text-sm text-red-700">{`${stock == 0 ? "Out of stock" : `Only ${stock} left`}`}</p>
       )}
       {/* Cart and buynow */}
       <div className="pt-9 lg:pt-3 xl:pt-5 grid lg:grid-flow-col gap-3 w-full ">

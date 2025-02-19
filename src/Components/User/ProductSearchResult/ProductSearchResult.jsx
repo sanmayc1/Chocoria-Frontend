@@ -35,6 +35,7 @@ const ProductSearchResult = () => {
     };
     fetchProducts();
   }, [query, filterData]);
+  console.log(data);
 
   useEffect(() => {
     navigate({

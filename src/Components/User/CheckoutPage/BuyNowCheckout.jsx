@@ -9,7 +9,7 @@ import { get_cart } from "../../../Services/api/cartApi.js";
 import PaymentOptions from "./PaymentOptions/PaymentOptions.jsx";
 import { toast } from "react-toastify";
 import { place_order } from "../../../Services/api/orders.js";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { get_product_user } from "../../../Services/api/productApi.js";
 
 const CheckoutForBuyNow = () => {
@@ -20,7 +20,8 @@ const CheckoutForBuyNow = () => {
   const [update, setUpdate] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [product, setProduct] = useState([]);
-  const [Recommendation, setRecommendation] = useState([]);
+  const [query] = useSearchParams();
+  const quantity = query.get("quantity");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { id, vId } = useParams();
@@ -30,10 +31,10 @@ const CheckoutForBuyNow = () => {
       const response = await get_product_user(id);
       if (response.status === 200) {
         const variant = response.data.product.variants.find(
-          (variant) => variant.id === vId
+          (variant) => variant._id === vId
         );
        
-        const data =[{_id:1,productId:response.data.product,variant,quantity:1}]
+        const data =[{_id:1,productId:response.data.product,variant,quantity}]
 
         setProduct(data);
         return;

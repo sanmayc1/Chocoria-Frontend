@@ -42,6 +42,7 @@ const LoginFields = () => {
         toast.error(response.response.data.message, {
           position: "top-center",
           autoClose: 2000,
+          style:{width: "100%"},
         });
         setTimeout(()=>{
             navigate(`/otp/${response.response.data.id}`)
@@ -51,6 +52,7 @@ const LoginFields = () => {
       toast.error(response.response.data.message, {
         position: "top-center",
         autoClose: 2000,
+        style:{width: "100%"},
       });
       return
     }

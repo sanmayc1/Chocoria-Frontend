@@ -39,6 +39,8 @@ const CommonForm = ({ heading, pageName, fields }) => {
         } else {
           toast.error(response.response.data.message, {
             position: "top-center",
+            autoClose: 2000,
+            style:{width: "100%"},
           });
           return
         }

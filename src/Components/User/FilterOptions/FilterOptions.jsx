@@ -26,7 +26,7 @@ const FilterOptions = ({ filterData, setFilterData }) => {
       [name]: value,
     });
   };
-  console.log(filterData);
+  
   return (
     <>
       {/* Mobile Filter Button */}

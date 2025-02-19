@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const ProductQuantity = ({ selectedVariant, quantity, setQuantity }) => {
@@ -13,8 +12,19 @@ const ProductQuantity = ({ selectedVariant, quantity, setQuantity }) => {
       toast.error("Quantity is already at its maximum", {
         position: "top-center",
         autoClose: 1000,
+        theme:"dark",
+        style:{width:"100%"},
       });
       return;
+    }
+    if(quantity + 1 > 8){
+      toast.error("A person can only buy 8 products", {
+        position: "top-center",
+        autoClose: 1000,
+        theme:"dark",
+        style:{width:"100%"},
+      });
+      return
     }
     setQuantity(quantity + 1);
   };

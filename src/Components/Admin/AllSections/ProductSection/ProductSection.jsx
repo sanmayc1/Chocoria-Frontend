@@ -4,32 +4,49 @@ import { AddCircleOutline } from "@mui/icons-material";
 import { Search, Archive, Tag, Package, MoreVertical, Eye } from "lucide-react";
 import { IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { delete_Product, get_product, soft_Delete_Product } from "../../../../Services/api/productApi.js";
+import {
+  delete_Product,
+  get_product,
+  soft_Delete_Product,
+} from "../../../../Services/api/productApi.js";
 import { toast } from "react-toastify";
 import { baseUrl } from "../../../../Services/api/constants.js";
 const ProductSection = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [products, setProducts] = useState([]);
-  const [selectedProduct,setSelectedProduct] = useState(null)
-  const [update,setUpdate]= useState(false)
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [update, setUpdate] = useState(false);
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
 
   useEffect(() => {
     async function fetch_All_Products() {
       const response = await get_product();
       if (response.status === 200) {
-        setProducts(response.data.products);
+        const data = response.data.products;
+        setTotalProducts(data.length);
+        setTotalPages(Math.ceil(data.length / 4));
+
+        const startIndex = (currentPage - 1) * 4;
+        const endIndex = startIndex + 4;
+        setProducts(data.slice(startIndex, endIndex));
         return;
       }
 
       toast.error(response.response.data.message);
     }
     fetch_All_Products();
-  }, [update]);
+  }, [update, currentPage]);
+
+  const handlePageChange = (e, value) => {
+    setCurrentPage(value);
+  };
 
   const handleChange = async (e, id) => {
-    const response = await soft_Delete_Product({id});
+    const response = await soft_Delete_Product({ id });
 
     if (response.status === 200) {
       setUpdate(!update);
@@ -45,49 +62,45 @@ const ProductSection = () => {
     }
   };
 
-  const handleMenu = (event,product) => {
+  const handleMenu = (event, product) => {
     setAnchorEl(event.currentTarget);
-    setSelectedProduct(product)
+    setSelectedProduct(product);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const stock= (variants)=>{
-
-    return variants.reduce((acc,cur)=>{
-         return acc =+ cur.quantity
-         
-    },0)
-
-
-  }
+  const stock = (variants) => {
+    return variants.reduce((acc, cur) => {
+      return (acc = +cur.quantity);
+    }, 0);
+  };
   // edit product
   const editProduct = () => {
     setAnchorEl(null);
     navigate(`/admin/product/edit-product/${selectedProduct._id}`);
-  }
+  };
 
-  const deleteProduct =async ()=>{
+  const deleteProduct = async () => {
     setAnchorEl(null);
-     const response = await delete_Product(selectedProduct._id);
-    
-        if (response.status === 200) {
-          toast.success(response.data.message, {
-            position: "top-center",
-            autoClose: 1000,
-          });
-          setUpdate(!update);
-    
-          return null;
-        }
-    
-        toast.error(response.response.data.message, {
-          position: "top-center",
-          autoClose: 1000,
-        });
-  }
+    const response = await delete_Product(selectedProduct._id);
+
+    if (response.status === 200) {
+      toast.success(response.data.message, {
+        position: "top-center",
+        autoClose: 1000,
+      });
+      setUpdate(!update);
+
+      return null;
+    }
+
+    toast.error(response.response.data.message, {
+      position: "top-center",
+      autoClose: 1000,
+    });
+  };
 
   return (
     <div className="p-4 sm:p-6 space-y-6">
@@ -96,7 +109,7 @@ const ProductSection = () => {
         <QuickStatCard
           icon={<Package className="text-blue-500" />}
           title="Total Products"
-          value={products.length}
+          value={totalProducts}
         />
         {/* <QuickStatCard
           icon={<Archive className="text-green-500" />}
@@ -204,12 +217,16 @@ const ProductSection = () => {
                     </div>
                   </td>
                   {/* Category */}
-                  <td className="px-6 py-4 whitespace-nowrap table-cell">
-                    <div className="text-sm text-gray-900">Milkchocolate</div>
+                  <td className="px-6 py-4 whitespace-nowrap table-cell uppercase">
+                    <div className="text-sm text-gray-900">
+                      {product.category.name}
+                    </div>
                   </td>
                   {/* Price */}
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">&#8377; {product.variants[0].price}</div>
+                    <div className="text-sm text-gray-900">
+                      &#8377; {product.variants[0].price}
+                    </div>
                   </td>
                   {/* Stock */}
                   <td className="px-6 py-4 whitespace-nowrap table-cell">
@@ -233,7 +250,7 @@ const ProductSection = () => {
                       aria-label="account of current user"
                       aria-controls="menu-appbar"
                       aria-haspopup="true"
-                      onClick={(e)=>handleMenu(e,product)}
+                      onClick={(e) => handleMenu(e, product)}
                       color="inherit"
                     >
                       <MoreVertical size={20} />
@@ -266,7 +283,11 @@ const ProductSection = () => {
 
       {/* Pagination */}
       <div className="flex justify-center w-full">
-        <Pagination count={10} />
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={handlePageChange}
+        />
       </div>
     </div>
   );

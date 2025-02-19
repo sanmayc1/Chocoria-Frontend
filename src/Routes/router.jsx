@@ -39,6 +39,7 @@ import OrderDetails from "../Components/Admin/AllSections/OrderSection/OrderDeta
 import CancelRequests from "../Components/Admin/AllSections/OrderSection/CancelRequests.jsx";
 import ForgetPasswordPage from "../Pages/UserPages/ForgetPassword.jsx";
 import ResetPasswordPage from "../Pages/UserPages/ResetPasswordPage.jsx";
+import ShopPage from "../Pages/UserPages/ShopPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
             element:<ProductSearchResult/>
           }
         ]
+      },
+      {
+        path:"/shop",
+        element:<ShopPage/>
       },
       {
         path: "/user",

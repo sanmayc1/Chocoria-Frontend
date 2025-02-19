@@ -89,11 +89,11 @@ const AddProduct = () => {
     if (response.status === 200) {
       toast.success(response.data.message, {
         position: "top-center",
-        autoClose: 1500,
+        autoClose: 1000,
       });
-      setTimeout(() => {
+     
         navigate("/admin/product");
-      }, 2000);
+     
 
       return null;
     }

@@ -23,9 +23,10 @@ function App() {
       });
 
       socket.on("block_user", async() => {
-        toast.error("Account Blocked By Admin", {
+        toast.error("Account blocked by admin", {
           position: "top-center",
           autoClose: 2000,
+          style:{width:"100%"}
         });
         await user_logout();
         dispatch(auth_False());  
