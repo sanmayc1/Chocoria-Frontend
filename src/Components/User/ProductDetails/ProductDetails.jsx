@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { add_to_cart } from "../../../Services/api/cartApi.js";
 import { useEffect, useState } from "react";
+import { addOrRemoveFromWhishlist, checkIfItemIsInWishlist } from "../../../Services/api/whishlistApi.js";
 
 const ProductDetails = ({
   brand,
@@ -20,10 +21,25 @@ const ProductDetails = ({
 }) => {
   const auth = useSelector((state) => state.auth.auth);
   const [quantity, setQuantity] = useState(1);
+  const [isWishlist, setIsWishlist] = useState(false);
+  const [update,setUpdate]=useState(false)
 
   useEffect(() => {
     setQuantity(1);
   }, [selectedVariant]);
+
+  useEffect(()=>{
+    const checkItemInWishlist = async ()=>{
+       const response = await checkIfItemIsInWishlist(id,selectedVariant?._id)
+       if(response.status === 200){
+        setIsWishlist(response.data.exists)
+        return
+       }
+       setIsWishlist(false)
+
+    }
+    checkItemInWishlist()
+  },[selectedVariant,update])
 
   const navigate = useNavigate();
 
@@ -34,13 +50,13 @@ const ProductDetails = ({
 
       return;
     }
-    if(selectedVariant.quantity === 0){
+    if (selectedVariant.quantity === 0) {
       toast.error("Product is out of stock", {
         position: "top-center",
         autoClose: 1000,
-        theme:"dark",
+        theme: "dark",
       });
-      return
+      return;
     }
 
     const data = { productId: id, quantity, variant: selectedVariant };
@@ -54,7 +70,6 @@ const ProductDetails = ({
       toast.success(response.data.message, {
         position: "top-center",
         autoClose: 1000,
-       
       });
       return;
     }
@@ -62,8 +77,8 @@ const ProductDetails = ({
     toast.error(response.response.data.message, {
       position: "top-center",
       autoClose: 1600,
-      style:{width: "100%"},
-      theme:"dark"
+      style: { width: "100%" },
+      theme: "dark",
     });
   };
   const buyNow = () => {
@@ -74,17 +89,47 @@ const ProductDetails = ({
       navigate("/login");
       return;
     }
-    if(selectedVariant.quantity === 0){
+    if (selectedVariant.quantity === 0) {
       toast.error("Product is out of stock", {
         position: "top-center",
         autoClose: 1000,
-        theme:"dark",
+        theme: "dark",
       });
-      return
+      return;
     }
 
-    navigate(`/user/checkout/${id}/${selectedVariant._id}?quantity=${quantity}`);
-   
+    navigate(
+      `/user/checkout/${id}/${selectedVariant._id}?quantity=${quantity}`
+    );
+  };
+
+  // add or remove from whishlist
+  const handleWishlist = async () => {
+    if (!auth) {
+      toast.error("Please Login First", {
+        position: "top-center",
+      });
+      navigate("/login");
+      return;
+    }
+    const data = { productId: id, variant: selectedVariant._id };
+    const response = await addOrRemoveFromWhishlist(data);
+    if(response.status === 200){
+      toast.success(response.data.message, {
+        position: "top-center",
+        autoClose: 1000,
+        style: { width: "100%" },
+        theme: "dark",
+      });
+      setUpdate(!update)
+      return;
+    }
+    toast.error(response.response.data.message, {
+      position: "top-center",
+      autoClose: 1000,
+      style: { width: "100%" },
+      theme: "dark",
+    });
   };
   return (
     <div className="sm:mx-0 mx-5 flex flex-col w-[100%] ">
@@ -94,9 +139,9 @@ const ProductDetails = ({
         <h1 className="xl:text-3xl md:text-xl md:font-bold font-semibold">
           {brand}{" "}
         </h1>
-        <Heart />
+        <Heart onClick={handleWishlist} fill={`${isWishlist ? "red" : "none" }`} color={`${isWishlist ? "red" : "black"}`}/>
       </div>
-      {/* Product Name */}
+      {/* Product Name */} 
 
       <h2 className="xl:text-xl md:py-3 py-2 xl:py-5 ">{productName}</h2>
       {/* Rating */}
@@ -144,7 +189,9 @@ const ProductDetails = ({
       {stock > 5 ? (
         <p className=" font-semibold pt-5 text-sm text-green-700">{`In stock`}</p>
       ) : (
-        <p className=" font-semibold pt-5 text-sm text-red-700">{`${stock == 0 ? "Out of stock" : `Only ${stock} left`}`}</p>
+        <p className=" font-semibold pt-5 text-sm text-red-700">{`${
+          stock == 0 ? "Out of stock" : `Only ${stock} left`
+        }`}</p>
       )}
       {/* Cart and buynow */}
       <div className="pt-9 lg:pt-3 xl:pt-5 grid lg:grid-flow-col gap-3 w-full ">

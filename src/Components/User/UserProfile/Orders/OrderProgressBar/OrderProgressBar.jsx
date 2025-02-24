@@ -1,4 +1,13 @@
+import { CircleX } from "lucide-react";
+
 const OrderProgressBar = ({ index, setIndex }) => {
+ 
+  if(index === 5){
+    return(
+      <div className="w-full max-w-4xl mx-auto p-4 px-10"><span className="flex items-center gap-2 font-medium"><CircleX size={20} color="red" />Order Not Placed</span></div>
+    )
+  }
+
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
       {/* Progress Stepper */}

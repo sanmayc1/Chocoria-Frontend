@@ -26,8 +26,8 @@ const SuccessPage = () => {
       }, []);
 
   return (
-    <div className="min-h-[60vh] flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-sm p-8 max-w-sm w-full text-center">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-sm p-8 max-w- w-full text-center">
         <div className="mb-4">
           <div className="mx-auto h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
             <Check className="h-6 w-6 text-green-500 animate-bounce" />

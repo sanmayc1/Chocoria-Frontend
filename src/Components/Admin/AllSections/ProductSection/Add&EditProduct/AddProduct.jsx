@@ -21,6 +21,7 @@ const AddProduct = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+   
     setProductDetails((prev) => ({ ...prev, [name]: value }));
   };
 

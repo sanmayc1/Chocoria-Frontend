@@ -24,7 +24,10 @@ const ShopPage = () => {
     async function fetch_All_Products() {
       const response = await getProductsUser();
       if (response.status === 200) {
-        setData(response.data.products);
+        const data = response.data.products.filter(
+          (item) => item.is_deleted === false
+        );
+        setData(data);
         return;
       }
 
@@ -66,6 +69,9 @@ const ShopPage = () => {
   // handle search input filed
   const handleSearch = async (e) => {
     const value = e.target.value;
+    if(/[^a-zA-Z0-9\s]/.test(value)){
+      return;
+    }
     setSearchTerm(value);
     if (!value.trim()) {
       setSearchSuggestion(null);

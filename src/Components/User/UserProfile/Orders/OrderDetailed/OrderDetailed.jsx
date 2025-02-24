@@ -34,6 +34,7 @@ const OrderDetailed = () => {
         response.data.orderItem.status === "Shipped" && setIndex(2);
         response.data.orderItem.status === "Delivered" && setIndex(3);
         response.data.orderItem.status === "Cancelled" && setIndex(4);
+        response.data.orderItem.status === "Order Not Placed" && setIndex(5);
         return;
       }
     }
@@ -126,9 +127,9 @@ const OrderDetailed = () => {
                 Order Details
               </h1>
               <p className="text-xs sm:text-sm pb-5 font-medium ">
-                Order ID : {order._id}
+                Order ID: {order.uniqueOrderId}
               </p>
-              <p className="text-xs sm:text-sm pb-2 font-medium ">
+              <p className=" sm:text-sm pb-2 font-medium ">
                 Delivery Address
               </p>
 
@@ -146,7 +147,7 @@ const OrderDetailed = () => {
             </div>
             {/* payment details */}
             <div>
-              <p className="text-xs sm:text-sm pb-2 font-medium ">
+              <p className=" sm:text-sm pb-2 font-medium ">
                 Payment Details
               </p>
 
@@ -154,7 +155,10 @@ const OrderDetailed = () => {
                 <p className="text-sm font-medium">
                   Payment Method : {order.paymentMethod}
                 </p>
-                <p className="text-sm font-medium ">
+                <p className="text-sm font-medium">
+                  Payment Status : {order.paymentStatus}
+                </p>
+                <p className="pt-4 font-medium ">
                   Toatl Amount : ₹{orderItems.totalPrice}
                 </p>
               </div>
@@ -165,6 +169,8 @@ const OrderDetailed = () => {
               className={`p-4 px-7 flex ${
                 orderItems.status === "Cancelled"
                   ? "justify-center"
+                  : orderItems.status === "Order Not Placed"
+                  ? "justify-start"
                   : "justify-end"
               } `}
             >
@@ -174,6 +180,12 @@ const OrderDetailed = () => {
                 </Button>
               ) : orderItems.status === "Cancelled" ? (
                 <p className="text-sm font-medium">Order Cancelled</p>
+              ) : orderItems.status === "Order Not Placed" ? (
+                <div>
+                  <p className="text-md font-medium ">Order Not Placed</p>
+                
+                  <p className="text-sm">Your Payment was not confirmed by the bank.</p>
+                </div>
               ) : (
                 <Button
                   variant="outlined"
@@ -195,13 +207,22 @@ const OrderDetailed = () => {
 
               <p className="text-sm font-medium ">
                 Status :{" "}
-                <span className={`font-bold uppercase ${cancelRequest.status === "pending" ? "text-orange-500" : cancelRequest.status === "approved" ? "text-green-500" : "text-red-500"}`}>
-                   {cancelRequest.status}
+                <span
+                  className={`font-bold uppercase ${
+                    cancelRequest.status === "pending"
+                      ? "text-orange-500"
+                      : cancelRequest.status === "approved"
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  {cancelRequest.status}
                 </span>
               </p>
 
               <p className="text-sm font-medium">
-                Details : {cancelRequest.response}</p>
+                Details : {cancelRequest.response}
+              </p>
             </div>
           )}
         </div>

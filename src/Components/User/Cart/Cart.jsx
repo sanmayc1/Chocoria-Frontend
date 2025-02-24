@@ -13,8 +13,8 @@ const Cart = () => {
 
 
   // navigate to product detailed page
-  const navigateToProductDetailedPage = (id) => {
-    navigate(`/product/${id}`);
+  const navigateToProductDetailedPage = (id,variantId) => {
+    navigate(`/product/${id}?variant=${variantId}`);
   };
 
   useEffect(() => {

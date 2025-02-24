@@ -8,7 +8,11 @@ import OrderSummary from "./OrderSummary/OrderSummary.jsx";
 import { get_cart } from "../../../Services/api/cartApi.js";
 import PaymentOptions from "./PaymentOptions/PaymentOptions.jsx";
 import { toast } from "react-toastify";
-import { place_order } from "../../../Services/api/orders.js";
+import {
+  place_order,
+  updateOrderStatus,
+  verifyPayment,
+} from "../../../Services/api/orders.js";
 import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
@@ -86,21 +90,102 @@ const Checkout = () => {
   // place order
 
   const placeOrder = async () => {
-    if (selectedMethod === "googlepay") {
-      toast.error("Payment not available now", {
+    setLoading(true);
+    const data = {
+      shippingAddress: selectedAddress,
+      paymentMethod: selectedMethod,
+      items: cart,
+    };
+    if (selectedMethod === "razorpay") {
+      const response = await place_order(data);
+      console.log(response);
+      if (response.status === 200) {
+        const order = response.data.razorpayOrder;
+        const user = response.data.user;
+        const key = import.meta.env.VITE_RAZORPAY_KEY_ID;
+        const options = {
+          key, // Enter the Key ID generated from the Dashboard
+          amount: order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          currency: order.currency,
+          name: "Chocoria",
+          description: "Test Transaction",
+          order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+          handler: async function (response) {
+            const data = {
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpayOrderId: order.id,
+              razorpaySignature: response.razorpay_signature,
+            };
+            const res = await verifyPayment(data);
+            if (res.status === 200) {
+              const id = res.data.order._id;
+              navigate(`/user/checkout/success/${id}`);
+            }
+          },
+          prefill: {
+            name: selectedAddress.name,
+            email: user.email,
+            contact: selectedAddress.phone,
+          },
+          notes: {
+            address: selectedAddress.detailed_address,
+          },
+          theme: {
+            color: "#080808",
+          },
+          modal: {
+            ondismiss: async function () {
+              console.log(order.id);
+              try {
+                const data = {
+                  razorpayOrderId:order.id,
+                };
+                const res = await updateOrderStatus(data);
+                console.log(res);
+                if (res.status === 200) {
+                  console.log(res.data.message);
+                  return;
+                }
+              } catch (error) {
+                console.log(error);
+              }
+            },
+          },
+        };
+
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.open();
+        paymentObject.on("payment.failed", async function (response) {
+          
+          try {
+            const data = {
+              razorpayOrderId: response.error.metadata.order_id,
+            };
+            const res = await updateOrderStatus(data);
+        
+            if (res.status === 200) {
+             console.log(res.data.message);
+             
+              return;
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        });
+
+        setLoading(false);
+        return;
+      }
+
+      toast.error(response.response.data.message, {
         position: "top-center",
         autoClose: 1000,
       });
-
+      setLoading(false);
       return;
     }
-    setLoading(true);
+
     if (selectedMethod === "COD") {
-      const data = {
-        shippingAddress: selectedAddress,
-        paymentMethod: selectedMethod,
-        items: cart,
-      };
       const response = await place_order(data);
       if (response.status === 200) {
         const id = response.data.order._id;

@@ -40,6 +40,9 @@ import CancelRequests from "../Components/Admin/AllSections/OrderSection/CancelR
 import ForgetPasswordPage from "../Pages/UserPages/ForgetPassword.jsx";
 import ResetPasswordPage from "../Pages/UserPages/ResetPasswordPage.jsx";
 import ShopPage from "../Pages/UserPages/ShopPage.jsx";
+import Wishlist from "../Components/User/Wishlist/Wishlist.jsx";
+import Wallet from "../Components/User/UserProfile/Wallet/Wallet.jsx";
+import WalletHistory from "../Components/User/UserProfile/Wallet/WalletHistory.jsx";
 
 const router = createBrowserRouter([
   {
@@ -100,12 +103,13 @@ const router = createBrowserRouter([
           </AuthGuard>
         ),
         children: [
+         
           {
             path: "/user/account-overview",
             element: <AccountOverview />,
           },
           {
-            path: "/user/orders",
+            path: "/user/order",
             element: <Orders />,
           },
           {
@@ -118,12 +122,13 @@ const router = createBrowserRouter([
           },
           {
             path: "/user/wallet",
-            element: (
-              <div className="flex items-center justify-center h-full">
-                Wallet
-              </div>
-            ),
+            element: <Wallet/>
+            ,
           },
+          {
+            path:"/user/wallet/history",
+            element:<WalletHistory/>
+          }
         ],
       },
       {
@@ -131,6 +136,14 @@ const router = createBrowserRouter([
         element: (
           <AuthGuard>
             <Cart />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: "/user/wishlist",
+        element: (
+          <AuthGuard>
+            <Wishlist />
           </AuthGuard>
         ),
       },

@@ -92,6 +92,10 @@ const AddEditForm = ({
   };
 
   const updateVariant = (id, field, value) => {
+   
+    if (!/^\d*$/g.test(value)) { 
+      return; 
+    }
     setVariants((prev) =>
       prev.map((variant) =>
         variant._id === id ? { ...variant, [field]: value } : variant
@@ -210,6 +214,7 @@ const AddEditForm = ({
                         <span className="px-1 text-sm">Price</span>
                         <input
                           type="number"
+                          min={0}
                           placeholder="Price"
                           value={variant.price}
                           onChange={(e) =>
@@ -224,6 +229,7 @@ const AddEditForm = ({
                           type="number"
                           placeholder="Quantity"
                           value={variant.quantity}
+                          min={0}
                           onChange={(e) =>
                             updateVariant(
                               variant._id,

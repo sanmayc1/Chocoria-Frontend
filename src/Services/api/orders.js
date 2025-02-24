@@ -110,3 +110,26 @@ export const updateCancelRequest = async (id,data) => {
         return error;
     }
 }
+
+// verify payment
+
+export const verifyPayment = async (data) => {
+    try {
+        const res = await chocoriaBackEnd.patch(`/user/order/payment/verify`,data);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}
+
+// update order status
+
+export const updateOrderStatus = async (data) => {
+    try {
+        const res = await chocoriaBackEnd.patch(`/user/order/status`,data);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}
+

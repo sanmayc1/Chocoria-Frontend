@@ -20,6 +20,9 @@ const SearchPage = () => {
   // handle search input filed
   const handleSearch = async (e) => {
     const value = e.target.value;
+    if(/[^a-zA-Z0-9\s]/.test(value)){
+      return;
+    }
     setSearchTerm(value);
     if (!value.trim()) {
       setSearchSuggestion(null);

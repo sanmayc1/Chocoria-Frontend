@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CreditCard, Plus, CreditCardIcon, ChevronRight } from "lucide-react";
+import { CreditCard, Plus, CreditCardIcon, ChevronRight, Wallet } from "lucide-react";
 import { SipOutlined } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 
@@ -25,7 +25,7 @@ const PaymentOptions = ({
         >
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0 mt-1">
-              <CreditCardIcon className="w-6 h-6 text-gray-600" />
+              <Wallet className="w-6 h-6 text-gray-600" />
             </div>
             <div>
               <h3 className="font-medium">Cash on Delivery</h3>
@@ -36,23 +36,23 @@ const PaymentOptions = ({
           </div>
         </div>
 
-        {/* Google Pay Option */}
+        {/* Razorpay Option */}
         <div
-          onClick={() => setSelectedMethod("googlepay")}
+          onClick={() => setSelectedMethod("razorpay")}
           className={`relative p-4 border rounded-lg cursor-pointer transition-all ${
-            selectedMethod === "googlepay"
+            selectedMethod === "razorpay"
               ? "border-blue-500 bg-blue-50"
               : "border-gray-200 hover:border-gray-300"
           }`}
         >
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0 mt-1">
-              <CreditCardIcon className="w-6 h-6 text-gray-600" />
+              <Wallet className="w-6 h-6 text-gray-600" />
             </div>
             <div>
-              <h3 className="font-medium">Google Pay</h3>
+              <h3 className="font-medium">Razorpay</h3>
               <p className="text-sm text-gray-600">
-                Fast, secure payment with Google Pay
+                Fast, secure payment with Razorpay
               </p>
             </div>
           </div>

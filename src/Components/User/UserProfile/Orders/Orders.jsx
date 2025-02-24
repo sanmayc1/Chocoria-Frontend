@@ -29,7 +29,7 @@ const Orders = () => {
               });
             })
           ) : (
-            <p className="text-center">No orders found</p>
+            <p className="text-center py-10">No orders found</p>
           )}
         </div>
         <div className="w-full flex justify-center">

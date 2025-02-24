@@ -4,7 +4,7 @@ import CommonBtn from "../button/CommonBtn.jsx";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { googleAuth } from "../../../Services/api/api.js";
-import { toast, ToastContainer } from "react-toastify";
+import { toast} from "react-toastify";
 import { useDispatch } from "react-redux";
 import { SET_AUTH } from "../../../Store/Slice/authSlice.jsx";
 

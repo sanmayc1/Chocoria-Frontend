@@ -119,7 +119,7 @@ const CartItem = ({
         />
         <div
           className="flex items-center gap-4 w-full sm:w-2/4"
-          onClick={() => navigateToProductDetailedPage(id)}
+          onClick={() => navigateToProductDetailedPage(id, variant._id)}
         >
           <img
             src={`${baseUrl}${product?.images[0]}`}

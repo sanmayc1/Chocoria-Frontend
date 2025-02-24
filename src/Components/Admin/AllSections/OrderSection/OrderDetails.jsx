@@ -63,7 +63,7 @@ const OrderDetails = () => {
       <div className="p-10">
         <div className="bg-white  w-full rounded-lg shadow-md p-6">
           <h5 className="text-xl  font-bold pb-2">Order Details</h5>
-          <p className="text-gray-500">order id : {id}</p>
+          <p className="text-gray-500"> {order?.uniqueOrderId}</p>
           <div className=" py-5">
             <h5 className="font-medium pb-2">Shipping Address</h5>
             <p className="text-gray-500">{order?.shippingAddress.name}</p>
