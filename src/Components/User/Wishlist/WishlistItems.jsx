@@ -1,8 +1,8 @@
-import DeleteDailog from "../../HelperComponents/InputFiled/DeleteDailog.jsx";
+import DeleteDailog from "../../HelperComponents/DeleteDailog.jsx";
 import { Trash2 } from "lucide-react";
 import { baseUrl } from "../../../Services/api/constants.js";
 import { useState } from "react";
-import Modal from "../../HelperComponents/InputFiled/Modal.jsx";
+import Modal from "../../HelperComponents/Modal.jsx";
 import { toast } from "react-toastify";
 import { removeWishlistItem } from "../../../Services/api/whishlistApi.js";
 import { useNavigate } from "react-router-dom";

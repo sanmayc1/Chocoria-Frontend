@@ -1,5 +1,5 @@
 import GpsFixedIcon from "@mui/icons-material/GpsFixed";
-import SingleInputField from "../../../HelperComponents/InputFiled/SingleInputField.jsx";
+import SingleInputField from "../../../HelperComponents/SingleInputField.jsx";
 import { useState } from "react";
 import { Building, Home } from "lucide-react";
 import { addressFetch } from "../../../../Services/api/thirdPartyApi.js";

@@ -1,9 +1,13 @@
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getProductsUser, searchProduct } from "../../Services/api/productApi.js";
+import {
+  getProductsUser,
+  searchProduct,
+} from "../../Services/api/productApi.js";
 import { baseUrl } from "../../Services/api/constants.js";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ProductWideList from "../../Components/User/ProductWideList/ProductWideList.jsx";
+import { toast } from "react-toastify";
 
 const ShopPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,24 +25,7 @@ const ShopPage = () => {
   const query = searchParams.get("query") || "";
 
   useEffect(() => {
-    async function fetch_All_Products() {
-      const response = await getProductsUser();
-      if (response.status === 200) {
-        const data = response.data.products.filter(
-          (item) => item.is_deleted === false
-        );
-        setData(data);
-        return;
-      }
-
-      toast.error(response.response.data.message, {
-        position: "top-center",
-      });
-    }
-    fetch_All_Products();
-  }, []);
-
-  useEffect(() => {
+    setSearchTerm(query);
     const fetchProducts = async () => {
       const response = await searchProduct(query, filterData);
       if (response.status === 200) {
@@ -69,7 +56,7 @@ const ShopPage = () => {
   // handle search input filed
   const handleSearch = async (e) => {
     const value = e.target.value;
-    if(/[^a-zA-Z0-9\s]/.test(value)){
+    if (/[^a-zA-Z0-9\s]/.test(value)) {
       return;
     }
     setSearchTerm(value);

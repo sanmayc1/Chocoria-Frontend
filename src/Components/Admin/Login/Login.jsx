@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CommonBtn from "../../User/button/CommonBtn.jsx";
 import { useNavigate } from "react-router-dom";
-import SingleInputField from "../../HelperComponents/InputFiled/SingleInputField.jsx";
+import SingleInputField from "../../HelperComponents/SingleInputField.jsx";
 import { admin_login } from "../../../Services/api/api.js";
 import { useDispatch } from "react-redux";
 import { SET_AUTH } from "../../../Store/Slice/authSlice.jsx";

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import CommonBtn from "../button/CommonBtn.jsx";
-import SingleInputField from "../../HelperComponents/InputFiled/SingleInputField.jsx";
+import SingleInputField from "../../HelperComponents/SingleInputField.jsx";
 import { auth_login } from "../../../Services/api/api.js";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";

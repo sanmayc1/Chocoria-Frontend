@@ -36,8 +36,6 @@ const ProductWideList = ({ data, filterData, setFilterData }) => {
       </div>
     );
   }
-
-
   return (
     <>
     <div className="w-full flex flex-col lg:flex-row">
@@ -53,7 +51,7 @@ const ProductWideList = ({ data, filterData, setFilterData }) => {
             <div key={item?._id}>
               <ProductCard
                 productTitle={item?.name}
-                 
+                offer={item?.offer}
                 rating={"4"}
                 imageUrl={item?.images[0]}
                 id={item._id}

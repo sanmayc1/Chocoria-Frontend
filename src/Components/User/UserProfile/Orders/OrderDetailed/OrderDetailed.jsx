@@ -8,8 +8,8 @@ import { useParams } from "react-router-dom";
 import { baseUrl } from "../../../../../Services/api/constants";
 import { Button, CircularProgress } from "@mui/material";
 import OrderProgressBar from "../OrderProgressBar/OrderProgressBar";
-import DeleteDailog from "../../../../HelperComponents/InputFiled/DeleteDailog";
-import Modal from "../../../../HelperComponents/InputFiled/Modal";
+import DeleteDailog from "../../../../HelperComponents/DeleteDailog.jsx";
+import Modal from "../../../../HelperComponents/Modal.jsx";
 import OrderCancelRequest from "./OrderCancelRequest";
 import { toast } from "react-toastify";
 
@@ -89,7 +89,7 @@ const OrderDetailed = () => {
   return (
     <>
       <div className="w-full  flex flex-col gap-4">
-        <div className="bg-white rounded-2xl border hover:shadow-md transition-shadow duration-300  border-gray-200">
+        <div className="bg-white rounded-2xl border hover:shadow-md transition-shadow duration-300 border-gray-200">
           <div className="flex items-center gap-4 w-full ">
             <img
               src={`${baseUrl}${
@@ -114,24 +114,22 @@ const OrderDetailed = () => {
               </p>
             </div>
             <p className="font-bold  hidden xl:block   text-end px-10 ">
-              <span>₹{orderItems.totalPrice}</span>
+              <span>₹{orderItems.totalAmountAfterDiscount}</span>
             </p>
           </div>
           <div className="w-full   ">
             <OrderProgressBar index={index} />
           </div>
 
-          <div className="p-4 px-7 sm:flex-row flex-col flex justify-between sm:items-center gap-5 ">
+          <div className="p-4 px-7 xl:flex-row flex-col flex justify-between xl:items-center gap-5 ">
             <div>
-              <h1 className="font-medium text-sm sm:text-lg pb-1 w-full ">
+              <h1 className="font-semibold  sm:text-lg pb-1 w-full ">
                 Order Details
               </h1>
               <p className="text-xs sm:text-sm pb-5 font-medium ">
                 Order ID: {order.uniqueOrderId}
               </p>
-              <p className=" sm:text-sm pb-2 font-medium ">
-                Delivery Address
-              </p>
+              <p className=" sm:text-sm pb-2 font-medium ">Delivery Address</p>
 
               <div className="w-full">
                 <p className="text-sm font-medium">
@@ -146,21 +144,40 @@ const OrderDetailed = () => {
               </div>
             </div>
             {/* payment details */}
-            <div>
-              <p className=" sm:text-sm pb-2 font-medium ">
-                Payment Details
-              </p>
+            <div className="xl:w-1/3">
+              <p className="  pb-2 font-semibold ">Payment Details</p>
 
               <div className="w-full ">
-                <p className="text-sm font-medium">
+                <p className="text-sm font-medium ">
                   Payment Method : {order.paymentMethod}
                 </p>
-                <p className="text-sm font-medium">
-                  Payment Status : {order.paymentStatus}
+                <p className="text-sm font-medium pb-4">
+                  Payment Status : <span className={`font-medium uppercase ${orderItems.paymentStatus === "success" ? "text-green-500" : orderItems.paymentStatus === "canceled" ?"text-red-500" :"text-yellow-500"  }`}>{orderItems.paymentStatus}</span>
                 </p>
-                <p className="pt-4 font-medium ">
-                  Toatl Amount : ₹{orderItems.totalPrice}
-                </p>
+              
+
+                <div className="flex justify-between font-medium">
+                  <span>Selling Price </span>
+                  <span>₹{orderItems.totalPrice}</span>
+                </div>
+                <div className=" flex justify-between font-medium">
+                  <span>Shipping </span>
+                  <span>₹{"0.00"}</span>
+                </div>
+                <div className="flex justify-between font-medium">
+                  <span>Discount </span>
+                  <span>-₹{orderItems.discount || "0.00"}</span>
+                </div>
+                <div className=" flex justify-between font-medium">
+                  <span>Coupon </span>
+                  <span>-₹{orderItems.couponDiscount.toFixed(2)}</span>
+                </div>
+                <div className="font-medium flex justify-between pt-5 ">
+                  <span>Toatl Amount </span>
+                  <span className="text-lg font-bold">
+                    ₹{orderItems.totalAmountAfterDiscount}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -183,8 +200,10 @@ const OrderDetailed = () => {
               ) : orderItems.status === "Order Not Placed" ? (
                 <div>
                   <p className="text-md font-medium ">Order Not Placed</p>
-                
-                  <p className="text-sm">Your Payment was not confirmed by the bank.</p>
+
+                  <p className="text-sm">
+                    Your Payment was not confirmed by the bank.
+                  </p>
                 </div>
               ) : (
                 <Button

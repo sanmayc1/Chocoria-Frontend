@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SingleInputField from "../../Components/HelperComponents/InputFiled/SingleInputField.jsx";
+import SingleInputField from "../../Components/HelperComponents/SingleInputField.jsx";
 import { forget_password } from "../../Services/api/userApi.js";
 import { toast } from "react-toastify";
 import { CircularProgress } from "@mui/material";

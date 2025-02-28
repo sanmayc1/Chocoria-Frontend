@@ -1,12 +1,12 @@
 import { Button, Pagination } from "@mui/material";
-import Modal from "../../../HelperComponents/InputFiled/Modal.jsx";
+import Modal from "../../../HelperComponents/Modal.jsx";
 import { useEffect, useState } from "react";
 import {
   delete_address,
   get_all_address,
 } from "../../../../Services/api/userApi.js";
 import { toast } from "react-toastify";
-import DeleteDailog from "../../../HelperComponents/InputFiled/DeleteDailog.jsx";
+import DeleteDailog from "../../../HelperComponents/DeleteDailog.jsx";
 import AddAddress from "./AddAddress.jsx";
 import EditAddress from "./EditAddress.jsx";
 

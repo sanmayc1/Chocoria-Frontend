@@ -38,7 +38,10 @@ const ProductDetails = ({
        setIsWishlist(false)
 
     }
-    checkItemInWishlist()
+    if(auth){
+      checkItemInWishlist()
+    }
+   
   },[selectedVariant,update])
 
   const navigate = useNavigate();

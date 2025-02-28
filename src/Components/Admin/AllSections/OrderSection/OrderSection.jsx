@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 const OrderSection = () => {
   const [update, setUpdate] = useState(false);
   const [orders, setOrders] = useState([]);
+  const [orderCancelRequests, setOrderCancelRequests] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,6 +17,7 @@ const OrderSection = () => {
       const response = await get_all_orders();
       if (response.status === 200) {
         setOrders(response.data.orders);
+        setOrderCancelRequests(response.data.orderCancelRequests);
         return;
       }
       toast.error(response.response.data.message);
@@ -57,12 +59,19 @@ const OrderSection = () => {
                   className="w-full pl-10 pr-4 py-2 border rounded-lg"
                 />
               </div>
-
-              <button className="px-4 py-2 border rounded-lg bg-white flex items-center justify-center gap-2 cursor-pointer" 
-              onClick={() => navigate("/admin/orders/cancel")}
-              >
-                Order Cancel Requests
-              </button>
+              <div className="pr-2 relative  ">
+                <button
+                  className=" px-4 py-2 border rounded-lg bg-white flex items-center justify-center gap-2 cursor-pointer"
+                  onClick={() => navigate("/admin/orders/cancel")}
+                >
+                  Order Cancel Requests{" "}
+                  {orderCancelRequests > 0 && (
+                    <span className="bg-red-500 h-5 w-5 rounded-full absolute top-0 right-0 flex justify-center items-center text-white text-xs font-semibold">
+                      {orderCancelRequests}
+                    </span>
+                  )}
+                </button>
+              </div>
               <div
                 className="px-4 py-2 border rounded-lg bg-white flex items-center justify-center gap-2 cursor-pointer"
                 onClick={() => setUpdate(!update)}
@@ -106,7 +115,9 @@ const OrderSection = () => {
                     onClick={() => navigate(`/admin/order/${order._id}`)}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm  text-gray-900">{order.uniqueOrderId}</div>
+                      <div className="text-sm  text-gray-900">
+                        {order.uniqueOrderId}
+                      </div>
                       <div className="text-sm text-gray-500"></div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
@@ -129,14 +140,14 @@ const OrderSection = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
                       <div className="text-sm text-gray-900">
-                        {order.orderDate}
+                        {order.orderDate.split("T")[0]}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 inline-flex text-sm leading-5 rounded-full`}
                       >
-                        ₹{order.totalAmount}
+                        ₹{order.totalAmountAfterDiscount}
                       </span>
                     </td>
                   </tr>
@@ -147,9 +158,7 @@ const OrderSection = () => {
         </div>
         {/* Pagination */}
         <div className="flex justify-center">
-          {orders.length > 5 && (
-            <Pagination count={Math.max(orders.length / 5)} />
-          )}
+          {orders.length > 5 && <Pagination count={1} />}
         </div>
       </div>
     </>

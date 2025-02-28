@@ -1,38 +1,95 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Package, MapPin, CreditCard, ChevronRight, Tag } from "lucide-react";
 import { baseUrl } from "../../../../Services/api/constants";
+import { getUserCoupons } from "../../../../Services/api/coupon";
+import { toast } from "react-toastify";
 
-const OrderSummary = ({ selectedAddress, cart,continueToPayment }) => {
+const OrderSummary = ({ selectedAddress, cart, continueToPayment, appliedCoupon, setAppliedCoupon, setCouponDiscount, couponDiscount }) => {
   const [couponCode, setCouponCode] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [coupons, setCoupons] = useState([]);
   const [isApplying, setIsApplying] = useState(false);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    const fetchCoupon = async () => {
+      const response = await getUserCoupons();
+
+      if (response.status === 200) {
+        setCoupons(response.data.coupons);
+        setTotal(
+          cart.reduce(
+            (sum, item) => sum + item.variant.price * item.quantity,
+            0
+          )
+        );
+      }
+    };
+    fetchCoupon();
+  }, []);
+
+  const totalPrice = cart.reduce((acc, cur) => {
+    
+    return (acc += cur.variant.price* cur.quantity);
+  }, 0);
+
+  const subtotal = cart.reduce(
+    (sum, item) => {
+      const price = item.variant.actualPrice ?? item.variant.price;
+     return sum + price * item.quantity
+    },
+    0
+  );
 
   const handleApplyCoupon = () => {
     if (!couponCode.trim()) return;
 
-    setIsApplying(true);
-    // Simulate API call
-    setTimeout(() => {
-      if (couponCode.toUpperCase() === "SAVE10") {
-        setAppliedCoupon({
-          code: "SAVE10",
-          discount: 12.0,
-          description: "10% off your order",
-        });
+    const coupon = coupons.find((coupon) => coupon.code === couponCode);
+
+    if (!coupon) {
+      toast.error("Coupon not found", {
+        position: "top-center",
+        autoClose: 2000,
+        theme: "dark",
+      });
+      return;
+    }
+
+    if (coupon.minPurchaseAmount > total) {
+      toast.error("Mnimum purchase amount not met", {
+        position: "top-center",
+        autoClose: 2000,
+        theme: "dark",
+        style: { width: "100%" },
+      });
+      return;
+    }
+
+    if (coupon.minPurchaseAmount <= total) {
+      let discount = 0;
+      if (coupon.type === "percentage") {
+        discount = (total * coupon.value) / 100;
+      } else {
+        discount = coupon.value;
       }
+
+      const maxDiscount = Math.min(discount, coupon.maxDiscountAmount);
+      setCouponDiscount(maxDiscount);
+      setTotal(total - maxDiscount);
+
+      setAppliedCoupon(coupon);
       setIsApplying(false);
-    }, 1000);
+      return;
+    }
+
+    setIsApplying(true);
   };
 
   const handleRemoveCoupon = () => {
     setAppliedCoupon(null);
     setCouponCode("");
+    setTotal(totalPrice);
+    setCouponDiscount(0);
   };
-
-  const total = cart.reduce(
-    (sum, item) => sum + item.variant.price * item.quantity,
-    0
-  );
 
   return (
     <div className="w-full max-w-3xl mx-auto p-4">
@@ -115,21 +172,59 @@ const OrderSummary = ({ selectedAddress, cart,continueToPayment }) => {
             </button>
           </div>
         ) : (
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={couponCode}
-              onChange={(e) => setCouponCode(e.target.value)}
-              placeholder="Enter coupon code"
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-            <button
-              onClick={handleApplyCoupon}
-              disabled={isApplying || !couponCode}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 disabled:bg-blue-300 transition-colors"
-            >
-              {isApplying ? "Applying..." : "Apply"}
-            </button>
+          <div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value)}
+                placeholder="Enter coupon code"
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+              <button
+                onClick={handleApplyCoupon}
+                disabled={isApplying || !couponCode}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 disabled:bg-blue-300 transition-colors"
+              >
+                {isApplying ? "Applying..." : "Apply"}
+              </button>
+            </div>
+            <p className="text-sm text-gray-600 py-5 px-2">Available Coupons</p>
+            <div className="border border-gray-200 flex gap-2 flex-col p-4  rounded-lg">
+              {coupons.length > 0 ? (
+                coupons.map((coupon) => {
+                  return (
+                    <div
+                      key={coupon._id}
+                      className="border p-3 border-gray-200 flex justify-between items-center  rounded-lg "
+                    >
+                      <div className="space-y-1">
+                        <p className="text-gray-600 font-medium text-sm">
+                          {coupon.title}
+                        </p>
+                        <p className="text-gray-500 text-xs">
+                          {coupon.description}
+                        </p>
+                        <p className="text-gray-500 text-xs ">
+                          Coupon Code :{" "}
+                          <span className="font-medium text-sm">
+                            {coupon.code}
+                          </span>
+                        </p>
+                      </div>
+                      <button
+                        className="text-sm text-black transition-colors duration-300 hover:text-blue-600"
+                        onClick={() => setCouponCode(coupon.code)}
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="text-gray-600">No available coupons</p>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -140,7 +235,7 @@ const OrderSummary = ({ selectedAddress, cart,continueToPayment }) => {
         <div className="space-y-2">
           <div className="flex justify-between">
             <p className="text-gray-600">Subtotal</p>
-            <p>₹{total.toFixed(2)}</p>
+            <p>₹{subtotal.toFixed(2)}</p>
           </div>
           <div className="flex justify-between">
             <p className="text-gray-600">Delivery</p>
@@ -148,11 +243,11 @@ const OrderSummary = ({ selectedAddress, cart,continueToPayment }) => {
           </div>
           <div className="flex justify-between">
             <p className="text-gray-600">Discount</p>
-            <p>-₹{"0.00"}</p>
+            <p>-₹{total - subtotal}</p>
           </div>
           <div className="flex justify-between">
             <p className="text-gray-600">Coupon Discount</p>
-            <p>-₹{"0.00"}</p>
+            <p>-₹{couponDiscount.toFixed(2)}</p>
           </div>
           <div className="border-t pt-2 mt-2">
             <div className="flex justify-between font-semibold text-lg">
@@ -164,8 +259,10 @@ const OrderSummary = ({ selectedAddress, cart,continueToPayment }) => {
       </div>
 
       {/* Place Order Button */}
-      <button className="w-full bg-orange-900 text-white font-semibold py-4 px-6 rounded-lg hover:bg-orange-700 focus:ring-4 focus:ring-orange-300 transition-colors flex items-center justify-center gap-2" 
-      onClick={continueToPayment}>
+      <button
+        className="w-full bg-orange-900 text-white font-semibold py-4 px-6 rounded-lg hover:bg-orange-700 focus:ring-4 focus:ring-orange-300 transition-colors flex items-center justify-center gap-2"
+        onClick={continueToPayment}
+      >
         Confirm Order
       </button>
     </div>

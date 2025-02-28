@@ -5,8 +5,8 @@ import {
 } from "../../../../Services/api/cartApi.js";
 import { baseUrl } from "../../../../Services/api/constants.js";
 import { Trash2 } from "lucide-react";
-import DeleteDailog from "../../../HelperComponents/InputFiled/DeleteDailog.jsx";
-import Modal from "../../../HelperComponents/InputFiled/Modal.jsx";
+import DeleteDailog from "../../../HelperComponents/DeleteDailog.jsx";
+import Modal from "../../../HelperComponents/Modal.jsx";
 import { useState } from "react";
 
 const CartItem = ({
@@ -38,12 +38,12 @@ const CartItem = ({
 
   // quandity change
   const handleQuantityChange = async (action, id, variant_id) => {
-    if(deleted){
+    if (deleted) {
       toast.error("Product not available", {
         position: "top-center",
         autoClose: 1000,
       });
-      return
+      return;
     }
     setLoading(true);
     const product = cart.find(
@@ -131,6 +131,20 @@ const CartItem = ({
               {product?.name || "Product details lorem ipsum dolor sit amet"}
             </h1>
             <p className="text-sm font-normal">Weight : {variant?.weight}g</p>
+            <p className="text-sm font-medium flex items-baseline gap-2">
+              Price :{" "}
+              {variant.actualPrice && (
+                <span className="text-xs font-normal line-through">
+                  ₹{variant.actualPrice}
+                </span>
+              )}
+              <span className="text-base font-medium">{variant?.price}</span>
+              {variant.actualPrice && (
+                <span className="text-xs font-medium text-green-700">
+                  {product.offer.percentage}% Off
+                </span>
+              )}
+            </p>
           </div>
         </div>
 
@@ -140,9 +154,7 @@ const CartItem = ({
             className="text-xl font-bold w-8 text-center"
             onClick={() => handleQuantityChange("decrement", id, variant._id)}
           >
-            {
-              quantity === 1 ? <Trash2 size={15} /> : "-"
-            }
+            {quantity === 1 ? <Trash2 size={15} /> : "-"}
           </button>
           <span className="mx-2">{quantity}</span>
           <button
@@ -156,7 +168,8 @@ const CartItem = ({
 
         <p className="font-bold  w-full sm:w-auto sm:ml-2 flex sm:flex-col justify-between text-center">
           <span className="sm:hidden text-sm  text-black">Price</span>
-          <span>₹{variant.price* quantity}</span>
+
+          <span> ₹{variant.price * quantity}</span>
         </p>
       </div>
       <Modal

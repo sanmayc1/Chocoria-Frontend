@@ -6,8 +6,8 @@ import {
 } from "../../../../Services/api/orders";
 import { toast } from "react-toastify";
 import { baseUrl } from "../../../../Services/api/constants";
-import Modal from "../../../HelperComponents/InputFiled/Modal";
-import DeleteDailog from "../../../HelperComponents/InputFiled/DeleteDailog";
+import Modal from "../../../HelperComponents/Modal.jsx";
+import DeleteDailog from "../../../HelperComponents/DeleteDailog.jsx";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState(null);
@@ -15,6 +15,7 @@ const OrderDetails = () => {
   const [update, setUpdate] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [isOpenConfirmDelivered, setIsOpenConfirmDelivered] = useState(false);
   const { id } = useParams();
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -38,6 +39,11 @@ const OrderDetails = () => {
       setIsOpen(true);
       return;
     }
+    if (value === "confirmDelivered") {
+      setSelectedId(id);
+      setIsOpenConfirmDelivered(true);
+      return;
+    }
     const response = await adminUpdateOrderStatus(id, { status: value });
     if (response.status === 200) {
       setUpdate(!update);
@@ -56,6 +62,10 @@ const OrderDetails = () => {
   const confrimCancelOrder = async () => {
     setIsOpen(false);
     handleStatusChange({ target: { value: "Cancelled" } }, selectedId);
+  };
+  const confrimDeliveredOrder = async () => {
+    setIsOpenConfirmDelivered(false);
+    handleStatusChange({ target: { value: "Delivered" } }, selectedId);
   };
 
   return (
@@ -119,7 +129,8 @@ const OrderDetails = () => {
                       </td>
                       <td className="px-6 py-4">{item.quantity}</td>
                       <td className="px-6 py-4">
-                        {item.status !== "Cancelled" ? (
+                        {item.status !== "Cancelled" &&
+                        item.status !== "Delivered" ? (
                           <select
                             name="status"
                             className="p-2 text-gray-800"
@@ -140,7 +151,7 @@ const OrderDetails = () => {
                             </option>
                             <option
                               className="p-2 text-green-600"
-                              value="Delivered"
+                              value="confirmDelivered"
                             >
                               Delivered
                             </option>
@@ -152,12 +163,20 @@ const OrderDetails = () => {
                             </option>
                           </select>
                         ) : (
-                          <p className="p-2 text-red-600">{item.status}</p>
+                          <p
+                            className={`${
+                              item.status === "Delivered"
+                                ? "text-green-600"
+                                : "text-red-600"
+                            }`}
+                          >
+                            {item.status}
+                          </p>
                         )}
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-gray-800">
-                          {item.variant.price * item.quantity}
+                          {item.totalAmountAfterDiscount}
                         </span>
                       </td>
                     </tr>
@@ -177,6 +196,21 @@ const OrderDetails = () => {
           confirm={confrimCancelOrder}
           btnName={"confirm"}
           cancel={() => setIsOpen(false)}
+          rejectBtnName={"cancel"}
+        />
+      </Modal>
+      <Modal
+        isOpen={isOpenConfirmDelivered}
+        onClose={() => setIsOpenConfirmDelivered(false)}
+      >
+        <DeleteDailog
+          title={"Order Delivered"}
+          message={
+            "Please confirm that this order has been delivered. If this order was placed using Cash on Delivery (COD), the payment status will be updated to 'Paid'. Ensure all details are correct before proceeding, as changes cannot be made after confirmation."
+          }
+          confirm={confrimDeliveredOrder}
+          btnName={"confirm"}
+          cancel={() => setIsOpenConfirmDelivered(false)}
           rejectBtnName={"cancel"}
         />
       </Modal>

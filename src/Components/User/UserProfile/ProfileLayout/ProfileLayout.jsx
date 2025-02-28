@@ -38,7 +38,7 @@ const ProfileLayout = () => {
     };
     return (
         <div className="min-h-screen ">
-        <div className="w-[95%] md:w-[90%] lg:w-[80%] mx-auto rounded-3xl shadow-md border bg-white  p-4 md:p-8 lg:p-14 ">
+        <div className="w-[95%] md:w-[90%] lg:w-[90%] mx-auto rounded-3xl shadow-md border bg-white mb-6  p-4 md:p-8 lg:p-14 ">
           {/* Mobile Header */}
           <div className="flex md:hidden items-center justify-between mb-6">
             <div className="flex items-center gap-3">

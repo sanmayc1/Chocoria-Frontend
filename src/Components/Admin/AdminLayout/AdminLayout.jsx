@@ -101,56 +101,56 @@ const AdminLayout = () => {
             icon={<LayoutGrid size={20} />}
             text="Dashboard"
             onClick={() => navigate("/admin/dashboard")}
-            active={select === "/admin/dashboard" ? true : false}
+            active={select.includes("/admin/dashboard") ? true : false}
           />
           {/* Products */}
           <SidebarItem
             icon={<Package size={20} />}
             text="Products"
             onClick={() => navigate("/admin/product")}
-            active={select === "/admin/product" ? true : false}
+            active={select.includes("/admin/product") ? true : false}
           />
           {/* Orders */}
           <SidebarItem
             icon={<ShoppingCart size={20} />}
             text="Orders"
             onClick={() => navigate("/admin/orders")}
-            active={select === "/admin/orders" ? true : false}
+            active={select.includes("/admin/orders") ? true : false}
           />
           {/* customers */}
           <SidebarItem
             icon={<Users size={20} />}
             text="Customers"
             onClick={() => navigate("/admin/customers")}
-            active={select === "/admin/customers" ? true : false}
+            active={select.includes("/admin/customers") ? true : false}
           />
           {/* offers */}
           <SidebarItem
             icon={<Gift size={20} />}
             text="Offers"
             onClick={() => navigate("/admin/offers")}
-            active={select === "/admin/offers" ? true : false}
+            active={select.includes("/admin/offers") ? true : false}
           />
           {/* Reviews  */}
           <SidebarItem
             icon={<Star size={20} />}
             text="Reviews"
             onClick={() => navigate("/admin/reviews")}
-            active={select === "/admin/reviews" ? true : false}
+            active={select.includes("/admin/reviews") ? true : false}
           />
           {/* Notification */}
           <SidebarItem
             icon={<Bell size={20} />}
             text="Notification"
             onClick={() => navigate("/admin/notification")}
-            active={select === "/admin/notification" ? true : false}
+            active={select.includes("/admin/notification") ? true : false}
           />
           {/* Contact Us */}
           <SidebarItem
             icon={<MessageCircle size={20} />}
             text="Contact Us"
             onClick={() => navigate("/admin/contact-us")}
-            active={select === "/admin/contact-us" ? true : false}
+            active={select.includes("/admin/contact-us") ? true : false}
           />
 
           <div className="my-4 border-t" />
@@ -159,14 +159,14 @@ const AdminLayout = () => {
             icon={<Ticket size={20} />}
             text="Coupon"
             onClick={() => navigate("/admin/coupon")}
-            active={select === "Coupon" ? true : false}
+            active={select.includes("/admin/coupon") ? true : false}
           />
           {/* Banner managment */}
           <SidebarItem
             icon={<ImagePlus size={20} />}
             text="Banner management"
             onClick={() => navigate("/admin/banner-management")}
-            active={select === "/admin/banner-management" ? true : false}
+            active={select.includes("/admin/banner-management") ? true : false}
           />
           {/* Category */}
           <SidebarItem

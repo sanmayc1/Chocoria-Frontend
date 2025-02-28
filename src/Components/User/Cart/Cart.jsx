@@ -52,11 +52,17 @@ const Cart = () => {
 
   // total price calculator
 
-  const totalPrice = () => {
-    return cart.reduce((acc, cur) => {
-      return (acc += (cur.variant.price * cur.quantity));
+
+  const totalPrice = cart.reduce((acc, cur) => {
+      const price = cur.variant.actualPrice  ?? cur.variant.price
+      return (acc += (price * cur.quantity));
     }, 0);
-  };
+
+
+  const afterDiscountedAmount=  cart.reduce((acc, cur) => {
+      return (acc +=( cur.variant.price * cur.quantity) )
+    }, 0);
+
 
 
   return (
@@ -107,7 +113,7 @@ const Cart = () => {
               {/* Price Details Breakdown */}
               <div className="flex justify-between items-center">
                 <p className="text-base font-semibold">Price ( items)</p>
-                <p className="text-base font-bold">₹{totalPrice()}</p>
+                <p className="text-base font-bold">₹{totalPrice}</p>
               </div>
 
               <div className="flex justify-between items-center">
@@ -117,13 +123,13 @@ const Cart = () => {
 
               <div className="flex justify-between items-center">
                 <p className="text-base font-semibold">Discount</p>
-                <p className="text-base font-bold">-₹0.00</p>
+                <p className="text-base font-bold">-{(totalPrice-afterDiscountedAmount).toFixed(2)}</p>
               </div>
             </div>
 
             <div className="flex justify-between items-center px-3 pt-4 border-t border-gray-200">
               <p className="text-base font-bold">Total Amount</p>
-              <p className="text-base font-bold">₹{totalPrice()}</p>
+              <p className="text-base font-bold">₹{afterDiscountedAmount}</p>
             </div>
 
             <div className="bg-white rounded-2xl pt-4 flex justify-end">

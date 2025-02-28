@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ProgressBar from "./ProgressBar/ProgressBar.jsx";
 import { get_all_address } from "../../../Services/api/userApi.js";
-import Modal from "../../HelperComponents/InputFiled/Modal.jsx";
+import Modal from "../../HelperComponents/Modal.jsx";
 import AddAddress from "../UserProfile/ManageAddress/AddAddress.jsx";
 import SelectAddress from "./SelectAddress/SelectAddress.jsx";
 import OrderSummary from "./OrderSummary/OrderSummary.jsx";
@@ -24,6 +24,8 @@ const Checkout = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponDiscount, setCouponDiscount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -95,6 +97,8 @@ const Checkout = () => {
       shippingAddress: selectedAddress,
       paymentMethod: selectedMethod,
       items: cart,
+      coupon: appliedCoupon,
+      couponDiscount: couponDiscount,
     };
     if (selectedMethod === "razorpay") {
       const response = await place_order(data);
@@ -104,12 +108,12 @@ const Checkout = () => {
         const user = response.data.user;
         const key = import.meta.env.VITE_RAZORPAY_KEY_ID;
         const options = {
-          key, // Enter the Key ID generated from the Dashboard
-          amount: order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          key, 
+          amount: order.amount, 
           currency: order.currency,
           name: "Chocoria",
           description: "Test Transaction",
-          order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+          order_id: order.id, 
           handler: async function (response) {
             const data = {
               razorpayPaymentId: response.razorpay_payment_id,
@@ -138,7 +142,7 @@ const Checkout = () => {
               console.log(order.id);
               try {
                 const data = {
-                  razorpayOrderId:order.id,
+                  razorpayOrderId: order.id,
                 };
                 const res = await updateOrderStatus(data);
                 console.log(res);
@@ -156,16 +160,15 @@ const Checkout = () => {
         const paymentObject = new window.Razorpay(options);
         paymentObject.open();
         paymentObject.on("payment.failed", async function (response) {
-          
           try {
             const data = {
               razorpayOrderId: response.error.metadata.order_id,
             };
             const res = await updateOrderStatus(data);
-        
+
             if (res.status === 200) {
-             console.log(res.data.message);
-             
+              console.log(res.data.message);
+
               return;
             }
           } catch (error) {
@@ -216,9 +219,13 @@ const Checkout = () => {
           )}
           {index === 2 && (
             <OrderSummary
+              appliedCoupon={appliedCoupon}
+              setAppliedCoupon={setAppliedCoupon}
               selectedAddress={selectedAddress}
               cart={cart}
               continueToPayment={continueToPayment}
+              couponDiscount={couponDiscount}
+              setCouponDiscount={setCouponDiscount}
             />
           )}
           {index === 3 && (

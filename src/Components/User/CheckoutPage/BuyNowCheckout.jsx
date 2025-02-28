@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ProgressBar from "./ProgressBar/ProgressBar.jsx";
 import { get_all_address } from "../../../Services/api/userApi.js";
-import Modal from "../../HelperComponents/InputFiled/Modal.jsx";
+import Modal from "../../HelperComponents/Modal.jsx";
 import AddAddress from "../UserProfile/ManageAddress/AddAddress.jsx";
 import SelectAddress from "./SelectAddress/SelectAddress.jsx";
 import OrderSummary from "./OrderSummary/OrderSummary.jsx";

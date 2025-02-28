@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import Modal from "../../../../HelperComponents/InputFiled/Modal";
-import ImageCropper from "../ImageCroper";
+import Modal from "../../../../HelperComponents/Modal.jsx";
+import ImageCropper from "../ImageCroper.jsx";
 import { Crop } from "lucide-react";
 import { useRef } from "react";
 import { get_categories } from "../../../../../Services/api/category";

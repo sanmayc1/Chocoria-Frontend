@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import Modal from "../../../HelperComponents/InputFiled/Modal";
+import Modal from "../../../HelperComponents/Modal.jsx";
 import {
   getAllCancelRequests,
   updateCancelRequest,
 } from "../../../../Services/api/orders";
 import { Eye } from "lucide-react";
-import CancelRequestModal from "./CancelRequestModal";
+import CancelRequestModal from "./CancelRequestModal.jsx";
 import { toast } from "react-toastify";
 
 const CancelRequests = () => {

@@ -1,5 +1,5 @@
 import { Button } from "@mui/material"
-import SingleInputField from "../../../../HelperComponents/InputFiled/SingleInputField.jsx"
+import SingleInputField from "../../../../HelperComponents/SingleInputField.jsx"
 
 
 const CategoryAddEditForm = ({onClose,addOrUpdate,handleChange,value,title})=>{

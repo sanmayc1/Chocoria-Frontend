@@ -32,7 +32,7 @@ const OrderItems = ({ item }) => {
       </div>
 
       <p className="font-bold sm:block hidden  w-full sm:w-auto  sm:flex-col ">
-        <span>₹{item.totalPrice}</span>
+        <span>₹{item.totalAmountAfterDiscount}</span>
       </p>
       <p
         className={`${

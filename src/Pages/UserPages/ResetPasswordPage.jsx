@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SingleInputField from "../../Components/HelperComponents/InputFiled/SingleInputField.jsx";
+import SingleInputField from "../../Components/HelperComponents/SingleInputField.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import yupSchema from "../../utils/yupSchema.jsx";
 import { resetPassword } from "../../Services/api/userApi.js";

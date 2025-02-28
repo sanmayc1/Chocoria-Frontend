@@ -3,8 +3,8 @@ import { Search, Filter, MoreVertical, Users, FolderTree } from "lucide-react";
 import QuickStatCard from "../../HelperComponents/QuickCard";
 import { IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
 import { AddCircleOutline, Category } from "@mui/icons-material";
-import Modal from "../../../HelperComponents/InputFiled/Modal";
-import CategoryAddEditForm from "./AddEditModal/AddEditModal";
+import Modal from "../../../HelperComponents/Modal.jsx";
+import CategoryAddEditForm from "./AddEditModal/AddEditModal.jsx";
 import {
   add_category,
   delete_category,
@@ -121,7 +121,9 @@ const CategorySection = () => {
 
     toast.error(response.response.data.message, {
       position: "top-center",
-      autoClose: 1000,
+      autoClose: 2000,
+      theme: "dark",
+      style: { width: "100%" },
     });
   };
 

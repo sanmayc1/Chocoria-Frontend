@@ -11,7 +11,7 @@ const CardListing = ({ products }) => {
   const [cart, setCart] = useState([]);
   const [update, setUpdate] = useState(false);
   const auth = useSelector((state) => state.auth.auth);
-
+  console.log(products);
   useEffect(() => {
     async function fetchCart() {
       const response = await get_cart();
@@ -41,6 +41,7 @@ const CardListing = ({ products }) => {
               <ProductCard
                 key={product._id}
                 productTitle={product.name}
+                offer={product.offer}
                 imageUrl={product.images[0]}
                 rating={"4.0"}
                 id={product._id}

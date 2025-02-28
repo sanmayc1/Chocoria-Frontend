@@ -1,10 +1,16 @@
-import { CircleCheckBig, Star } from "lucide-react";
+import {
+  CircleCheckBig,
+  CirclePercent,
+  Star,
+  TicketPercent,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import { add_to_cart } from "../../../Services/api/cartApi";
 import { baseUrl } from "../../../Services/api/constants";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 
 const ProductCard = ({
   productTitle,
@@ -14,6 +20,7 @@ const ProductCard = ({
   variants,
   cart,
   setUpdate,
+  offer,
 }) => {
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth.auth);
@@ -35,7 +42,11 @@ const ProductCard = ({
   }, [variants]);
 
   const navigateToProductDetailedPage = () => {
-    navigate(`/product/${id}?variant=${availableVariant ? availableVariant._id :variants[0]._id}`);
+    navigate(
+      `/product/${id}?variant=${
+        availableVariant ? availableVariant._id : variants[0]._id
+      }`
+    );
   };
 
   const addToCard = async () => {
@@ -72,10 +83,16 @@ const ProductCard = ({
       });
     }
   };
+
   return (
     <>
-      <div className="shadow-md w-fit rounded-3xl flex flex-col">
+      <div className="shadow-md w-fit rounded-3xl flex flex-col relative">
         {/* Price image rating container */}
+        {offer  && (
+          <div className="absolute top-5 right-0 rounded-l-full flex justify-center items-center bg-orange-900  h-7 text-white text-xs px-2">
+            {offer?.percentage}% OFF
+          </div>
+        )}
         <div
           className="bg-white max-h-40 min-h-[200px] min-w-[150px] max-w-32 md:min-h-[218px] md:max-h-[218px] md:min-w-[200px] md:max-w-[180px] xl:min-h-[250px] xl:max-h-[250px] xl:min-w-[235px] xl:max-w-[235px] rounded-3xl md:rounded-b-none flex flex-col justify-between "
           onClick={navigateToProductDetailedPage}
@@ -104,8 +121,8 @@ const ProductCard = ({
             {/* Price */}
 
             {availableVariant ? (
-              <h5 className="pt-3  font-bold md:text-2xl xl:text-2xl w-2/5 ">
-                &#8377;{availableVariant.price}
+              <h5 className="pt-3 flex items-center gap-1 font-bold md:text-2xl xl:text-2xl w-2/5 ">
+                &#8377;{availableVariant.price} {offer &&<span className="line-through text-gray-600 font-medium text-xl">{offer?.availableVariant?.actualPrice}</span>}
               </h5>
             ) : (
               <h5 className="pt-3  font-bold text-xs md:text-base xl:text-lg text-red-600  ">

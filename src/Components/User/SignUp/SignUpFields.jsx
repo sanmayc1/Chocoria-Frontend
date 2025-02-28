@@ -1,6 +1,6 @@
 import { useState } from "react";
 import CommonBtn from "../button/CommonBtn.jsx";
-import SingleInputField from "../../HelperComponents/InputFiled/SingleInputField.jsx";
+import SingleInputField from "../../HelperComponents/SingleInputField.jsx";
 import yupSchema from "../../../utils/yupSchema.jsx";
 import { sign_up } from "../../../Services/api/api.js";
 import { toast } from "react-toastify";
