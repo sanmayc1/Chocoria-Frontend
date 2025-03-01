@@ -179,12 +179,17 @@ const Checkout = () => {
         setLoading(false);
         return;
       }
+     
 
       toast.error(response.response.data.message, {
         position: "top-center",
         autoClose: 1000,
       });
       setLoading(false);
+      console.log(response);
+      if(response.status === 409){
+        navigate("/user/cart");
+      }
       return;
     }
 
@@ -200,6 +205,11 @@ const Checkout = () => {
         autoClose: 1000,
       });
       setLoading(false);
+      
+      if(response.status === 409){
+        navigate("/user/cart");
+      }
+      return
     }
   };
 
@@ -234,6 +244,7 @@ const Checkout = () => {
               setSelectedMethod={setSelectedMethod}
               placeOrder={placeOrder}
               loading={loading}
+             
             />
           )}
         </div>

@@ -33,6 +33,7 @@ const ProductDetailedPage = () => {
       const response = await get_product_user(id);
       if (response.status === 200) {
         setProduct(response.data.product);
+        
         setRecommendation(response.data.recomendation);
         window.scrollTo(0, 0);
         return;
@@ -53,7 +54,7 @@ const ProductDetailedPage = () => {
   },[selectedVariant])
 
 
-
+console.log(selectedVariant,product)
 
   if (!product) {
     return (
@@ -87,6 +88,9 @@ const ProductDetailedPage = () => {
             brand={product.brand}
             productName={product.name}
             price={selectedVariant?.price}
+            actualPrice={selectedVariant?.actualPrice
+            }
+            offer={product?.offer}
             stock={selectedVariant?.quantity}
             varients={product.variants}
             selectedVariant={selectedVariant}

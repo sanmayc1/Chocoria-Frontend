@@ -166,7 +166,7 @@ const OrderDetailed = () => {
                 </div>
                 <div className="flex justify-between font-medium">
                   <span>Discount </span>
-                  <span>-₹{orderItems.discount || "0.00"}</span>
+                  <span>-₹{orderItems.offerDiscount || "0.00"}</span>
                 </div>
                 <div className=" flex justify-between font-medium">
                   <span>Coupon </span>
@@ -192,9 +192,14 @@ const OrderDetailed = () => {
               } `}
             >
               {orderItems.status === "Delivered" ? (
+                <div className="flex gap-4">
+                <Button variant="outlined" color="error">
+                  Return
+                </Button>
                 <Button variant="outlined" color="inherit">
                   Rate & Review
                 </Button>
+                </div>
               ) : orderItems.status === "Cancelled" ? (
                 <p className="text-sm font-medium">Order Cancelled</p>
               ) : orderItems.status === "Order Not Placed" ? (

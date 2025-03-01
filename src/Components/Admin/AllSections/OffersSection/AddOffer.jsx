@@ -7,7 +7,6 @@ const AddOffer = ({onClose,setUpdate}) => {
   const [offerData, setOfferData] = useState({
     offerTitle: "",
     percentage: "",
-    maximumDiscount: "",
     expiryDate: "",
     applicableOn: "",
     specific: "",

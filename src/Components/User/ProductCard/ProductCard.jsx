@@ -86,11 +86,11 @@ const ProductCard = ({
 
   return (
     <>
-      <div className="shadow-md w-fit rounded-3xl flex flex-col relative">
+      <div className="shadow-md w-fit rounded-3xl flex flex-col relative hover:scale-105 transform transition-transform duration-300 m-2">
         {/* Price image rating container */}
         {offer  && (
-          <div className="absolute top-5 right-0 rounded-l-full flex justify-center items-center bg-orange-900  h-7 text-white text-xs px-2">
-            {offer?.percentage}% OFF
+          <div className="absolute top-5 right-0 rounded-l-full flex justify-center items-center bg-orange-900  sm:h-7 text-white sm:text-xs text-[8px] sm:px-2 h-4 px-1">
+            {offer?.percentage}% <span className="sm:block hidden">OFF</span> 
           </div>
         )}
         <div
@@ -121,8 +121,8 @@ const ProductCard = ({
             {/* Price */}
 
             {availableVariant ? (
-              <h5 className="pt-3 flex items-center gap-1 font-bold md:text-2xl xl:text-2xl w-2/5 ">
-                &#8377;{availableVariant.price} {offer &&<span className="line-through text-gray-600 font-medium text-xl">{offer?.availableVariant?.actualPrice}</span>}
+              <h5 className="pt-3 flex items-baseline gap-1 font-bold md:text-2xl xl:text-2xl w-2/5 ">
+               {offer &&<span className="line-through text-gray-600 font-medium text-base">₹{availableVariant?.actualPrice}</span>} &#8377;{availableVariant.price} 
               </h5>
             ) : (
               <h5 className="pt-3  font-bold text-xs md:text-base xl:text-lg text-red-600  ">
@@ -141,7 +141,7 @@ const ProductCard = ({
           </div>
         </div>
         <button
-          className="bg-orange-950 md:h-12 w-full xl:h-14 xl:text-lg   text-white font-semibold rounded-b-3xl hidden md:block hover:bg-orange-900  transition-colors"
+          className="bg-orange-950 md:h-12 w-full xl:h-14 xl:text-lg   text-white font-semibold rounded-b-3xl hidden md:block hover:bg-orange-900  transition-colors duration-500"
           onClick={addToCard}
         >
           {checkItemInCart() ? (

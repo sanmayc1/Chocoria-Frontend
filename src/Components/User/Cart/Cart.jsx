@@ -43,6 +43,16 @@ const Cart = () => {
         theme: "dark",
       });
     }
+for(let item of cart){
+  if(item.variant.quantity<=0){
+    return toast.error("Cart Contain Out Stock Products", {
+      position: "top-center",
+      autoClose: 1000,
+      theme: "dark",
+      style: { width: "100%" },
+    });
+  }
+}
     navigate("/user/checkout");
   };
 

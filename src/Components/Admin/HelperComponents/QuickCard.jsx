@@ -2,7 +2,7 @@
 
 
 const QuickStatCard = ({ icon, title, value }) => (
-    <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow hover:scale-105 transition-transform duration-300">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-500">{title}</p>

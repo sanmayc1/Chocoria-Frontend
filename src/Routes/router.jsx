@@ -20,7 +20,7 @@ import AuthGuard from "../Components/GuardComponent/AuthGuard.jsx";
 import AdminLoginPage from "../Pages/AdminPages/LoginPage.jsx";
 import AdminAuthGuard from "../Components/GuardComponent/AdminAuthGuard.jsx";
 import AdminLoginGuard from "../Components/GuardComponent/AdminLoginGuard.jsx";
-import EditProduct from "../Components/Admin/AllSections/ProductSection/Add&EditProduct/editProduct.jsx";
+import EditProduct from "../Components/Admin/AllSections/ProductSection/Add&EditProduct/EditProduct.jsx";
 import UserLayout from "../Components/User/UserLayout/UserLayout.jsx";
 import AuthLoginGuard from "../Components/GuardComponent/AuthLogin.jsx";
 import { createBrowserRouter } from "react-router-dom";
@@ -43,6 +43,7 @@ import ShopPage from "../Pages/UserPages/ShopPage.jsx";
 import Wishlist from "../Components/User/Wishlist/Wishlist.jsx";
 import Wallet from "../Components/User/UserProfile/Wallet/Wallet.jsx";
 import WalletHistory from "../Components/User/UserProfile/Wallet/WalletHistory.jsx";
+import SalesReport from "../Components/Admin/AdminDashboard/SalesReport.jsx";
 
 const router = createBrowserRouter([
   {
@@ -188,7 +189,6 @@ const router = createBrowserRouter([
     path: "/admin",
     element: (
       <AdminAuthGuard>
-        {" "}
         <AdminLayout />
       </AdminAuthGuard>
     ),
@@ -197,6 +197,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard",
         element: <Dashboard />,
+      },
+      {
+       path:"/admin/sales-report",
+        element:<SalesReport/>
       },
       {
         path: "/admin/product",

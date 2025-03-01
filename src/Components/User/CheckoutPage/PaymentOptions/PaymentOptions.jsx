@@ -8,6 +8,7 @@ const PaymentOptions = ({
   setSelectedMethod,
   placeOrder,
   loading,
+  totalPrice,
 }) => {
   return (
     <div className="w-full max-w-2xl mx-auto p-4">
@@ -69,7 +70,7 @@ const PaymentOptions = ({
           ) : (
             <>
               {" "}
-              <span>Place Order</span>
+              <span>Place Order{}</span>
               <ChevronRight className="w-5 h-5" />
             </>
           )}

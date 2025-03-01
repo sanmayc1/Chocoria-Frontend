@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import AddEditForm from "./Add-Edit-Form.jsx";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-toastify";
-import { add_product, edit_product, get_product_details } from "../../../../../Services/api/productApi.js";
+import {  edit_product, get_product_details } from "../../../../../Services/api/productApi.js";
 import { useNavigate, useParams } from "react-router-dom";
 import { baseUrl } from "../../../../../Services/api/constants.js";
 

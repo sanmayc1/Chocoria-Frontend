@@ -132,4 +132,13 @@ export const updateOrderStatus = async (data) => {
         return error;
     }
 }
+// get all delivered orders
 
+export const getDeliveredOrders = async () => {
+    try {
+        const res = await chocoriaBackEnd.get(`admin/orders/delivered`);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}

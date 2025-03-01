@@ -148,7 +148,7 @@ const CartItem = ({
           </div>
         </div>
 
-        <div className="flex items-center justify-between w-full sm:w-auto sm:justify-center gap-4 border border-black rounded-2xl px-2 py-1">
+        {quantity > 0 ?<div className="flex items-center justify-between w-full sm:w-auto sm:justify-center gap-4 border border-black rounded-2xl px-2 py-1">
           <button
             disabled={loading}
             className="text-xl font-bold w-8 text-center"
@@ -164,7 +164,7 @@ const CartItem = ({
           >
             +
           </button>
-        </div>
+        </div>: <div className="text-red-500 font-bold">Out of Stock</div>}
 
         <p className="font-bold  w-full sm:w-auto sm:ml-2 flex sm:flex-col justify-between text-center">
           <span className="sm:hidden text-sm  text-black">Price</span>

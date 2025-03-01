@@ -23,28 +23,44 @@ const WalletHistory = () => {
       <h2 className="text-4xl font-bold">₹{wallet?.balance || 0}</h2>
 
       <table className="w-full mt-3 ">
-        <tr className="table-row h-12 ">
-          <th className="text-left">Transaction ID</th>
-          <th className="text-left">Amount</th>
-          <th className="text-left">Type</th>
-          <th className="text-left">Date</th>
-        </tr>
-        {
-            wallet?.transactions?.length > 0 ?
-            wallet?.transactions.map((transaction) => (
-                <tr key={transaction._id} className="table-row h-12 " >
-                  <td className="text-left">{transaction.transactionId}</td>
-                  <td className="text-left">₹{transaction.amount}</td>
-                  <td className={`text-left uppercase ${transaction.type === "credit" ? "text-green-500" : "text-red-500"}`}>{transaction.type}</td>
-                  <td className="text-left">{transaction.createdAt.split("T")[0]}</td>
-                </tr>
-            )) :
-            <tr>
-              <td colSpan={4} className="text-center">
-                No transactions found
-              </td>
-            </tr>
-        }
+        <thead>
+          <tr className="table-row h-12 ">
+            <th className="text-left">Transaction ID</th>
+            <th className="text-left">Amount</th>
+            <th className="text-left">Type</th>
+            <th className="text-left">Date</th>
+          </tr>
+        </thead>
+        <tbody >
+        {wallet?.transactions?.length > 0 ? (
+          wallet?.transactions.map((transaction) => (
+           
+              <tr key={transaction._id} className="table-row h-12 ">
+                <td className="text-left">{transaction.transactionId}</td>
+                <td className="text-left">₹{transaction.amount}</td>
+                <td
+                  className={`text-left uppercase ${
+                    transaction.type === "credit"
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  {transaction.type}
+                </td>
+                <td className="text-left">
+                  {transaction.createdAt.split("T")[0]}
+                </td>
+              </tr>
+            
+          ))
+        ) : (
+          <tr>
+            <td colSpan={4} className="text-center">
+              No transactions found
+            </td>
+          </tr>
+        )}
+        </tbody>
       </table>
     </div>
   );

@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
 import { Button, Pagination } from "@mui/material";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import Modal from "../../../HelperComponents/Modal.jsx";
-import OfferAddEditForm from "./OfferAddEdit.jsx";
 import AddOffer from "./AddOffer.jsx";
-import { getAllOffers } from "../../../../Services/api/offerApi.js";
+import { deleteOffer, getAllOffers } from "../../../../Services/api/offerApi.js";
 import { baseUrl } from "../../../../Services/api/constants.js";
 import { Trash2 } from "lucide-react";
+import DeleteDailog from "../../../HelperComponents/DeleteDailog.jsx";
 
 const OffersSection = () => {
   const [update, setUpdate] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [productsOffer, setProductsOffer] = useState([]);
   const [categoriesOffer, setCategoriesOffer] = useState([]);
+  const [isOpenDelete, setIsOpenDelete] = useState(false);
+  const [selectedOffer, setSelectedOffer] = useState(null);
 
   useEffect(() => {
     const fetchOffers = async () => {
@@ -29,6 +30,31 @@ const OffersSection = () => {
     fetchOffers();
   }, [update]);
 
+  const openDeleteModal = (offer) => {
+    setSelectedOffer(offer);
+    setIsOpenDelete(true);
+  };
+
+  const closeDeleteModal = ()=>{
+    setIsOpenDelete(false);
+    setSelectedOffer(null)
+  }
+  const deleteSelectedOffer = async () => {
+    setIsOpenDelete(false);
+    const response = await deleteOffer(selectedOffer._id);
+    if (response.status === 200) {
+      setUpdate((prev) => !prev);
+      toast.success(response.data.message, {
+        position: "top-center",
+        autoClose: 1000,
+      });
+      return
+    }
+    toast.error(response.response.data.message, {
+      position: "top-center",
+      autoClose: 1000,
+    });
+  }
   return (
     <>
       <div className="p-4 sm:p-6 space-y-6">
@@ -70,9 +96,7 @@ const OffersSection = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
                     Expire Date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-                    Maximum Discount
-                  </th>
+                  
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
                     
                   </th>
@@ -110,11 +134,9 @@ const OffersSection = () => {
                         {offer.expiresAt.split("T")[0]}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
-                      ₹{offer.maximumDiscount}
-                    </td>
+                   
                     <td className="px-6 py-4 whitespace-nowrap">
-                     <Trash2 size={16} color="red" />
+                     <Trash2 size={16} color="red" onClick={()=>openDeleteModal (offer)} />
                     </td>
                   </tr>
                 ))}
@@ -155,9 +177,7 @@ const OffersSection = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
                     expires date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-                    maximum discount
-                  </th>
+                
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     
                   </th>
@@ -182,11 +202,8 @@ const OffersSection = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                      {offer.expiresAt.split("T")[0]}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
-                      <div className="text-sm text-gray-900">₹{offer.maximumDiscount}</div>
-                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                     <Trash2 size={16} color="red" />
+                     <Trash2 size={16} color="red" onClick={()=>openDeleteModal(offer)} />
                     </td>
                   </tr>
                 ))}
@@ -204,6 +221,14 @@ const OffersSection = () => {
 
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <AddOffer onClose={() => setIsOpen(false)} setUpdate={setUpdate} />
+      </Modal>
+      <Modal isOpen={isOpenDelete} onClose={closeDeleteModal}>
+        <DeleteDailog
+        title={"Delete Offer"}
+        message={`Are you sure you want to delete "${selectedOffer?.offerTitle}" this offer?`}
+        cancel={closeDeleteModal}
+        confirm={deleteSelectedOffer}
+        />
       </Modal>
     </>
   );

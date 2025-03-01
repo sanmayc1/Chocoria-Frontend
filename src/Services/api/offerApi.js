@@ -18,3 +18,12 @@ export const getAllOffers = async () => {
         return error;
     }
 };
+
+export const deleteOffer = async (id) => {
+    try {
+        const res = await chocoriaBackEnd.delete(`/admin/offer/${id}`);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}

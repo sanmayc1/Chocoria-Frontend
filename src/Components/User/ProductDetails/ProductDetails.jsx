@@ -7,7 +7,10 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { add_to_cart } from "../../../Services/api/cartApi.js";
 import { useEffect, useState } from "react";
-import { addOrRemoveFromWhishlist, checkIfItemIsInWishlist } from "../../../Services/api/whishlistApi.js";
+import {
+  addOrRemoveFromWhishlist,
+  checkIfItemIsInWishlist,
+} from "../../../Services/api/whishlistApi.js";
 
 const ProductDetails = ({
   brand,
@@ -18,31 +21,31 @@ const ProductDetails = ({
   setSelectedVariant,
   selectedVariant,
   id,
+  actualPrice,
+  offer,
 }) => {
   const auth = useSelector((state) => state.auth.auth);
   const [quantity, setQuantity] = useState(1);
   const [isWishlist, setIsWishlist] = useState(false);
-  const [update,setUpdate]=useState(false)
+  const [update, setUpdate] = useState(false);
 
   useEffect(() => {
     setQuantity(1);
   }, [selectedVariant]);
 
-  useEffect(()=>{
-    const checkItemInWishlist = async ()=>{
-       const response = await checkIfItemIsInWishlist(id,selectedVariant?._id)
-       if(response.status === 200){
-        setIsWishlist(response.data.exists)
-        return
-       }
-       setIsWishlist(false)
-
+  useEffect(() => {
+    const checkItemInWishlist = async () => {
+      const response = await checkIfItemIsInWishlist(id, selectedVariant?._id);
+      if (response.status === 200) {
+        setIsWishlist(response.data.exists);
+        return;
+      }
+      setIsWishlist(false);
+    };
+    if (auth) {
+      checkItemInWishlist();
     }
-    if(auth){
-      checkItemInWishlist()
-    }
-   
-  },[selectedVariant,update])
+  }, [selectedVariant, update]);
 
   const navigate = useNavigate();
 
@@ -117,14 +120,14 @@ const ProductDetails = ({
     }
     const data = { productId: id, variant: selectedVariant._id };
     const response = await addOrRemoveFromWhishlist(data);
-    if(response.status === 200){
+    if (response.status === 200) {
       toast.success(response.data.message, {
         position: "top-center",
         autoClose: 1000,
         style: { width: "100%" },
         theme: "dark",
       });
-      setUpdate(!update)
+      setUpdate(!update);
       return;
     }
     toast.error(response.response.data.message, {
@@ -142,9 +145,13 @@ const ProductDetails = ({
         <h1 className="xl:text-3xl md:text-xl md:font-bold font-semibold">
           {brand}{" "}
         </h1>
-        <Heart onClick={handleWishlist} fill={`${isWishlist ? "red" : "none" }`} color={`${isWishlist ? "red" : "black"}`}/>
+        <Heart
+          onClick={handleWishlist}
+          fill={`${isWishlist ? "red" : "none"}`}
+          color={`${isWishlist ? "red" : "black"}`}
+        />
       </div>
-      {/* Product Name */} 
+      {/* Product Name */}
 
       <h2 className="xl:text-xl md:py-3 py-2 xl:py-5 ">{productName}</h2>
       {/* Rating */}
@@ -163,12 +170,17 @@ const ProductDetails = ({
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
         >
-          <span className="text-gray-700 line-through font-normal text-xl ">
-            ₹600
-          </span>
-          <span className="font-normal text-base text-orange-700">
-            (10% OFF)
-          </span>
+          {actualPrice && (
+            <span>
+              {" "}
+              <span className="text-gray-700 line-through font-normal text-xl ">
+                ₹{actualPrice}
+              </span>
+              <span className="font-normal text-base text-orange-700">
+                ({offer.percentage}% OFF)
+              </span>
+            </span>
+          )}
         </motion.div>
       </h1>
       <p className=" font-semibold pt-1 text-sm">inclusive of all taxes</p>
