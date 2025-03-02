@@ -1,40 +1,232 @@
 import { useEffect, useState } from "react";
 import {
-  Search,
-  RefreshCwIcon,
-  Layers,
   ChartNoAxesCombined,
   HandCoins,
   BadgePercent,
   ChartColumnIncreasing,
 } from "lucide-react";
 import QuickStatCard from "../HelperComponents/QuickCard.jsx";
-import { Pagination } from "@mui/material";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Button, Pagination } from "@mui/material";
+import { utils, writeFile } from "xlsx";
 import { getDeliveredOrders } from "../../../Services/api/orders.js";
-
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
+import { toast } from "react-toastify";
 const OrderSection = () => {
-  const [update, setUpdate] = useState(false);
+  const initialData = { fromDate: "", toDate: "", year: "" };
+  const [filterOrders, setFilterOrders] = useState(initialData);
+  const currentYear = new Date().getFullYear();
+  const earliestYear = currentYear - 5;
+  const years = Array.from(
+    { length: currentYear - earliestYear + 1 },
+    (_, i) => earliestYear + i
+  );
+  const [selectedFilter, setSelectedFilter] = useState("");
   const [orders, setOrders] = useState([]);
-  const navigate = useNavigate();
-
+  const [data, setData] = useState([]);
   useEffect(() => {
-    async function fetchAllOrders(){
-        const response = await getDeliveredOrders();
+    async function fetchAllOrders() {
+      const response = await getDeliveredOrders();
 
-        if(response.status === 200){
-            setOrders(response.data.orders);
-            return;
-        }
-
+      if (response.status === 200) {
+        setData(response.data.orders);
+        setOrders(response.data.orders);
+        return;
+      }
     }
     fetchAllOrders();
-  },[])
+  }, []);
 
-  const totlaDiscount = orders.reduce((acc,order) => acc + order.offerDiscount + order.couponDiscount,0);
-  const totalSalesAmount = orders.reduce((acc,order) => acc + order.totalPrice,0);
-  const totalRevenue = orders.reduce((acc,order) => acc + order.totalAmountAfterDiscount,0);
+  const handleChange = (e) => {
+    if (e.target.name === "fromDate") {
+      if (filterOrders.toDate && e.target.value > filterOrders.toDate) {
+        toast.error(
+          "The 'From' date must be earlier than the 'To' date. Please select valid dates.",
+          {
+            theme: "dark",
+            autoClose: 3000,
+            position: "top-center",
+            style:{width:"100%"}
+          }
+        );
+        return 
+      }
+    }
+    setFilterOrders({ ...filterOrders, [e.target.name]: e.target.value });
+  };
+
+  const filter = () => {
+    if (filterOrders.fromDate && filterOrders.toDate) {
+      setOrders(
+        data.filter((order) => {
+          return (
+            order.orderId.orderDate.split("T")[0] >= filterOrders.fromDate &&
+            filterOrders.toDate >= order.orderId.orderDate.split("T")[0]
+          );
+        })
+      );
+      return;
+    } else if (selectedFilter === "specificPeriod") {
+      toast.error(
+        `Please Select ${
+          !filterOrders.toDate && !filterOrders.fromDate
+            ? "Period"
+            : filterOrders.fromDate
+            ? "To Date"
+            : "From Date"
+        } `,
+        {
+          theme: "dark",
+          autoClose: 1000,
+          position: "top-center",
+        }
+      );
+      return;
+    }
+    if (selectedFilter === "yearly") {
+      if (!filterOrders.year) {
+        toast.error("Please Select Year", {
+          theme: "dark",
+          autoClose: 1000,
+          position: "top-center",
+        });
+        return;
+      }
+      setOrders(
+        data.filter(
+          (order) => order.orderId.orderDate.split("-")[0] === filterOrders.year
+        )
+      );
+      return;
+    }
+  };
+
+  const filterRest = () => {
+    setFilterOrders(initialData);
+    setSelectedFilter("");
+    setOrders(data);
+  };
+
+  const totalOfferDiscount = orders.reduce(
+    (acc, order) => acc + order.offerDiscount,
+    0
+  );
+  const totalCouponDiscount = orders.reduce(
+    (acc, order) => acc + order.couponDiscount,
+    0
+  );
+  const totalDiscount = totalOfferDiscount + totalCouponDiscount;
+  const totalSalesAmount = orders.reduce(
+    (acc, order) => acc + order.totalPrice,
+    0
+  );
+  const totalRevenue = orders.reduce(
+    (acc, order) => acc + order.totalAmountAfterDiscount,
+    0
+  );
+
+  function exportToExcel() {
+    const ws = utils.aoa_to_sheet([
+      [
+        "Order ID",
+        "Order Date",
+        "Customer Name",
+        "Product",
+        "Quantity",
+        "Total Amount",
+        "Offer Discount",
+        "Coupon Discount",
+        "Net Amount",
+      ],
+      ...orders.map((order) => [
+        order.orderId.uniqueOrderId,
+        order.orderId.orderDate.split("T")[0],
+        order.orderId.shippingAddress.name,
+        order.name,
+        order.quantity,
+        order.totalPrice,
+        order.offerDiscount,
+        order.couponDiscount,
+        order.totalAmountAfterDiscount,
+      ]),
+      ["", "", "", "", "", "", "", "", "", ""],
+      [
+        "Overall Summary",
+        "",
+        "",
+        "",
+        "",
+        totalSalesAmount,
+        totalOfferDiscount,
+        totalCouponDiscount,
+        totalRevenue,
+      ],
+    ]);
+    const wsCols = [
+      { wch: 20 },
+      { wch: 15 },
+      { wch: 20 },
+      { wch: 25 },
+      { wch: 10 },
+      { wch: 12 },
+      { wch: 12 },
+      { wch: 12 },
+      { wch: 12 },
+    ];
+    ws["!cols"] = wsCols;
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Sales Report");
+
+    writeFile(wb, "SalesReport.xlsx");
+  }
+
+  const exportToPdf = () => {
+    const doc = new jsPDF();
+    const tableColumn = [
+      "Order ID",
+      "Order Date",
+      "Customer Name",
+      "Product",
+      "Quantity",
+      "Total Amount",
+      "Offer Discount",
+      "Coupon Discount",
+      "Net Amount",
+    ];
+    const tableRows = [
+      ...orders.map((order) => [
+        order.orderId.uniqueOrderId,
+        order.orderId.orderDate.split("T")[0],
+        order.orderId.shippingAddress.name,
+        order.name,
+        order.quantity,
+        order.totalPrice,
+        order.offerDiscount,
+        order.couponDiscount,
+        order.totalAmountAfterDiscount,
+      ]),
+      ["", "", "", "", "", "", "", "", ""],
+      [
+        "Overall Summary",
+        "",
+        "",
+        "",
+        "",
+        totalSalesAmount,
+        totalOfferDiscount,
+        totalCouponDiscount,
+        totalRevenue,
+      ],
+    ];
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      theme: "grid",
+    });
+    doc.save("SalesReport.pdf");
+  };
 
   return (
     <>
@@ -53,7 +245,7 @@ const OrderSection = () => {
           />
           <QuickStatCard
             title="Total Discount"
-            value={totlaDiscount}
+            value={totalDiscount}
             icon={<BadgePercent color="red" />}
           />
           <QuickStatCard
@@ -62,18 +254,112 @@ const OrderSection = () => {
             icon={<ChartNoAxesCombined color="green" />}
           />
         </div>
-
+        <div className="flex justify-end gap-3 px-2">
+          <button
+            className="bg-gray-900 hover:bg-gray-700 transition-colors rounded-sm duration-300 text-white p-2"
+            onClick={exportToExcel}
+          >
+            Download Excel
+          </button>
+          <button
+            className="bg-gray-900 hover:bg-gray-700 transition-colors rounded-sm duration-300 text-white p-2"
+            onClick={exportToPdf}
+          >
+            Download PDF
+          </button>
+        </div>
         {/* Main Customer List Card */}
         <div className="bg-white rounded-lg shadow">
           {/* Header */}
           <div className="p-4 sm:p-6 border-b">
             <div className="flex flex-col sm:flex-row justify-start gap-4">
-              <h2 className="text-lg font-semibold">Sales Report</h2>
+              <h2 className="text-xl font-medium">Sales Report</h2>
             </div>
-            
+            <div className="pt-6 flex gap-5 items-end">
+              {!selectedFilter && (
+                <label
+                  htmlFor="filter"
+                  className="w-[20%] flex flex-col font-medium gap-2"
+                >
+                  Filter
+                  <select
+                    name="seletedFilter "
+                    className="border p-1 w-full"
+                    value={selectedFilter}
+                    onChange={(e) => setSelectedFilter(e.target.value)}
+                  >
+                    <option value="">Select</option>
+                    <option value="specificPeriod">Sepecific Period</option>
+                    <option value="yearly">Yearly</option>
+                  </select>
+                </label>
+              )}
+
+              {selectedFilter === "specificPeriod" && (
+                <>
+                  <label
+                    htmlFor="fromDate"
+                    className=" flex flex-col gap-2 text-sm font-semibold"
+                  >
+                    From Date
+                    <input
+                      type="date"
+                      className="border p-2 uppercase rounded-md "
+                      name="fromDate"
+                      value={filterOrders.fromDate}
+                      onChange={handleChange}
+                    />
+                  </label>
+                  <label
+                    htmlFor="fromDate"
+                    className=" flex flex-col gap-2 text-sm font-semibold"
+                  >
+                    To Date
+                    <input
+                      type="date"
+                      className="border p-2 uppercase rounded-md"
+                      name="toDate"
+                      value={filterOrders.toDate}
+                      onChange={handleChange}
+                      disabled={!filterOrders.fromDate}
+                      min={filterOrders.fromDate}
+                    />
+                  </label>
+                </>
+              )}
+              {selectedFilter === "yearly" && (
+                <select
+                  name="year"
+                  value={filterOrders.year}
+                  onChange={handleChange}
+                  className="border p-2 w-[10%]"
+                >
+                  <option value="">Select Year</option>
+                  {years.map((year) => (
+                    <option key={year}>{year}</option>
+                  ))}
+                </select>
+              )}
+              {selectedFilter && (
+                <div className="flex gap-3">
+                  <Button variant="outlined" className="h-10" onClick={filter}>
+                    Apply filter
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    className="h-10"
+                    onClick={filterRest}
+                  >
+                    reset
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Table */}
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50">
@@ -85,39 +371,32 @@ const OrderSection = () => {
                     Order Date
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
-                   Customer Name
+                    Customer Name
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                     Product
                   </th>
 
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-                   Quantity
+                    Quantity
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-                   Total Amount
+                    Total Amount
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-                   Offer Discount
+                    Offer Discount
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-                   Coupon Discount
+                    Coupon Discount
                   </th>
                   <th className=" py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-                   Net Amount
+                    Net Amount
                   </th>
-                 
-                 
-                
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {orders.map((order) => (
-                  <tr
-                    key={order._id}
-                    className="hover:bg-gray-50 "
-                    
-                  >
+                  <tr key={order._id} className="hover:bg-gray-50 ">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm  text-gray-900">
                         {order.orderId.uniqueOrderId}
@@ -139,7 +418,9 @@ const OrderSection = () => {
                       <span
                         className={`px-2 inline-flex text-sm leading-5 rounded-full`}
                       >
-                        {order.name.length < 22 ? order.name : order.name.slice(0,22) + "..."}
+                        {order.name.length < 22
+                          ? order.name
+                          : order.name.slice(0, 22) + "..."}
                       </span>
                     </td>
                     <td className="px-10 py-4 whitespace-nowrap hidden lg:table-cell">
@@ -181,6 +462,7 @@ const OrderSection = () => {
             </table>
           </div>
         </div>
+
         {/* Pagination */}
         <div className="flex justify-center">
           {orders.length > 5 && <Pagination count={1} />}
