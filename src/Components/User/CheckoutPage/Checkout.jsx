@@ -184,6 +184,8 @@ const Checkout = () => {
       toast.error(response.response.data.message, {
         position: "top-center",
         autoClose: 1000,
+        theme:"dark",
+        style:{width:"100%"}
       });
       setLoading(false);
       console.log(response);
@@ -202,7 +204,9 @@ const Checkout = () => {
       }
       toast.error(response.response.data.message, {
         position: "top-center",
-        autoClose: 1000,
+        autoClose: 2000,
+        theme:"dark",
+        style:{width:"100%"}
       });
       setLoading(false);
       

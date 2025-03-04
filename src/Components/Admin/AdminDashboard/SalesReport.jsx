@@ -14,7 +14,7 @@ import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
 import { toast } from "react-toastify";
 const OrderSection = () => {
-  const initialData = { fromDate: "", toDate: "", year: "" };
+  const initialData = { fromDate: "", toDate: "", year: "", date: "" };
   const [filterOrders, setFilterOrders] = useState(initialData);
   const currentYear = new Date().getFullYear();
   const earliestYear = currentYear - 5;
@@ -37,7 +37,7 @@ const OrderSection = () => {
     }
     fetchAllOrders();
   }, []);
-
+  console.log(selectedFilter);
   const handleChange = (e) => {
     if (e.target.name === "fromDate") {
       if (filterOrders.toDate && e.target.value > filterOrders.toDate) {
@@ -47,10 +47,10 @@ const OrderSection = () => {
             theme: "dark",
             autoClose: 3000,
             position: "top-center",
-            style:{width:"100%"}
+            style: { width: "100%" },
           }
         );
-        return 
+        return;
       }
     }
     setFilterOrders({ ...filterOrders, [e.target.name]: e.target.value });
@@ -100,7 +100,66 @@ const OrderSection = () => {
       );
       return;
     }
+    if(selectedFilter === "day"){
+      if(!filterOrders.date){
+        toast.error("Please Select Date", {
+          theme: "dark",
+          autoClose: 1000,
+          position: "top-center",
+        });
+        return;
+      
+      }
+
+      setOrders(data.filter((order)=>order.orderId.orderDate.split("T")[0] === filterOrders.date))
+
+    }
   };
+
+  useEffect(() => {
+    if (selectedFilter === "today") {
+      const date = new Date().toISOString().split("T")[0];
+      setOrders(
+        data.filter((order) => order.orderId.orderDate.split("T")[0] === date)
+      );
+      return;
+    }
+    if (selectedFilter === "week") {
+      const today = new Date();
+      const day = today.getDay();
+
+      let monday = new Date(today);
+      monday.setDate(today.getDate() - (day === 0 ? 6 : day - 1));
+      monday.setHours(0, 0, 0, 0);
+
+      let sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+      sunday.setHours(23, 59, 59, 999);
+      sunday = sunday.toISOString().split("T")[0];
+      monday = monday.toISOString().split("T")[0];
+
+      setOrders(
+        data.filter(
+          (order) =>
+            order.orderId.orderDate.split("T")[0] <= sunday &&
+            order.orderId.orderDate.split("T")[0] >= monday
+        )
+      );
+      return;
+    }
+
+    if (selectedFilter === "month") {
+      const thisMonth = new Date().getMonth() + 1;
+      console.log(thisMonth);
+      setOrders(
+        data.filter(
+          (order) => order.orderId.orderDate.split("-")[1] == thisMonth
+        )
+      );
+      return;
+    }
+    setOrders(data);
+  }, [selectedFilter]);
 
   const filterRest = () => {
     setFilterOrders(initialData);
@@ -240,17 +299,17 @@ const OrderSection = () => {
           />
           <QuickStatCard
             title="Total Sales Amount"
-            value={totalSalesAmount}
+            value={`₹ ${totalSalesAmount}`}
             icon={<HandCoins color="blue" />}
           />
           <QuickStatCard
             title="Total Discount"
-            value={totalDiscount}
+            value={`₹ ${totalDiscount}`}
             icon={<BadgePercent color="red" />}
           />
           <QuickStatCard
             title="Total Revenue"
-            value={totalRevenue}
+            value={`₹ ${totalRevenue}`}
             icon={<ChartNoAxesCombined color="green" />}
           />
         </div>
@@ -276,24 +335,26 @@ const OrderSection = () => {
               <h2 className="text-xl font-medium">Sales Report</h2>
             </div>
             <div className="pt-6 flex gap-5 items-end">
-              {!selectedFilter && (
-                <label
-                  htmlFor="filter"
-                  className="w-[20%] flex flex-col font-medium gap-2"
+              <label
+                htmlFor="filter"
+                className="w-[20%] flex flex-col font-medium gap-2"
+              >
+                Filter
+                <select
+                  name="seletedFilter "
+                  className="border p-1 w-full"
+                  value={selectedFilter}
+                  onChange={(e) => setSelectedFilter(e.target.value)}
                 >
-                  Filter
-                  <select
-                    name="seletedFilter "
-                    className="border p-1 w-full"
-                    value={selectedFilter}
-                    onChange={(e) => setSelectedFilter(e.target.value)}
-                  >
-                    <option value="">Select</option>
-                    <option value="specificPeriod">Sepecific Period</option>
-                    <option value="yearly">Yearly</option>
-                  </select>
-                </label>
-              )}
+                  <option value="">Select</option>
+                  <option value="specificPeriod">Sepecific Period</option>
+                  <option value="day">Specific Date</option>
+                  <option value="yearly">Yearly</option>
+                  <option value="today">Today</option>
+                  <option value="week">This Week</option>
+                  <option value="month">This Month</option>
+                </select>
+              </label>
 
               {selectedFilter === "specificPeriod" && (
                 <>
@@ -340,21 +401,40 @@ const OrderSection = () => {
                   ))}
                 </select>
               )}
-              {selectedFilter && (
-                <div className="flex gap-3">
-                  <Button variant="outlined" className="h-10" onClick={filter}>
-                    Apply filter
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="inherit"
-                    className="h-10"
-                    onClick={filterRest}
-                  >
-                    reset
-                  </Button>
-                </div>
-              )}
+
+              {
+                selectedFilter === "day" && 
+                <label
+                htmlFor="fromDate"
+                className=" flex flex-col gap-2 text-sm font-semibold"
+              >
+                Date
+                <input type="date" className="border p-2 uppercase rounded-md" value={filterOrders.date} name="date" onChange={handleChange}/>
+               </label>
+              }
+
+              {selectedFilter &&
+                selectedFilter !== "today" &&
+                selectedFilter !== "week" &&
+                selectedFilter !== "month" && (
+                  <div className="flex gap-3">
+                    <Button
+                      variant="outlined"
+                      className="h-10"
+                      onClick={filter}
+                    >
+                      Apply filter
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="inherit"
+                      className="h-10"
+                      onClick={filterRest}
+                    >
+                      reset
+                    </Button>
+                  </div>
+                )}
             </div>
           </div>
 
