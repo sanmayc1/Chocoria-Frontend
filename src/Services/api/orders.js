@@ -136,7 +136,30 @@ export const updateOrderStatus = async (data) => {
 
 export const getDeliveredOrders = async () => {
     try {
-        const res = await chocoriaBackEnd.get(`admin/orders/delivered`);
+        const res = await chocoriaBackEnd.get(`/admin/orders/delivered`);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}
+
+// get total revenue
+
+export const getTotalRevenue = async (selectedFilter)=>{
+    try {
+        const res = await chocoriaBackEnd.get(`/admin/orders/revenue?filter=${selectedFilter}`);
+        return res;
+    } catch (error) {
+        
+    }
+}
+
+// get user order details 
+
+
+export const getUserOrderDetails = async (id) => {
+    try {
+        const res = await chocoriaBackEnd.get(`/user/order/details/${id}`);
         return res;
     } catch (error) {
         return error;

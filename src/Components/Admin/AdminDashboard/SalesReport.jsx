@@ -150,10 +150,10 @@ const OrderSection = () => {
 
     if (selectedFilter === "month") {
       const thisMonth = new Date().getMonth() + 1;
-      console.log(thisMonth);
+      const thisYear = new Date().getFullYear();  
       setOrders(
         data.filter(
-          (order) => order.orderId.orderDate.split("-")[1] == thisMonth
+          (order) => order.orderId.orderDate.split("-")[1] == thisMonth && order.orderId.orderDate.split("-")[0] == thisYear
         )
       );
       return;

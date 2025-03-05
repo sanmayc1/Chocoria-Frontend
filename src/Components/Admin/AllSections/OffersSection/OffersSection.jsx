@@ -3,7 +3,10 @@ import { Button, Pagination } from "@mui/material";
 import { toast } from "react-toastify";
 import Modal from "../../../HelperComponents/Modal.jsx";
 import AddOffer from "./AddOffer.jsx";
-import { deleteOffer, getAllOffers } from "../../../../Services/api/offerApi.js";
+import {
+  deleteOffer,
+  getAllOffers,
+} from "../../../../Services/api/offerApi.js";
 import { baseUrl } from "../../../../Services/api/constants.js";
 import { Trash2 } from "lucide-react";
 import DeleteDailog from "../../../HelperComponents/DeleteDailog.jsx";
@@ -20,9 +23,13 @@ const OffersSection = () => {
     const fetchOffers = async () => {
       const response = await getAllOffers();
       if (response.status === 200) {
-      const productsOfferData = response.data.productsOffers.filter((offer) => offer.specificProduct !== null);
-      const categoriesOfferData = response.data.categoryOffers.filter((offer) => offer.specificProduct !== null);
-        
+        const productsOfferData = response.data.productsOffers.filter(
+          (offer) => offer.specificProduct !== null
+        );
+        const categoriesOfferData = response.data.categoryOffers.filter(
+          (offer) => offer.specificProduct !== null
+        );
+
         setProductsOffer(productsOfferData);
         setCategoriesOffer(categoriesOfferData);
       }
@@ -35,10 +42,10 @@ const OffersSection = () => {
     setIsOpenDelete(true);
   };
 
-  const closeDeleteModal = ()=>{
+  const closeDeleteModal = () => {
     setIsOpenDelete(false);
-    setSelectedOffer(null)
-  }
+    setSelectedOffer(null);
+  };
   const deleteSelectedOffer = async () => {
     setIsOpenDelete(false);
     const response = await deleteOffer(selectedOffer._id);
@@ -48,13 +55,13 @@ const OffersSection = () => {
         position: "top-center",
         autoClose: 1000,
       });
-      return
+      return;
     }
     toast.error(response.response.data.message, {
       position: "top-center",
       autoClose: 1000,
     });
-  }
+  };
   return (
     <>
       <div className="p-4 sm:p-6 space-y-6">
@@ -96,18 +103,17 @@ const OffersSection = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
                     Expire Date
                   </th>
-                  
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-                    
-                  </th>
+
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell"></th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {productsOffer.map((offer) => (
                   <tr
                     key={offer._id}
-                    className="hover:bg-gray-50 "
+                    className={`hover:bg-gray-50`}
                   >
+                  
                     <td className="px-6 py-4 ">
                       <img
                         src={`${baseUrl}${offer.specificProduct.images[0]}`}
@@ -128,15 +134,20 @@ const OffersSection = () => {
                       <span className="px-2 text-sm">{offer.percentage}%</span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span
+                    { offer.expiresAt.split("T")[0] !==
+                      new Date().toISOString().split("T")[0] ? <span
                         className={`px-2 inline-flex text-sm leading-5 rounded-full`}
                       >
                         {offer.expiresAt.split("T")[0]}
-                      </span>
+                      </span>:<span className="text-red-500">Expired</span>}
                     </td>
-                   
+
                     <td className="px-6 py-4 whitespace-nowrap">
-                     <Trash2 size={16} color="red" onClick={()=>openDeleteModal (offer)} />
+                      <Trash2
+                        size={16}
+                        color="red"
+                        onClick={() => openDeleteModal(offer)}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -177,18 +188,13 @@ const OffersSection = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
                     expires date
                   </th>
-                
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    
-                  </th>
+
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {categoriesOffer.map((offer) => (
-                  <tr
-                    key={offer._id}
-                    className="hover:bg-gray-50 "
-                  >
+                  <tr key={offer._id} className="hover:bg-gray-50 ">
                     <td className="px-6 py-4 whitespace-nowrap">
                       {offer.specificCategory.name}
                     </td>
@@ -200,10 +206,14 @@ const OffersSection = () => {
                       <span className="px-2 text-sm">{offer.percentage}%</span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                     {offer.expiresAt.split("T")[0]}
+                      {offer.expiresAt.split("T")[0]}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                     <Trash2 size={16} color="red" onClick={()=>openDeleteModal(offer)} />
+                      <Trash2
+                        size={16}
+                        color="red"
+                        onClick={() => openDeleteModal(offer)}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -213,9 +223,7 @@ const OffersSection = () => {
         </div>
         {/* Pagination */}
         <div className="flex justify-center">
-    
-            <Pagination count={1} />
-        
+          <Pagination count={1} />
         </div>
       </div>
 
@@ -224,10 +232,10 @@ const OffersSection = () => {
       </Modal>
       <Modal isOpen={isOpenDelete} onClose={closeDeleteModal}>
         <DeleteDailog
-        title={"Delete Offer"}
-        message={`Are you sure you want to delete "${selectedOffer?.offerTitle}" this offer?`}
-        cancel={closeDeleteModal}
-        confirm={deleteSelectedOffer}
+          title={"Delete Offer"}
+          message={`Are you sure you want to delete "${selectedOffer?.offerTitle}" this offer?`}
+          cancel={closeDeleteModal}
+          confirm={deleteSelectedOffer}
         />
       </Modal>
     </>

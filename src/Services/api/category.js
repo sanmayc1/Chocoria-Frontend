@@ -63,3 +63,14 @@ export const getCategoriesUserSide = async ()=>{
       return error;
   }
 }
+
+// get top selling categories
+ 
+export const getTopSellingCategories = async () => {
+  try {
+      const res = await chocoriaBackEnd.get("/admin//category/top-selling");
+      return res;
+  } catch (error) {
+      return error;
+  }
+}

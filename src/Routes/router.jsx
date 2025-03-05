@@ -44,6 +44,7 @@ import Wishlist from "../Components/User/Wishlist/Wishlist.jsx";
 import Wallet from "../Components/User/UserProfile/Wallet/Wallet.jsx";
 import WalletHistory from "../Components/User/UserProfile/Wallet/WalletHistory.jsx";
 import SalesReport from "../Components/Admin/AdminDashboard/SalesReport.jsx";
+import OrderFailed from "../Components/User/CheckoutPage/OrderFailed/OrderFailed.jsx";
 
 const router = createBrowserRouter([
   {
@@ -91,6 +92,10 @@ const router = createBrowserRouter([
             element:<ProductSearchResult/>
           }
         ]
+      },
+      {
+        path:"/checkout/failed/:id",
+        element:<OrderFailed/>
       },
       {
         path:"/shop",

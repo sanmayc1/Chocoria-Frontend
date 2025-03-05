@@ -102,18 +102,18 @@ const Checkout = () => {
     };
     if (selectedMethod === "razorpay") {
       const response = await place_order(data);
-      console.log(response);
+  
       if (response.status === 200) {
         const order = response.data.razorpayOrder;
         const user = response.data.user;
         const key = import.meta.env.VITE_RAZORPAY_KEY_ID;
         const options = {
-          key, 
-          amount: order.amount, 
+          key,
+          amount: order.amount,
           currency: order.currency,
           name: "Chocoria",
           description: "Test Transaction",
-          order_id: order.id, 
+          order_id: order.id,
           handler: async function (response) {
             const data = {
               razorpayPaymentId: response.razorpay_payment_id,
@@ -139,15 +139,15 @@ const Checkout = () => {
           },
           modal: {
             ondismiss: async function () {
-              console.log(order.id);
+              
               try {
                 const data = {
                   razorpayOrderId: order.id,
                 };
                 const res = await updateOrderStatus(data);
-                console.log(res);
+                
                 if (res.status === 200) {
-                  console.log(res.data.message);
+                  navigate(`/checkout/failed/${res.data.order._id}`);
                   return;
                 }
               } catch (error) {
@@ -167,8 +167,8 @@ const Checkout = () => {
             const res = await updateOrderStatus(data);
 
             if (res.status === 200) {
-              console.log(res.data.message);
-
+              navigate(`/checkout/failed/${res.data.order._id}`);
+             
               return;
             }
           } catch (error) {
@@ -179,17 +179,16 @@ const Checkout = () => {
         setLoading(false);
         return;
       }
-     
 
       toast.error(response.response.data.message, {
         position: "top-center",
         autoClose: 1000,
-        theme:"dark",
-        style:{width:"100%"}
+        theme: "dark",
+        style: { width: "100%" },
       });
       setLoading(false);
       console.log(response);
-      if(response.status === 409){
+      if (response.status === 409) {
         navigate("/user/cart");
       }
       return;
@@ -205,15 +204,15 @@ const Checkout = () => {
       toast.error(response.response.data.message, {
         position: "top-center",
         autoClose: 2000,
-        theme:"dark",
-        style:{width:"100%"}
+        theme: "dark",
+        style: { width: "100%" },
       });
       setLoading(false);
-      
-      if(response.status === 409){
+
+      if (response.status === 409) {
         navigate("/user/cart");
       }
-      return
+      return;
     }
   };
 
@@ -248,7 +247,6 @@ const Checkout = () => {
               setSelectedMethod={setSelectedMethod}
               placeOrder={placeOrder}
               loading={loading}
-             
             />
           )}
         </div>

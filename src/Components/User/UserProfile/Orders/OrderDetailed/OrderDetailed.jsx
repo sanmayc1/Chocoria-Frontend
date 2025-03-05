@@ -203,12 +203,22 @@ const OrderDetailed = () => {
               ) : orderItems.status === "Cancelled" ? (
                 <p className="text-sm font-medium">Order Cancelled</p>
               ) : orderItems.status === "Order Not Placed" ? (
-                <div>
+                <div className="flex flex-col gap-2 w-full">
                   <p className="text-md font-medium ">Order Not Placed</p>
 
                   <p className="text-sm">
                     Your Payment was not confirmed by the bank.
                   </p>
+                  <div className="flex justify-end">
+                     <Button
+                    variant="contained"
+                    color="success"
+                    
+                  >
+                    Continue Payment
+                  </Button>
+                  </div>
+                 
                 </div>
               ) : (
                 <Button

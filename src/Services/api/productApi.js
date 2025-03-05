@@ -106,3 +106,14 @@ export const searchProduct = async (data,filterData) => {
     return error;
   }
 };
+
+// get top selling product
+
+export const getTopSellingProduct = async () => {
+  try {
+    const res = await chocoriaBackEnd.get("/admin/products/top-selling");
+    return res;
+  } catch (error) {
+    return error;
+  }
+};

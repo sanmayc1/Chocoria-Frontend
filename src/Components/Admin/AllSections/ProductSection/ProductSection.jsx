@@ -98,7 +98,9 @@ const ProductSection = () => {
 
     toast.error(response.response.data.message, {
       position: "top-center",
-      autoClose: 1000,
+      autoClose: 2000,
+      theme:"dark",
+      style:{width:"100%"}
     });
   };
 
@@ -111,21 +113,7 @@ const ProductSection = () => {
           title="Total Products"
           value={totalProducts}
         />
-        {/* <QuickStatCard
-          icon={<Archive className="text-green-500" />}
-          title="In Stock"
-          value="385"
-        />
-        <QuickStatCard
-          icon={<Tag className="text-yellow-500" />}
-          title="Categories"
-          value="12"
-        />
-        <QuickStatCard
-          icon={<Package className="text-red-500" />}
-          title="Low Stock"
-          value="15"
-        /> */}
+       
       </div>
 
       {/* Product Table */}
