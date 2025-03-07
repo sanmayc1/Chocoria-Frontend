@@ -6,16 +6,31 @@ import Breadcrumbs from "../../Breadcrumbs/Breadcrumbs.jsx";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [ordersPerPage] = useState(4);
+  const [totalPages, setTotalPages] = useState(0);
+
+  
   useEffect(() => {
     async function fetch_orders() {
       const response = await get_orders();
       if (response.status === 200) {
-        setOrders(response.data.orders);
+        const data = response.data.orders
+        setTotalPages(Math.ceil(data.length / ordersPerPage));
+        const startIndex = (currentPage - 1) * ordersPerPage;
+        const endIndex = startIndex + ordersPerPage;
+        const currentOrders = data.slice(startIndex, endIndex);
+        setOrders(currentOrders);
         return;
       }
     }
     fetch_orders();
-  }, []);
+  }, [currentPage]);
+
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <>
@@ -33,7 +48,7 @@ const Orders = () => {
           )}
         </div>
         <div className="w-full flex justify-center">
-          {orders.length > 0 && <Pagination />}
+          <Pagination count={totalPages} page={currentPage} onChange={handlePageChange}  />
         </div>
       </div>
     </>

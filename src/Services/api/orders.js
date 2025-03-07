@@ -165,3 +165,25 @@ export const getUserOrderDetails = async (id) => {
         return error;
     }
 }
+
+// create a razorpay api 
+
+export const createRazorpayOrder = async (data) => {
+    try {
+        const res = await chocoriaBackEnd.post(`/user/order/razorpay`,data);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}
+
+// retry payment verification 
+
+export const retryPaymentVerify = async (data) => {
+    try {
+        const res = await chocoriaBackEnd.patch(`/user/order/payment/verify/retry`,data);
+        return res;
+    } catch (error) {
+        return error;
+    }
+}

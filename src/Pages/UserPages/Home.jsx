@@ -4,18 +4,23 @@ import CardListingHeading from "../../Components/User/CardListingHeading/CardLis
 import CardListing from "../../Components/User/CardListing/CardListing.jsx";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { getProductsUser } from "../../Services/api/productApi.js";
+import { getPopularProducts, getProductsUser, getTrendingProducts } from "../../Services/api/productApi.js";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 const Home = () => {
   const [products, setProducts] = useState([]);
+  const [popularProducts, setPopularProducts] = useState([]);
+  const [trendingProducts, setTrendingProducts] = useState([]);
 
   useEffect(() => {
     async function fetch_All_Products() {
       const response = await getProductsUser();
-      if (response.status === 200) {
+      const popularResponse = await getPopularProducts();
+      const trendingResponse = await getTrendingProducts()
+      if (response.status === 200 && popularResponse.status === 200 && trendingResponse.status === 200) {
         setProducts(response.data.products);
-        
+        setPopularProducts(popularResponse.data.products);
+        setTrendingProducts(trendingResponse.data.products);
         return;
       }
 
@@ -27,12 +32,12 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    // Prevent back navigation
+   
     window.history.pushState(null, "", window.location.href);
     window.onpopstate = function () {
       window.history.pushState(null, "", window.location.href);
     };
-    // Clean up the event listener when the component unmounts
+   
     return () => {
       window.onpopstate = null;
     };
@@ -49,6 +54,10 @@ const Home = () => {
         <Banner />
         <CardListingHeading heading={"Products"} viewMore />
         <CardListing products={products} />
+        <CardListingHeading heading={"Popular Products"} viewMore />
+        <CardListing products={popularProducts} />
+        <CardListingHeading heading={"Trending Products"} viewMore />
+        <CardListing products={trendingProducts} />
         
       </motion.div>
     </>

@@ -7,14 +7,14 @@ import CustomerReviews from "../../Components/User/CustomerReview/CustomerReview
 import ProductDescription from "../../Components/User/ProductDescription/ProductDescription.jsx";
 import CardListingHeading from "../../Components/User/CardListingHeading/CardListingHeading.jsx";
 import CardListing from "../../Components/User/CardListing/CardListing.jsx";
-import { get_product_user } from "../../Services/api/productApi.js";
+import { get_product_user, getRecommendedProducts } from "../../Services/api/productApi.js";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { baseUrl } from "../../Services/api/constants.js";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CircularProgress } from "@mui/material";
-import Varients from "../../Components/User/Varients/Varients.jsx";
+
 
 
 const ProductDetailedPage = () => {
@@ -31,17 +31,19 @@ const ProductDetailedPage = () => {
   useEffect(() => {
     async function fetch_All_Products() {
       const response = await get_product_user(id);
-      if (response.status === 200) {
+      const recommendedResponse = await getRecommendedProducts(id);
+      if (response.status === 200 && recommendedResponse.status === 200) {
         setProduct(response.data.product);
-        
-        setRecommendation(response.data.recomendation);
-        window.scrollTo(0, 0);
+        setRecommendation(recommendedResponse.data.recommendation);
+        console.log(recommendedResponse)
+        window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
 
       toast.error(response.response.data.message, {
         position: "top-center",
       });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
     fetch_All_Products();
   }, [location.pathname]);
@@ -53,8 +55,8 @@ const ProductDetailedPage = () => {
    
   },[selectedVariant])
 
+console.log(recommendation)
 
-console.log(selectedVariant,product)
 
   if (!product) {
     return (

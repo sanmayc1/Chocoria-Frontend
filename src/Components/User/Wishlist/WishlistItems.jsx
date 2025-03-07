@@ -6,6 +6,7 @@ import Modal from "../../HelperComponents/Modal.jsx";
 import { toast } from "react-toastify";
 import { removeWishlistItem } from "../../../Services/api/whishlistApi.js";
 import { useNavigate } from "react-router-dom";
+import { add_to_cart } from "../../../Services/api/cartApi.js";
 
 const WishlistItems = ({ product, setUpdateWishlist, updateWishlist }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,6 +41,39 @@ const WishlistItems = ({ product, setUpdateWishlist, updateWishlist }) => {
     });
     modalClose();
     return;
+  };
+
+  const addToCart = async () => {
+    if (!product.variant.quantity) {
+      toast.error("Product is out of stock", {
+        position: "top-center",
+        autoClose: 1000,
+        theme: "dark",
+      });
+      return;
+    }
+    const data = {
+      productId: product.productId._id,
+      quantity: 1,
+      variant: product.variant,
+    };
+    const response = await add_to_cart(data);
+    if (response.status === 200) {
+      if (response.data.message === "Go to Cart") {
+        return navigate("/user/cart");
+      }
+
+      toast.success(response.data.message, {
+        position: "top-center",
+        autoClose: 1000,
+      });
+      return;
+    }
+
+    toast.error(response.response.data.message, {
+      position: "top-center",
+      autoClose: 1000,
+    });
   };
   return (
     <>
@@ -78,6 +112,12 @@ const WishlistItems = ({ product, setUpdateWishlist, updateWishlist }) => {
           <span className="sm:hidden text-sm  text-black">Price</span>
           <span>₹{product?.variant?.price}</span>
         </p>
+        <button
+          className="bg-orange-800 text-white px-4 py-2 rounded"
+          onClick={addToCart}
+        >
+          Add to cart
+        </button>
       </div>
       <Modal
         isOpen={isOpen}

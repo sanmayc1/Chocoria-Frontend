@@ -177,7 +177,7 @@ const ProductDetails = ({
                 ₹{actualPrice}
               </span>
               <span className="font-normal text-base text-orange-700">
-                ({offer.percentage}% OFF)
+                ({offer?.percentage}% OFF)
               </span>
             </span>
           )}

@@ -117,3 +117,38 @@ export const getTopSellingProduct = async () => {
     return error;
   }
 };
+
+// get Popular products
+
+export const getPopularProducts = async () => {
+  try {
+    const res = await chocoriaBackEnd.get("/user/products/popular");
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+
+// treding products 
+
+
+export const getTrendingProducts = async () => {
+  try {
+    const res = await chocoriaBackEnd.get("/user/products/trending");
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+// get recommended products
+
+export const getRecommendedProducts = async (id) => {
+  try {
+    const res = await chocoriaBackEnd.get(`/user/products/recommended/${id}`);
+    return res;
+  } catch (error) {
+    return error;
+  }
+};

@@ -11,7 +11,6 @@ const CardListing = ({ products }) => {
   const [cart, setCart] = useState([]);
   const [update, setUpdate] = useState(false);
   const auth = useSelector((state) => state.auth.auth);
-  console.log(products);
   useEffect(() => {
     async function fetchCart() {
       const response = await get_cart();
