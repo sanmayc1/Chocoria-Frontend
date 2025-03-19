@@ -130,7 +130,7 @@ const OrderDetails = () => {
                       <td className="px-6 py-4">{item.quantity}</td>
                       <td className="px-6 py-4">
                         {item.status !== "Cancelled" &&
-                        item.status !== "Delivered" ? (
+                        item.status !== "Delivered" && item.status !=="Order Not Placed" ? (
                           <select
                             name="status"
                             className="p-2 text-gray-800"
@@ -176,7 +176,7 @@ const OrderDetails = () => {
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-gray-800">
-                          {item.totalAmountAfterDiscount}
+                          ₹ {item.totalAmountAfterDiscount}
                         </span>
                       </td>
                     </tr>

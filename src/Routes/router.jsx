@@ -11,7 +11,6 @@ import ReviewSection from "../Components/Admin/AllSections/ReviewSection/ReviewS
 import NotificationSection from "../Components/Admin/AllSections/NotificationSection/NotificationSection.jsx";
 import ContactUsSection from "../Components/Admin/AllSections/ContactUs/ContactUs.jsx";
 import CouponSection from "../Components/Admin/AllSections/CouponSection/CouponSection.jsx";
-import BannerManagementSection from "../Components/Admin/AllSections/BannerManagementSection/BannerManagementSection.jsx";
 import AddProduct from "../Components/Admin/AllSections/ProductSection/Add&EditProduct/AddProduct.jsx";
 import SignUpPage from "../Pages/UserPages/SingnUpPage.jsx";
 import LoginPage from "../Pages/UserPages/LoginPage.jsx";
@@ -45,6 +44,7 @@ import Wallet from "../Components/User/UserProfile/Wallet/Wallet.jsx";
 import WalletHistory from "../Components/User/UserProfile/Wallet/WalletHistory.jsx";
 import SalesReport from "../Components/Admin/AdminDashboard/SalesReport.jsx";
 import OrderFailed from "../Components/User/CheckoutPage/OrderFailed/OrderFailed.jsx";
+import BrandSection from "../Components/Admin/AllSections/Brand/BrandSection.jsx";
 
 const router = createBrowserRouter([
   {
@@ -252,8 +252,8 @@ const router = createBrowserRouter([
         element: <CouponSection />,
       },
       {
-        path: "/admin/banner-management",
-        element: <BannerManagementSection />,
+        path: "/admin/brand",
+        element: <BrandSection />,
       },
       {
         path: "/admin/product/add-product",

@@ -14,6 +14,8 @@ import {
   Menu,
   X,
   Star,
+  Factory,
+  Crown,
 } from "lucide-react";
 import SidebarItem from "../HelperComponents/SidebarItems.jsx";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -163,10 +165,10 @@ const AdminLayout = () => {
           />
           {/* Banner managment */}
           <SidebarItem
-            icon={<ImagePlus size={20} />}
-            text="Banner management"
-            onClick={() => navigate("/admin/banner-management")}
-            active={select.includes("/admin/banner-management") ? true : false}
+            icon={<Crown size={20} />}
+            text="Brand"
+            onClick={() => navigate("/admin/brand")}
+            active={select.includes("/admin/brand") ? true : false}
           />
           {/* Category */}
           <SidebarItem

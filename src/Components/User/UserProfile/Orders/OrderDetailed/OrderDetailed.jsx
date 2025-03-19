@@ -4,9 +4,8 @@ import {
   createRazorpayOrder,
   get_order_details,
   getCancelRequest,
+  orderReturn,
   retryPaymentVerify,
-  updateOrderStatus,
-  verifyPayment,
 } from "../../../../../Services/api/orders";
 import { useNavigate, useParams } from "react-router-dom";
 import { baseUrl } from "../../../../../Services/api/constants";
@@ -17,6 +16,8 @@ import Modal from "../../../../HelperComponents/Modal.jsx";
 import OrderCancelRequest from "./OrderCancelRequest";
 import { toast } from "react-toastify";
 import jsPDF from "jspdf";
+import { TurnLeft } from "@mui/icons-material";
+import OrderReturnRequest from "./OrderReturnRequest.jsx";
 
 const OrderDetailed = () => {
   const { id } = useParams();
@@ -25,6 +26,8 @@ const OrderDetailed = () => {
   const [index, setIndex] = useState(0);
   const [isOpenCancelConfirmation, setIsOpenCancelConfirmation] =
     useState(false);
+  const [isOpenReturnRequest,setIsOpenReturnRequest] = useState(false)
+  const [isOpenReturnRequestConfirmation,setIsOpenReturnRequestConfirmation] = useState(false)
   const [isOpenCancelRequest, setIsOpenCancelRequest] = useState(false);
   const [update, setUpdate] = useState(false);
   const [cancelRequest, setCancelRequest] = useState(null);
@@ -62,6 +65,11 @@ const OrderDetailed = () => {
     setIsOpenCancelRequest(true);
   };
 
+  const confrimReturn = ()=>{
+    setIsOpenReturnRequestConfirmation(false)
+    setIsOpenReturnRequest(true)
+  }
+
   const continuePayment = async () => {
     const response = await createRazorpayOrder({
       totalAmountAfterDiscount: orderItems.totalAmountAfterDiscount,
@@ -89,12 +97,11 @@ const OrderDetailed = () => {
           if (res.status === 200) {
             setUpdate(!update);
             setTimeout(() => {
-                toast.success("Payment Successful", {
-              position: "top-center",
-              autoClose: 1000,
-            });
+              toast.success("Payment Successful", {
+                position: "top-center",
+                autoClose: 1000,
+              });
             }, 3000);
-          
           }
         },
         modal: {
@@ -149,17 +156,28 @@ const OrderDetailed = () => {
     });
   };
 
-  const downloadInvoice = async () => {
+  const submitReturnRequest = async (reason) =>{
+
+    const data = {
+      reason: reason.reason,
+      explanation: reason.explanation,
+      orderItemId: orderItems._id,
+    };
+
+    const response = await orderReturn(data);
     
+   console.log(response.data);
+   
+  }
+
+  const downloadInvoice = async () => {
     const doc = new jsPDF();
 
-
-    
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
     doc.text("INVOICE", 10, 25);
-    
-    doc.setFont("helvetica","normal");
+
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setLineHeightFactor(0.1);
     doc.text(`Order ID: ${order.uniqueOrderId}`, 10, 40);
@@ -169,21 +187,21 @@ const OrderDetailed = () => {
     doc.text(`Address: ${order.shippingAddress.detailed_address}`, 10, 60);
     doc.text(`Payment Method: ${order.paymentMethod}`, 10, 65);
 
-    doc.setFont("helvetica","normal");
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setLineHeightFactor(0.1);
-    doc.text(`${orderItems.productId?.name }`, 10,80);
+    doc.text(`${orderItems.productId?.name}`, 10, 80);
     doc.text(`Quantity :${orderItems.quantity}`, 10, 85);
-   
-    doc.text(`Total Price `,10, 105);
-    doc.text(`${orderItems.totalPrice.toFixed(2)}`, 50, 105)
-    doc.text(`Discount `,10, 110);
-    doc.text(`${orderItems.offerDiscount.toFixed(2)}`, 50, 110)
-    doc.text(`Coupon `,10, 115);
-    doc.text(`${orderItems.couponDiscount.toFixed(2)}`, 50, 115)
-    doc.setFont("helvetica","bold");
-    doc.text(`Price`,10, 125);
-    doc.text(`${orderItems.totalAmountAfterDiscount.toFixed(2)}`, 50, 125)
+
+    doc.text(`Total Price `, 10, 105);
+    doc.text(`${orderItems.totalPrice.toFixed(2)}`, 50, 105);
+    doc.text(`Discount `, 10, 110);
+    doc.text(`${orderItems.offerDiscount.toFixed(2)}`, 50, 110);
+    doc.text(`Coupon `, 10, 115);
+    doc.text(`${orderItems.couponDiscount.toFixed(2)}`, 50, 115);
+    doc.setFont("helvetica", "bold");
+    doc.text(`Price`, 10, 125);
+    doc.text(`${orderItems.totalAmountAfterDiscount.toFixed(2)}`, 50, 125);
 
     doc.save(`invoice.pdf`);
   };
@@ -195,6 +213,8 @@ const OrderDetailed = () => {
       </div>
     );
   }
+
+  
 
   return (
     <>
@@ -254,7 +274,10 @@ const OrderDetailed = () => {
               </div>
 
               {orderItems.status === "Delivered" && (
-                <p className="pt-5 text-blue-500 cursor-pointer" onClick={downloadInvoice}>
+                <p
+                  className="pt-5 text-blue-500 cursor-pointer"
+                  onClick={downloadInvoice}
+                >
                   Download Invoice
                 </p>
               )}
@@ -319,7 +342,11 @@ const OrderDetailed = () => {
             >
               {orderItems.status === "Delivered" ? (
                 <div className="flex gap-4">
-                  <Button variant="outlined" color="error">
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={()=>setIsOpenReturnRequestConfirmation(true)}
+                  >
                     Return
                   </Button>
                   <Button variant="outlined" color="inherit">
@@ -406,6 +433,28 @@ const OrderDetailed = () => {
         <OrderCancelRequest
           cancel={() => setIsOpenCancelRequest(false)}
           confirm={submitCancelRequest}
+        />
+      </Modal>
+      <Modal
+        isOpen={isOpenReturnRequestConfirmation}
+        onClose={() => setIsOpenReturnRequestConfirmation(false)}
+      >
+        <DeleteDailog
+          btnName={"Yes"}
+          rejectBtnName={"No"}
+          title={"Return Order"}
+          cancel={() => setIsOpenReturnRequestConfirmation(false)}
+          message={"Are you sure you want to Return this order?"}
+          confirm={confrimReturn}
+        />
+      </Modal>
+      <Modal
+        isOpen={isOpenReturnRequest}
+        onClose={() => setIsOpenReturnRequest(false)}
+      >
+        <OrderReturnRequest
+          cancel={() => setIsOpenReturnRequest(false)}
+          confirm={submitReturnRequest}
         />
       </Modal>
     </>
