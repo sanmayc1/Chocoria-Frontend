@@ -113,12 +113,12 @@ const OrderDetails = () => {
                     <tr className="bg-white border-b  " key={item._id}>
                       <td className="px-6 py-4 flex items-center gap-2">
                         <img
-                          src={`${baseUrl}${item.img}`}
+                          src={`${baseUrl}${item?.productId?.images[0]}`}
                           alt="product"
                           className="w-12 h-12 object-contain"
                         />
                         <span className="font-medium text-gray-800">
-                          {" "}
+                         
                           {item.name}
                         </span>
                       </td>
@@ -130,7 +130,7 @@ const OrderDetails = () => {
                       <td className="px-6 py-4">{item.quantity}</td>
                       <td className="px-6 py-4">
                         {item.status !== "Cancelled" &&
-                        item.status !== "Delivered" && item.status !=="Order Not Placed" ? (
+                        item.status !== "Delivered" && item.status !=="Order Not Placed" && item.status !== "Return"  ? (
                           <select
                             name="status"
                             className="p-2 text-gray-800"

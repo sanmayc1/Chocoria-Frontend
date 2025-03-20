@@ -4,23 +4,38 @@ import CardListingHeading from "../../Components/User/CardListingHeading/CardLis
 import CardListing from "../../Components/User/CardListing/CardListing.jsx";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { getPopularProducts, getProductsUser, getTrendingProducts } from "../../Services/api/productApi.js";
+import {
+  getPopularProducts,
+  getProductsUser,
+  getTrendingProducts,
+} from "../../Services/api/productApi.js";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import BrandScroll from "../../Components/User/Brand/BrandScroll.jsx";
+import { getAllBrandsUser } from "../../Services/api/brand.js";
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [popularProducts, setPopularProducts] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
+  const [brands, setBrands] = useState([]);
 
   useEffect(() => {
-    async function fetch_All_Products() {
+    async function fetchAll() {
       const response = await getProductsUser();
       const popularResponse = await getPopularProducts();
-      const trendingResponse = await getTrendingProducts()
-      if (response.status === 200 && popularResponse.status === 200 && trendingResponse.status === 200) {
+      const trendingResponse = await getTrendingProducts();
+      const brandResponse = await getAllBrandsUser();
+      console.log(brandResponse);
+      if (
+        response.status === 200 &&
+        popularResponse.status === 200 &&
+        trendingResponse.status === 200 &&
+        brandResponse.status === 200
+      ) {
         setProducts(response.data.products);
         setPopularProducts(popularResponse.data.products);
         setTrendingProducts(trendingResponse.data.products);
+        setBrands(brandResponse.data.brands);
         return;
       }
 
@@ -28,21 +43,19 @@ const Home = () => {
         position: "top-center",
       });
     }
-    fetch_All_Products();
+    fetchAll();
   }, []);
 
   useEffect(() => {
-   
     window.history.pushState(null, "", window.location.href);
     window.onpopstate = function () {
       window.history.pushState(null, "", window.location.href);
     };
-   
+
     return () => {
       window.onpopstate = null;
     };
   }, []);
-  
 
   return (
     <>
@@ -52,13 +65,16 @@ const Home = () => {
         transition={{ duration: 0.5 }}
       >
         <Banner />
-        <CardListingHeading heading={"Products"} viewMore />
+        <div className="flex justify-center p-5">
+          <CardListingHeading heading={"Top Brands"} />
+        </div>
+        <BrandScroll brands={brands} />
+        <CardListingHeading heading={"Products"} />
         <CardListing products={products} />
-        <CardListingHeading heading={"Popular Products"} viewMore />
+        <CardListingHeading heading={"Popular Products"} />
         <CardListing products={popularProducts} />
-        <CardListingHeading heading={"Trending Products"} viewMore />
+        <CardListingHeading heading={"Trending Products"} />
         <CardListing products={trendingProducts} />
-        
       </motion.div>
     </>
   );

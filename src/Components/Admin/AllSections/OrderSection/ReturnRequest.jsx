@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import Modal from "../../../HelperComponents/Modal.jsx";
 import {
-  getAllCancelRequests,
-  updateCancelRequest,
+  getAllReturnRequests,
+  updateReturnRequest,
 } from "../../../../Services/api/orders.js";
 import { Eye } from "lucide-react";
 import CancelReturnModal from "./CancelReturnModal.jsx";
 import { toast } from "react-toastify";
 
-const CancelRequests = () => {
-  const [cancelRequests, setCancelRequests] = useState([]);
+const ReturnRequests = () => {
+  const [returnRequest, setReturnRequests] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isOpenReject, setIsOpenReject] = useState(false);
@@ -17,14 +17,14 @@ const CancelRequests = () => {
   const [update, setUpdate] = useState(false);
 
   useEffect(() => {
-    const fetchCancelRequests = async () => {
-      const response = await getAllCancelRequests();
+    const fetchReturnRequests = async () => {
+      const response = await getAllReturnRequests()
       if (response.status === 200) {
-        setCancelRequests(response.data.cancelRequests);
+        setReturnRequests(response.data.returnRequests);
         return;
       }
     };
-    fetchCancelRequests();
+    fetchReturnRequests();
   }, [update]);
 
   const openModal = (details) => {
@@ -50,7 +50,7 @@ const CancelRequests = () => {
       return;
     }
      
-    const response = await updateCancelRequest(requestId, {
+    const response = await updateReturnRequest(requestId, {
       status: action,
       response: reason,
     });
@@ -80,7 +80,7 @@ const CancelRequests = () => {
     <>
       <div className="p-10">
         <div className="bg-white  w-full rounded-lg shadow-md p-6">
-          <h5 className="text-xl  font-bold pb-2">Cancel Requests</h5>
+          <h5 className="text-xl  font-bold pb-2">Return Requests</h5>
 
           <div>
             <div className="overflow-x-auto">
@@ -106,10 +106,10 @@ const CancelRequests = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {cancelRequests?.map((request) => (
+                  {returnRequest?.map((request) => (
                     <tr className="bg-white border-b  " key={request._id}>
                       <td className="px-6 py-4 font-medium ">
-                        #{request.orderId.uniqueOrderId}
+                        {request.orderId.uniqueOrderId}
                       </td>
                       <td className="px-6 py-4">{request.orderItem.name}</td>
                       <td className="px-6 py-4 text-orange-300">
@@ -137,8 +137,8 @@ const CancelRequests = () => {
       </div>
       <Modal isOpen={isOpen} onClose={closeModal}>
         <CancelReturnModal
-        title={"Cancel Request"}
           selectedRequest={selectedRequest}
+          title={"Return Request"}
           handleRejectAndApprove={handleRejectAndApprove}
           handleReject={handleReject}
         />
@@ -170,7 +170,7 @@ const CancelRequests = () => {
               );
             }}
           >
-            Reject
+            Confirm
           </button>
         </div>
       </Modal>
@@ -178,4 +178,4 @@ const CancelRequests = () => {
   );
 };
 
-export default CancelRequests;
+export default ReturnRequests;

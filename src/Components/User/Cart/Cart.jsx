@@ -10,10 +10,8 @@ const Cart = () => {
   const [update, setUpdate] = useState(false);
   const navigate = useNavigate();
 
-
-
   // navigate to product detailed page
-  const navigateToProductDetailedPage = (id,variantId) => {
+  const navigateToProductDetailedPage = (id, variantId) => {
     navigate(`/product/${id}?variant=${variantId}`);
   };
 
@@ -22,8 +20,7 @@ const Cart = () => {
       const response = await get_cart();
       if (response.status === 200) {
         const data = response.data.cart.products.filter(
-          (item) =>
-            item.productId !== null 
+          (item) => item.productId !== null
         );
         console.log(response.data.cart.products);
         setCart(data);
@@ -31,6 +28,7 @@ const Cart = () => {
       }
     }
     fetchCart();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [update]);
 
   // handleCheckout
@@ -43,16 +41,16 @@ const Cart = () => {
         theme: "dark",
       });
     }
-for(let item of cart){
-  if(item.variant.quantity<=0){
-    return toast.error("Cart Contain Out Stock Products", {
-      position: "top-center",
-      autoClose: 1000,
-      theme: "dark",
-      style: { width: "100%" },
-    });
-  }
-}
+    for (let item of cart) {
+      if (item.variant.quantity <= 0) {
+        return toast.error("Cart Contain Out Stock Products", {
+          position: "top-center",
+          autoClose: 1000,
+          theme: "dark",
+          style: { width: "100%" },
+        });
+      }
+    }
     navigate("/user/checkout");
   };
 
@@ -62,18 +60,14 @@ for(let item of cart){
 
   // total price calculator
 
-
   const totalPrice = cart.reduce((acc, cur) => {
-      const price = cur.variant.actualPrice  ?? cur.variant.price
-      return (acc += (price * cur.quantity));
-    }, 0);
+    const price = cur.variant.actualPrice ?? cur.variant.price;
+    return (acc += price * cur.quantity);
+  }, 0);
 
-
-  const afterDiscountedAmount=  cart.reduce((acc, cur) => {
-      return (acc +=( cur.variant.price * cur.quantity) )
-    }, 0);
-
-
+  const afterDiscountedAmount = cart.reduce((acc, cur) => {
+    return (acc += cur.variant.price * cur.quantity);
+  }, 0);
 
   return (
     <div className="min-h-screen  p-4">
@@ -133,7 +127,9 @@ for(let item of cart){
 
               <div className="flex justify-between items-center">
                 <p className="text-base font-semibold">Discount</p>
-                <p className="text-base font-bold">-{(totalPrice-afterDiscountedAmount).toFixed(2)}</p>
+                <p className="text-base font-bold">
+                  -{(totalPrice - afterDiscountedAmount).toFixed(2)}
+                </p>
               </div>
             </div>
 

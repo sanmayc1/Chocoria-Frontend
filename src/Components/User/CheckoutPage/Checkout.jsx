@@ -19,13 +19,14 @@ const Checkout = () => {
   const [index, setIndex] = useState(1);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [selectedMethod, setSelectedMethod] = useState("COD");
+  const [selectedMethod, setSelectedMethod] = useState("razorpay");
   const [update, setUpdate] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponDiscount, setCouponDiscount] = useState(0);
+  const [total, setTotal] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,6 +46,7 @@ const Checkout = () => {
       });
     }
     fetchCart();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   useEffect(() => {
@@ -232,6 +234,8 @@ const Checkout = () => {
           )}
           {index === 2 && (
             <OrderSummary
+              total={total}
+              setTotal={setTotal}
               appliedCoupon={appliedCoupon}
               setAppliedCoupon={setAppliedCoupon}
               selectedAddress={selectedAddress}
@@ -247,6 +251,7 @@ const Checkout = () => {
               setSelectedMethod={setSelectedMethod}
               placeOrder={placeOrder}
               loading={loading}
+              totalPrice={total}
             />
           )}
         </div>

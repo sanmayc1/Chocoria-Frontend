@@ -194,3 +194,35 @@ export const orderReturn = async (data) => {
     return error;
   }
 };
+
+// return request 
+
+export const getReturnRequest = async (id) => {
+  try {
+    const res = await chocoriaBackEnd.get(`/user/order/${id}/return`);
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+
+// get all return requests for admin
+export const getAllReturnRequests = async () => {
+  try {
+    const res = await chocoriaBackEnd.get(`/admin/orders/return`);
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+// admin side order return  request update
+export const updateReturnRequest = async (id, data) => {
+  try {
+    const res = await chocoriaBackEnd.patch(`/admin/orders/${id}/return`, data);
+    return res;
+  } catch (error) {
+    return error;
+  }
+};

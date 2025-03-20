@@ -18,6 +18,7 @@ const ShopPage = () => {
     sortBy: searchParams.get("sortBy") || "",
     rating: searchParams.get("rating") || "",
     category: searchParams.get("category") || "",
+    brand:searchParams.get("brand") || ""
   };
 
   const [filterData, setFilterData] = useState(initialFilterData);
@@ -37,7 +38,9 @@ const ShopPage = () => {
       });
     };
     fetchProducts();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [query, filterData]);
+  console.log(filterData)
 
   useEffect(() => {
     if (query) {
@@ -49,7 +52,7 @@ const ShopPage = () => {
   useEffect(() => {
     navigate({
       pathname: `/shop`,
-      search: `?sortBy=${filterData.sortBy}&query=${query}&rating=${filterData.rating}&category=${filterData.category}`,
+      search: `?sortBy=${filterData.sortBy}&query=${query}&rating=${filterData.rating}&category=${filterData.category}&brand=${filterData.brand}`,
     });
   }, [filterData, navigate]);
 

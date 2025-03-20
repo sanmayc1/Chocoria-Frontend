@@ -108,6 +108,7 @@ const BrandSection = () => {
       closeDeleteConfirmation();
       return;
     }
+    closeDeleteConfirmation();
     toast.error(response.response.data.message, {
       position: "top-center",
       style: { width: "100%" },

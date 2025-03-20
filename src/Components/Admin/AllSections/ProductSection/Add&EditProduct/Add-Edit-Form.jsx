@@ -6,6 +6,7 @@ import ImageCropper from "../ImageCroper.jsx";
 import { Crop } from "lucide-react";
 import { useRef } from "react";
 import { get_categories } from "../../../../../Services/api/category";
+import { getAllBrands } from "../../../../../Services/api/brand.js";
 const AddEditForm = ({
   images,
   setImages,
@@ -21,6 +22,7 @@ const AddEditForm = ({
   const [editImageid, setEditImageId] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [brands ,setBrand] = useState([])
   const inputFileRef = useRef(null);
 
   // fetch the available categories
@@ -34,7 +36,19 @@ const AddEditForm = ({
       }
       toast.error(response.response.data.message);
     }
+
+    async function fetchBrand() {
+      const response = await getAllBrands();
+      if (response.status === 200) {
+        setBrand(response.data.brands);
+        return null;
+      }
+      toast.error(response.response.data.message);
+    }
+
     fetchCategories();
+    fetchBrand()
+
   }, []);
 
   const handleImageUpload = (e) => {
@@ -139,15 +153,19 @@ const AddEditForm = ({
                   </label>
                   <select
                     id="brand"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    className="uppercase w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                     name="brand"
                     onChange={handleChange}
                     value={productDetails.brand}
                   >
                     <option value="">Select brand</option>
-                    <option value="Ferraro">Ferraro</option>
-                    <option value="Cadbury">Cadburry</option>
-                    <option value="Hershey's">Hershey's</option>
+                    {
+                         brands.map((brand)=>{
+                          return (
+                            <option key={brand._id} value={brand._id} className="uppercase">{brand.name}</option>
+                          )
+                         })
+                    }
                   </select>
                 </div>
               </div>

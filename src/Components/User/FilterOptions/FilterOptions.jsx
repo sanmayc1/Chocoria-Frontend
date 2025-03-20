@@ -1,18 +1,22 @@
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getCategoriesUserSide } from "../../../Services/api/category";
+import { getAllBrandsUser } from "../../../Services/api/brand";
 
 const FilterOptions = ({ filterData, setFilterData }) => {
   const [toggleSelect, setToggleSelect] = useState(null);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [category, setCategory] = useState([]);
+  const [brands, setBrands] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await getCategoriesUserSide();
-        if (res.status === 200) {
+        const brandResponse = await getAllBrandsUser();
+        if (res.status === 200 && brandResponse.status === 200) {
           setCategory(res.data.categories);
+          setBrands(brandResponse.data.brands);
         }
       } catch (error) {}
     };
@@ -26,7 +30,7 @@ const FilterOptions = ({ filterData, setFilterData }) => {
       [name]: value,
     });
   };
-  
+
   return (
     <>
       {/* Mobile Filter Button */}
@@ -187,13 +191,29 @@ const FilterOptions = ({ filterData, setFilterData }) => {
               toggleSelect === "category" ? "flex" : "hidden"
             }`}
           >
-             <label  htmlFor="milkChocolate" className="cursor-pointer">
-                <input type="radio" name="category" value="" onChange={handleChange} checked={filterData.category === ""} />
-                <span className="pl-2">All Categories</span>
-              </label>
+            <label htmlFor="milkChocolate" className="cursor-pointer">
+              <input
+                type="radio"
+                name="category"
+                value=""
+                onChange={handleChange}
+                checked={filterData.category === ""}
+              />
+              <span className="pl-2">All Categories</span>
+            </label>
             {category.map((item) => (
-              <label key={item._id} htmlFor="milkChocolate" className="cursor-pointer">
-                <input type="radio" name="category" value={item._id} onChange={handleChange} checked={filterData.category === item._id} />
+              <label
+                key={item._id}
+                htmlFor="milkChocolate"
+                className="cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name="category"
+                  value={item._id}
+                  onChange={handleChange}
+                  checked={filterData.category === item._id}
+                />
                 <span className="pl-2">{item.name}</span>
               </label>
             ))}
@@ -215,10 +235,32 @@ const FilterOptions = ({ filterData, setFilterData }) => {
               toggleSelect === "brand" ? "flex" : "hidden"
             }`}
           >
-            <label htmlFor="milkChocolate" className="cursor-pointer">
-              <input type="radio" name="sort" />
-              <span className="pl-2">Ferraro</span>
+            <label htmlFor="brand" className="cursor-pointer">
+              <input
+                type="radio"
+                name="brand"
+                value=""
+                onChange={handleChange}
+                checked={filterData.brand === ""}
+              />
+              <span className="pl-2">All Brands</span>
             </label>
+            {brands.map((item) => (
+              <label
+                key={item._id}
+                htmlFor="brand"
+                className="cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name="brand"
+                  value={item._id}
+                  onChange={handleChange}
+                  checked={filterData.brand === item._id}
+                />
+                <span className="pl-2 uppercase">{item.name}</span>
+              </label>
+            ))}
           </div>
         </div>
       </div>

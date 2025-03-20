@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { CreditCard, Plus, CreditCardIcon, ChevronRight, Wallet } from "lucide-react";
+import {
+  CreditCard,
+  Plus,
+  CreditCardIcon,
+  ChevronRight,
+  Wallet,
+} from "lucide-react";
 import { SipOutlined } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 
@@ -17,8 +23,12 @@ const PaymentOptions = ({
       <div className="space-y-4">
         {/* COD Option */}
         <div
-          onClick={() => setSelectedMethod("COD")}
-          className={`relative p-4 border rounded-lg cursor-pointer transition-all ${
+          onClick={() =>
+            setSelectedMethod(totalPrice > 1000 ? "razorpay" : "COD")
+          }
+          className={`relative p-4 border rounded-lg  transition-all ${
+            totalPrice > 1000 ? "cursor-not-allowed  text-gray-500 " : "cursor-pointer"
+          } ${
             selectedMethod === "COD"
               ? "border-blue-500 bg-blue-50"
               : "border-gray-200 hover:border-gray-300"
@@ -31,7 +41,9 @@ const PaymentOptions = ({
             <div>
               <h3 className="font-medium">Cash on Delivery</h3>
               <p className="text-sm text-gray-600">
-                Pay with cash when you receive the order
+                {totalPrice > 1000
+                  ? "COD not available for orders above ₹1000. Please use another payment method."
+                  : "Pay with cash when you receive the order"}
               </p>
             </div>
           </div>
@@ -57,6 +69,10 @@ const PaymentOptions = ({
               </p>
             </div>
           </div>
+        </div>
+        <div className="flex justify-between font-semibold px-2">
+        <p>Total Price</p>
+        <p>₹{totalPrice}</p>
         </div>
 
         {/* Continue Button */}

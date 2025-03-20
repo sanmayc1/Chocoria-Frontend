@@ -1,8 +1,6 @@
 import { chocoriaBackEnd } from "./api.js";
 
-
-
-// fetch all products 
+// fetch all products
 
 export const get_product = async () => {
   try {
@@ -13,11 +11,10 @@ export const get_product = async () => {
   }
 };
 
-
 // add product
 export const add_product = async (data) => {
   try {
-    const res = await chocoriaBackEnd.post("/admin/products", data,{
+    const res = await chocoriaBackEnd.post("/admin/products", data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -27,10 +24,13 @@ export const add_product = async (data) => {
     return error;
   }
 };
-// soft delete 
+// soft delete
 export const soft_Delete_Product = async (data) => {
   try {
-    const res = await chocoriaBackEnd.patch("/admin/products/soft-delete",data)
+    const res = await chocoriaBackEnd.patch(
+      "/admin/products/soft-delete",
+      data
+    );
     return res;
   } catch (error) {
     return error;
@@ -41,15 +41,14 @@ export const soft_Delete_Product = async (data) => {
 
 export const delete_Product = async (data) => {
   try {
-    const res = await chocoriaBackEnd.delete(`/admin/products/${data}`)
+    const res = await chocoriaBackEnd.delete(`/admin/products/${data}`);
     return res;
   } catch (error) {
     return error;
   }
 };
 
-
-// user side all product fetch 
+// user side all product fetch
 
 export const getProductsUser = async () => {
   try {
@@ -64,7 +63,7 @@ export const getProductsUser = async () => {
 
 export const get_product_user = async (id) => {
   try {
-    const res = await chocoriaBackEnd.get(`/user/products/${id}`,);
+    const res = await chocoriaBackEnd.get(`/user/products/${id}`);
     return res;
   } catch (error) {
     return error;
@@ -80,10 +79,9 @@ export const get_product_details = async (id) => {
   }
 };
 
-
 // edit product
 
-export const edit_product = async (data,id) => {
+export const edit_product = async (data, id) => {
   try {
     const res = await chocoriaBackEnd.patch(`/admin/products/${id}`, data, {
       headers: {
@@ -97,10 +95,15 @@ export const edit_product = async (data,id) => {
 };
 
 // search product
-export const searchProduct = async (data,filterData) => {
+export const searchProduct = async (data, filterData) => {
   try {
-   
-    const res = await chocoriaBackEnd.get(`/user/products/search?searchQuery=${data}${filterData?`&sortBy=${filterData.sortBy}&rating=${filterData.rating}&category=${filterData.category}`:""}`);
+    const res = await chocoriaBackEnd.get(
+      `/user/products/search?searchQuery=${data}${
+        filterData
+          ? `&sortBy=${filterData.sortBy}&rating=${filterData.rating}&category=${filterData.category}&brand=${filterData.brand}`
+          : ""
+      }`
+    );
     return res;
   } catch (error) {
     return error;
@@ -129,9 +132,7 @@ export const getPopularProducts = async () => {
   }
 };
 
-
-// treding products 
-
+// treding products
 
 export const getTrendingProducts = async () => {
   try {

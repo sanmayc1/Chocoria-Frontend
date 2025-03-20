@@ -33,7 +33,7 @@ const CardListing = ({ products }) => {
   
   return (
     <div className="w-[88%] m-auto md:py-10 py-6">
-      <Slider  {...settings}>
+      <Slider {...settings}>
         {products?.map((product) => {
           return (
             !product.is_deleted && (

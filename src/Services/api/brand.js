@@ -32,3 +32,12 @@ export const getAllBrands = async () => {
       return error;
     }
   };
+
+  export const getAllBrandsUser = async () => {
+    try {
+      const res = await chocoriaBackEnd.get("/user/brand");
+      return res;
+    } catch (error) {
+      return error;
+    }
+  };

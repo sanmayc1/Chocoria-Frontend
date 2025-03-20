@@ -10,6 +10,7 @@ const OrderSection = () => {
   const [update, setUpdate] = useState(false);
   const [orders, setOrders] = useState([]);
   const [orderCancelRequests, setOrderCancelRequests] = useState(0);
+  const [OrderReturnRequest,setOrderReturnRequests] = useState(0)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,6 +19,7 @@ const OrderSection = () => {
       if (response.status === 200) {
         setOrders(response.data.orders);
         setOrderCancelRequests(response.data.orderCancelRequests);
+        setOrderReturnRequests(response.data.returnRequests)
         return;
       }
       toast.error(response.response.data.message);
@@ -58,6 +60,19 @@ const OrderSection = () => {
                   placeholder="Search orders..."
                   className="w-full pl-10 pr-4 py-2 border rounded-lg"
                 />
+              </div>
+              <div className="pr-2 relative  ">
+                <button
+                  className=" px-4 py-2 border rounded-lg bg-white flex items-center justify-center gap-2 cursor-pointer"
+                  onClick={() => navigate("/admin/orders/return")}
+                >
+                  Order Return Requests{" "}
+                  {OrderReturnRequest > 0 && (
+                    <span className="bg-red-500 h-5 w-5 rounded-full absolute top-0 right-0 flex justify-center items-center text-white text-xs font-semibold">
+                      {OrderReturnRequest}
+                    </span>
+                  )}
+                </button>
               </div>
               <div className="pr-2 relative  ">
                 <button

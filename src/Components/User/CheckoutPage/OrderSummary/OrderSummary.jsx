@@ -4,11 +4,11 @@ import { baseUrl } from "../../../../Services/api/constants";
 import { getUserCoupons } from "../../../../Services/api/coupon";
 import { toast } from "react-toastify";
 
-const OrderSummary = ({ selectedAddress, cart, continueToPayment, appliedCoupon, setAppliedCoupon, setCouponDiscount, couponDiscount }) => {
+const OrderSummary = ({ selectedAddress, cart, continueToPayment, appliedCoupon, setAppliedCoupon, setCouponDiscount, couponDiscount ,total,setTotal}) => {
   const [couponCode, setCouponCode] = useState("");
   const [coupons, setCoupons] = useState([]);
   const [isApplying, setIsApplying] = useState(false);
-  const [total, setTotal] = useState(0);
+  
 
   useEffect(() => {
     const fetchCoupon = async () => {

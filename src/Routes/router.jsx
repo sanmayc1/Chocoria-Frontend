@@ -45,6 +45,8 @@ import WalletHistory from "../Components/User/UserProfile/Wallet/WalletHistory.j
 import SalesReport from "../Components/Admin/AdminDashboard/SalesReport.jsx";
 import OrderFailed from "../Components/User/CheckoutPage/OrderFailed/OrderFailed.jsx";
 import BrandSection from "../Components/Admin/AllSections/Brand/BrandSection.jsx";
+import BrandListPage from "../Pages/UserPages/BrandListPage.jsx";
+import ReturnRequests from "../Components/Admin/AllSections/OrderSection/ReturnRequest.jsx";
 
 const router = createBrowserRouter([
   {
@@ -68,8 +70,8 @@ const router = createBrowserRouter([
     element: <ForgetPasswordPage />,
   },
   {
-    path:"/reset-password/:id",
-    element:<ResetPasswordPage />
+    path: "/reset-password/:id",
+    element: <ResetPasswordPage />,
   },
   {
     path: "/",
@@ -86,20 +88,24 @@ const router = createBrowserRouter([
       {
         path: "/search",
         element: <SearchPage />,
-        children:[
+        children: [
           {
-            path:"/search/:query",
-            element:<ProductSearchResult/>
-          }
-        ]
+            path: "/search/:query",
+            element: <ProductSearchResult />,
+          },
+        ],
       },
       {
-        path:"/checkout/failed/:id",
-        element:<OrderFailed/>
+        path: "/checkout/failed/:id",
+        element: <OrderFailed />,
       },
       {
-        path:"/shop",
-        element:<ShopPage/>
+        path: "/brand",
+        element: <BrandListPage />,
+      },
+      {
+        path: "/shop",
+        element: <ShopPage />,
       },
       {
         path: "/user",
@@ -109,7 +115,6 @@ const router = createBrowserRouter([
           </AuthGuard>
         ),
         children: [
-         
           {
             path: "/user/account-overview",
             element: <AccountOverview />,
@@ -128,13 +133,12 @@ const router = createBrowserRouter([
           },
           {
             path: "/user/wallet",
-            element: <Wallet/>
-            ,
+            element: <Wallet />,
           },
           {
-            path:"/user/wallet/history",
-            element:<WalletHistory/>
-          }
+            path: "/user/wallet/history",
+            element: <WalletHistory />,
+          },
         ],
       },
       {
@@ -204,8 +208,8 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-       path:"/admin/sales-report",
-        element:<SalesReport/>
+        path: "/admin/sales-report",
+        element: <SalesReport />,
       },
       {
         path: "/admin/product",
@@ -230,6 +234,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/orders/cancel",
         element: <CancelRequests />,
+      },
+      {
+       path:"/admin/orders/return",
+       element:<ReturnRequests/>
       },
       {
         path: "/admin/offers",

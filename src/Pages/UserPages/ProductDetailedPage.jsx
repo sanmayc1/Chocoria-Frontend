@@ -87,7 +87,7 @@ console.log(recommendation)
           <ProductImageView imageUrl={`${baseUrl}${selectedImage}`} />
           {/* product details */}
           <ProductDetails
-            brand={product.brand}
+            brand={product.brand.name}
             productName={product.name}
             price={selectedVariant?.price}
             actualPrice={selectedVariant?.actualPrice

@@ -4,6 +4,7 @@ import {
   createRazorpayOrder,
   get_order_details,
   getCancelRequest,
+  getReturnRequest,
   orderReturn,
   retryPaymentVerify,
 } from "../../../../../Services/api/orders";
@@ -18,6 +19,8 @@ import { toast } from "react-toastify";
 import jsPDF from "jspdf";
 import { TurnLeft } from "@mui/icons-material";
 import OrderReturnRequest from "./OrderReturnRequest.jsx";
+import CancelReturnReason from "./CancelReturnReason.jsx";
+import ReviewRatingModal from "./ReviewRatingModal.jsx";
 
 const OrderDetailed = () => {
   const { id } = useParams();
@@ -26,11 +29,15 @@ const OrderDetailed = () => {
   const [index, setIndex] = useState(0);
   const [isOpenCancelConfirmation, setIsOpenCancelConfirmation] =
     useState(false);
-  const [isOpenReturnRequest,setIsOpenReturnRequest] = useState(false)
-  const [isOpenReturnRequestConfirmation,setIsOpenReturnRequestConfirmation] = useState(false)
+  const [isOpenReturnRequest, setIsOpenReturnRequest] = useState(false);
+  const [isOpenReturnRequestConfirmation, setIsOpenReturnRequestConfirmation] =
+    useState(false);
   const [isOpenCancelRequest, setIsOpenCancelRequest] = useState(false);
   const [update, setUpdate] = useState(false);
   const [cancelRequest, setCancelRequest] = useState(null);
+  const [returnRequest, setReturnRequest] = useState(null);
+  const [isOpenReview,setIsOpenReview] = useState(false)
+  
   const navigate = useNavigate();
   useEffect(() => {
     async function fetch_order() {
@@ -43,6 +50,7 @@ const OrderDetailed = () => {
         response.data.orderItem.status === "Delivered" && setIndex(3);
         response.data.orderItem.status === "Cancelled" && setIndex(4);
         response.data.orderItem.status === "Order Not Placed" && setIndex(5);
+        response.data.orderItem.status === "Return" && setIndex(6);
         return;
       }
     }
@@ -52,8 +60,10 @@ const OrderDetailed = () => {
   useEffect(() => {
     const fetchCancelRequest = async () => {
       const response = await getCancelRequest(id);
-      if (response.status === 200) {
+      const responseReturnRequest = await getReturnRequest(id);
+      if (response.status === 200 && responseReturnRequest.status === 200) {
         setCancelRequest(response.data.cancelRequest);
+        setReturnRequest(responseReturnRequest.data.returnRequest);
         return;
       }
     };
@@ -65,10 +75,10 @@ const OrderDetailed = () => {
     setIsOpenCancelRequest(true);
   };
 
-  const confrimReturn = ()=>{
-    setIsOpenReturnRequestConfirmation(false)
-    setIsOpenReturnRequest(true)
-  }
+  const confrimReturn = () => {
+    setIsOpenReturnRequestConfirmation(false);
+    setIsOpenReturnRequest(true);
+  };
 
   const continuePayment = async () => {
     const response = await createRazorpayOrder({
@@ -156,8 +166,7 @@ const OrderDetailed = () => {
     });
   };
 
-  const submitReturnRequest = async (reason) =>{
-
+  const submitReturnRequest = async (reason) => {
     const data = {
       reason: reason.reason,
       explanation: reason.explanation,
@@ -165,10 +174,21 @@ const OrderDetailed = () => {
     };
 
     const response = await orderReturn(data);
-    
-   console.log(response.data);
-   
-  }
+
+    if (response.status === 200) {
+      toast.success(response.data.message, {
+        position: "top-center",
+        autoClose: 1000,
+      });
+      setUpdate(!update);
+      setIsOpenReturnRequest(false);
+      return;
+    }
+    toast.error(response.response.data.message, {
+      position: "top-center",
+      autoClose: 1000,
+    });
+  };
 
   const downloadInvoice = async () => {
     const doc = new jsPDF();
@@ -206,6 +226,14 @@ const OrderDetailed = () => {
     doc.save(`invoice.pdf`);
   };
 
+  const openReviewModal = ()=>{
+    setIsOpenReview(true)
+  }
+
+  const closeReviewModal = ()=>{
+    setIsOpenReview(false)
+  }
+
   if (!order && !orderItems) {
     return (
       <div className="w-full  flex justify-center items-center h-full">
@@ -213,8 +241,6 @@ const OrderDetailed = () => {
       </div>
     );
   }
-
-  
 
   return (
     <>
@@ -235,8 +261,12 @@ const OrderDetailed = () => {
               <p className="text-sm font-normal">
                 Weight : {orderItems.variant.weight}g
               </p>
-              <p className="text-sm font-normal">
-                Brand : {orderItems.productId?.brand || orderItems.brand}
+              <p className="text-sm font-normal ">
+                Brand :{" "}
+                <span className="uppercase">
+                  {" "}
+                  {orderItems.productId?.brand?.name || orderItems.brand}
+                </span>
               </p>
               <p className="text-sm font-normal">Qty : {orderItems.quantity}</p>
               <p className="font-bold  xl:hidden block   sm:w-auto  sm:flex-col ">
@@ -296,7 +326,7 @@ const OrderDetailed = () => {
                     className={`font-medium uppercase ${
                       orderItems.paymentStatus === "success"
                         ? "text-green-500"
-                        : orderItems.paymentStatus === "canceled"
+                        : orderItems.paymentStatus === "failed"
                         ? "text-red-500"
                         : "text-yellow-500"
                     }`}
@@ -331,85 +361,74 @@ const OrderDetailed = () => {
             </div>
           </div>
           {cancelRequest === null ? (
-            <div
-              className={`p-4 px-7 flex ${
-                orderItems.status === "Cancelled"
-                  ? "justify-center"
-                  : orderItems.status === "Order Not Placed"
-                  ? "justify-start"
-                  : "justify-end"
-              } `}
-            >
-              {orderItems.status === "Delivered" ? (
-                <div className="flex gap-4">
+            returnRequest === null ? (
+              <div
+                className={`p-4 px-7 flex ${
+                  orderItems.status === "Cancelled"
+                    ? "justify-center"
+                    : orderItems.status === "Order Not Placed"
+                    ? "justify-start"
+                    : "justify-end"
+                } `}
+              >
+                {orderItems.status === "Delivered" ? (
+                  <div className="flex gap-4">
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => setIsOpenReturnRequestConfirmation(true)}
+                    >
+                      Return
+                    </Button>
+                    <Button variant="outlined" color="inherit" onClick={openReviewModal}>
+                      Rate & Review
+                    </Button>
+                  </div>
+                ) : orderItems.status === "Cancelled" ? (
+                  <p className="text-sm font-medium">Order Cancelled</p>
+                ) : orderItems.status === "Order Not Placed" ? (
+                  <div className="flex flex-col gap-2 w-full">
+                    <p className="text-md font-medium ">Order Not Placed</p>
+
+                    <p className="text-sm">
+                      Your Payment was not confirmed by the bank.
+                    </p>
+                    <div className="flex justify-end">
+                      <Button
+                        onClick={continuePayment}
+                        variant="contained"
+                        color="success"
+                      >
+                        Continue Payment
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
                   <Button
                     variant="outlined"
                     color="error"
-                    onClick={()=>setIsOpenReturnRequestConfirmation(true)}
+                    onClick={() => setIsOpenCancelConfirmation(true)}
                   >
-                    Return
+                    Cancel Order
                   </Button>
-                  <Button variant="outlined" color="inherit">
-                    Rate & Review
-                  </Button>
-                </div>
-              ) : orderItems.status === "Cancelled" ? (
-                <p className="text-sm font-medium">Order Cancelled</p>
-              ) : orderItems.status === "Order Not Placed" ? (
-                <div className="flex flex-col gap-2 w-full">
-                  <p className="text-md font-medium ">Order Not Placed</p>
-
-                  <p className="text-sm">
-                    Your Payment was not confirmed by the bank.
-                  </p>
-                  <div className="flex justify-end">
-                    <Button
-                      onClick={continuePayment}
-                      variant="contained"
-                      color="success"
-                    >
-                      Continue Payment
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => setIsOpenCancelConfirmation(true)}
-                >
-                  Cancel Order
-                </Button>
-              )}
-            </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex justify-between items-end pe-2 pb-2">
+                <CancelReturnReason
+                  reason={returnRequest}
+                  title={"Return Request"}
+                />
+               { returnRequest.status !=="approved"? <Button variant="outlined" color="inherit" className="h-10" onClick={openReviewModal} >
+                  Rate & Review
+                </Button> :null}
+              </div>
+            )
           ) : (
-            <div className="px-7 p-4">
-              <h1 className="font-medium text-sm sm:text-lg pb-1 w-full ">
-                Cancel Request
-              </h1>
-              <p className="text-sm font-medium">
-                Reason : {cancelRequest.reason}
-              </p>
-
-              <p className="text-sm font-medium ">
-                Status :{" "}
-                <span
-                  className={`font-bold uppercase ${
-                    cancelRequest.status === "pending"
-                      ? "text-orange-500"
-                      : cancelRequest.status === "approved"
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {cancelRequest.status}
-                </span>
-              </p>
-
-              <p className="text-sm font-medium">
-                Details : {cancelRequest.response}
-              </p>
-            </div>
+            <CancelReturnReason
+              reason={cancelRequest}
+              title={"Cancel Request"}
+            />
           )}
         </div>
       </div>
@@ -456,6 +475,9 @@ const OrderDetailed = () => {
           cancel={() => setIsOpenReturnRequest(false)}
           confirm={submitReturnRequest}
         />
+      </Modal>
+      <Modal isOpen={isOpenReview} onClose={closeReviewModal}>
+     <ReviewRatingModal/>
       </Modal>
     </>
   );

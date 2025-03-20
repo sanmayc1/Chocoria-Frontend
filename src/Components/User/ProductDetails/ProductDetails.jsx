@@ -143,7 +143,7 @@ const ProductDetails = ({
 
       <div className="flex items-center justify-between">
         <h1 className="xl:text-3xl md:text-xl md:font-bold font-semibold">
-          {brand}{" "}
+          {brand.charAt(0).toUpperCase() + brand.slice(1)}
         </h1>
         <Heart
           onClick={handleWishlist}

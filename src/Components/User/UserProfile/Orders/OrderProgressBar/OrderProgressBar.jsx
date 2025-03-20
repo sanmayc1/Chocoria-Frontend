@@ -1,10 +1,16 @@
-import { CircleX } from "lucide-react";
+import { CircleCheck, CircleX } from "lucide-react";
 
 const OrderProgressBar = ({ index, setIndex }) => {
  
   if(index === 5){
     return(
       <div className="w-full max-w-4xl mx-auto p-4 px-10"><span className="flex items-center gap-2 font-medium"><CircleX size={20} color="red" />Order Not Placed</span></div>
+    )
+  }
+
+  if(index === 6){
+    return(
+      <div className="w-full max-w-4xl mx-auto p-4 px-10"><span className="flex items-center gap-2 font-medium"><CircleCheck size={20} color="green" />Product Returned</span></div>
     )
   }
 

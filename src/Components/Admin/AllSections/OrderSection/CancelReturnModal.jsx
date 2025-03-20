@@ -1,15 +1,15 @@
 
 
-const CancelRequestModal = ({ selectedRequest, handleRejectAndApprove ,handleReject}) => {
+const CancelReturnModal = ({ title, selectedRequest, handleRejectAndApprove ,handleReject}) => {
   return (
     <div className="w-full max-w-4xl mx-auto p-4 md:p-6">
       <div className="bg-white rounded-lg shadow-sm p-4 md:p-6">
-        <h2 className="text-xl md:text-2xl font-bold pb-5">Cancel Request</h2>
+        <h2 className="text-xl md:text-2xl font-bold pb-5">{title}</h2>
 
         <p className="pb-2 font-medium text-sm md:text-base">
           <span className="text-gray-600">Order ID:</span>{" "}
           <span className="break-all">
-            {selectedRequest?.orderId?._id || "N/A"}
+            {selectedRequest?.orderId?.uniqueOrderId || "N/A"}
           </span>
         </p>
 
@@ -81,7 +81,7 @@ const CancelRequestModal = ({ selectedRequest, handleRejectAndApprove ,handleRej
           </button>
           <button
             className=" bg-black text-white px-4 py-2 rounded"
-            onClick={() => handleRejectAndApprove("approved",selectedRequest._id,"Approved Cancel Request")}
+            onClick={() => handleRejectAndApprove("approved",selectedRequest._id,`Approved ${title === "Cancel Request" ? "Cancel":"Return"} Request`)}
           >
             Approve
           </button>
@@ -91,4 +91,4 @@ const CancelRequestModal = ({ selectedRequest, handleRejectAndApprove ,handleRej
   );
 };
 
-export default CancelRequestModal;
+export default CancelReturnModal;
