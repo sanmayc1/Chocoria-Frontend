@@ -1,6 +1,6 @@
 import axios from "axios";
 import { baseUrl } from "./constants.js";
-import { auth_False } from "../../Store/Slice/authSlice.jsx";
+import { authFalse } from "../../Store/Slice/authSlice.jsx";
 import {store} from "../../Store/Store.jsx"
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
@@ -22,8 +22,8 @@ chocoriaBackEnd.interceptors.response.use(
       (error.response.data.message === "Token Expired" ||
         error.response.data.message === "Unauthorized")
     ) {
-      await user_logout();
-      store.dispatch(auth_False());
+      await userLogout();
+      store.dispatch(authFalse());
       toast.error("Session Expired Please Login again",{position:"top-center"})
       io.disconnect();
       
@@ -49,7 +49,7 @@ export const googleAuth = async (accessToken) => {
 
 // sign up with userinfo and password
 
-export const sign_up = async (data) => {
+export const signUp = async (data) => {
   try {
     const res = await chocoriaBackEnd.post("/user/auth/signup", data);
     return res;
@@ -60,7 +60,7 @@ export const sign_up = async (data) => {
 
 //Otp verify
 
-export const otp_verify = async (data) => {
+export const otpVerify = async (data) => {
   try {
     const res = await chocoriaBackEnd.patch("/user/otp", data);
     return res;
@@ -70,7 +70,7 @@ export const otp_verify = async (data) => {
 };
 
 //resend the otp
-export const resend_Otp = async (data) => {
+export const resendOtp = async (data) => {
   try {
     const res = await chocoriaBackEnd.post("/user/resend-otp", data);
     return res;
@@ -81,7 +81,7 @@ export const resend_Otp = async (data) => {
 
 // login request
 
-export const auth_login = async (data) => {
+export const authLogin = async (data) => {
   try {
     const res = await chocoriaBackEnd.post("/user/auth/login", data);
     return res;
@@ -92,7 +92,7 @@ export const auth_login = async (data) => {
 
 // logout request
 
-export const user_logout = async () => {
+export const userLogout= async () => {
   try {
     const res = await chocoriaBackEnd.post("/user/logout");
     return res;
@@ -103,7 +103,7 @@ export const user_logout = async () => {
 
 // get user details
 
-export const get_user = async () => {
+export const getUser = async () => {
   try {
     const res = await chocoriaBackEnd.get("/user/profile");
     return res;
@@ -115,7 +115,7 @@ export const get_user = async () => {
 
 // admin login
 
-export const admin_login = async (data) => {
+export const adminLogin = async (data) => {
   try {
     const res = await chocoriaBackEnd.post("/admin/auth/login", data);
     return res;

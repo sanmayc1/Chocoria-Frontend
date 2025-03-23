@@ -3,7 +3,7 @@ import { chocoriaBackEnd } from "./api.js";
 
 // add to cart
 
-export const add_to_cart = async (data) => {
+export const addToCart = async (data) => {
     try {
         const res = await chocoriaBackEnd.post("/user/cart", data);
         return res;
@@ -14,7 +14,7 @@ export const add_to_cart = async (data) => {
 
 // get cart
 
-export const get_cart = async () => {
+export const getCart = async () => {
     try {
         const res = await chocoriaBackEnd.get("/user/cart");
         return res;
@@ -25,7 +25,7 @@ export const get_cart = async () => {
 
 // product quantity update
 
-export const update_quantity = async (data) => {
+export const updateQuantity = async (data) => {
     try {
         const res = await chocoriaBackEnd.patch(`/user/cart`, data);
         return res;
@@ -36,7 +36,7 @@ export const update_quantity = async (data) => {
 
 // product delete from cart 
 
-export const delete_cart_item = async (id,variantId) => {
+export const deleteItemFromCart = async (id,variantId) => {
     try {
         const res = await chocoriaBackEnd.delete(`/user/cart?productId=${id}&variantId=${variantId}`);
         return res;

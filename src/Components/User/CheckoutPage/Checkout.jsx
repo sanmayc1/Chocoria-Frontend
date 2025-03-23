@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import ProgressBar from "./ProgressBar/ProgressBar.jsx";
-import { get_all_address } from "../../../Services/api/userApi.js";
+import { getAllAddressOfUser } from "../../../Services/api/userApi.js";
 import Modal from "../../HelperComponents/Modal.jsx";
 import AddAddress from "../UserProfile/ManageAddress/AddAddress.jsx";
 import SelectAddress from "./SelectAddress/SelectAddress.jsx";
 import OrderSummary from "./OrderSummary/OrderSummary.jsx";
-import { get_cart } from "../../../Services/api/cartApi.js";
+import { getCart } from "../../../Services/api/cartApi.js";
 import PaymentOptions from "./PaymentOptions/PaymentOptions.jsx";
 import { toast } from "react-toastify";
 import {
-  place_order,
+  placeOrder,
   updateOrderStatus,
   verifyPayment,
 } from "../../../Services/api/orders.js";
@@ -31,7 +31,7 @@ const Checkout = () => {
 
   useEffect(() => {
     async function fetchCart() {
-      const response = await get_cart();
+      const response = await getCart();
       if (response.status === 200) {
         const data = response.data.cart.products.filter(
           (item) => item.productId !== null
@@ -66,10 +66,10 @@ const Checkout = () => {
 
   useEffect(() => {
     async function fetchAddress() {
-      const response = await get_all_address();
+      const response = await getAllAddressOfUser();
       if (response.status === 200 && response.data.addresses.length > 0) {
         setSavedAddresses(response.data.addresses);
-        setSelectedAddress(response.data.addresses[0]);
+        setSelectedAddress(response.data.addresses.find((addres)=>addres.default));
         return null;
       }
     }
@@ -103,7 +103,7 @@ const Checkout = () => {
       couponDiscount: couponDiscount,
     };
     if (selectedMethod === "razorpay") {
-      const response = await place_order(data);
+      const response = await placeOrder(data);
   
       if (response.status === 200) {
         const order = response.data.razorpayOrder;
@@ -197,7 +197,7 @@ const Checkout = () => {
     }
 
     if (selectedMethod === "COD") {
-      const response = await place_order(data);
+      const response = await placeOrder(data);
       if (response.status === 200) {
         const id = response.data.order._id;
         setLoading(false);

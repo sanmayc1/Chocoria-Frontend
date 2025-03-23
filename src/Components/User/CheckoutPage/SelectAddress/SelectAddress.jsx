@@ -46,7 +46,7 @@ const SelectAddress = ({
               <div className="pr-8">
                 <div className="flex items-center gap-2 mb-1">
                   <p className="font-medium">{address.name}</p>
-                  {address.isDefault && (
+                  {address.default && (
                     <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
                       Default
                     </span>

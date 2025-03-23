@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import CartItem from "./CartItem/CartItem.jsx";
-import { get_cart, update_quantity } from "../../../Services/api/cartApi.js";
+import { getCart, updateQuantity } from "../../../Services/api/cartApi.js";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -17,7 +17,7 @@ const Cart = () => {
 
   useEffect(() => {
     async function fetchCart() {
-      const response = await get_cart();
+      const response = await getCart();
       if (response.status === 200) {
         const data = response.data.cart.products.filter(
           (item) => item.productId !== null

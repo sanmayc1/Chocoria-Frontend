@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import CommonBtn from "../button/CommonBtn.jsx";
 import SingleInputField from "../../HelperComponents/SingleInputField.jsx";
-import { auth_login } from "../../../Services/api/api.js";
-import { toast, ToastContainer } from "react-toastify";
+import { authLogin } from "../../../Services/api/api.js";
+import { toast} from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SET_AUTH } from "../../../Store/Slice/authSlice.jsx";
@@ -31,7 +31,7 @@ const LoginFields = () => {
       return
     }
     setErr("")
-    const response = await auth_login(formData);
+    const response = await authLogin(formData);
     if (response.status !== 200) {
       if (response.status === 401) {
        setErr(response.response.data.message)

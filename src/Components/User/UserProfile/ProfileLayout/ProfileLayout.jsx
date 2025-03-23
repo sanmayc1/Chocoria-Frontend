@@ -4,8 +4,8 @@ import SideNavigation from "./SideNavigation.jsx";
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { get_user, user_logout } from "../../../../Services/api/api.js";
-import { auth_False } from "../../../../Store/Slice/authSlice.jsx";
+import { getUser,userLogout } from "../../../../Services/api/api.js";
+import { authFalse } from "../../../../Store/Slice/authSlice.jsx";
 import { toast } from "react-toastify";
 
 
@@ -15,14 +15,14 @@ const ProfileLayout = () => {
     const dispatch = useDispatch();
     // logout 
     const handleLogout = async () => {
-      await user_logout();
-      dispatch(auth_False());
+      await userLogout();
+      dispatch(authFalse());
     };
   
     // fetch user details
     useEffect(() => {
       const fetchUser = async () => {
-        const response = await get_user();
+        const response = await getUser();
        if (response.status === 200) {
         const name = response.data.user.username.split(" ").map((name)=>name.charAt(0).toUpperCase()+name.slice(1).toLowerCase()).join(" ")
         setUsername(name);

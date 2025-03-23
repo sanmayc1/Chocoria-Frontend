@@ -1,7 +1,7 @@
 import { useState } from "react";
 import addressSchema from "../../../../utils/yupAddressSchema.jsx";
 import AddressForm from "./AddressForm.jsx";
-import { add_address } from "../../../../Services/api/userApi.js";
+import { addUserAddress } from "../../../../Services/api/userApi.js";
 import { toast } from "react-toastify";
 
 const AddAddress = ({ closeModel, update, setUpdate,setCurrentPage }) => {
@@ -28,7 +28,7 @@ const AddAddress = ({ closeModel, update, setUpdate,setCurrentPage }) => {
         address_type: selectedAddressType,
         pincode: parseInt(address.pincode),
       };
-      const response = await add_address(data);
+      const response = await addUserAddress(data);
       if (response.status === 200) {
         toast.success(response.data.message, {
           position: "top-center",

@@ -3,7 +3,7 @@ import { Search, RefreshCwIcon, Layers } from "lucide-react";
 import QuickStatCard from "../../HelperComponents/QuickCard";
 import { Pagination } from "@mui/material";
 import { toast } from "react-toastify";
-import { get_all_orders } from "../../../../Services/api/orders.js";
+import { getAllOrdersAdminSide } from "../../../../Services/api/orders.js";
 import { useNavigate } from "react-router-dom";
 
 const OrderSection = () => {
@@ -14,8 +14,8 @@ const OrderSection = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetch_All_Orders() {
-      const response = await get_all_orders();
+    async function fetchAllOrder() {
+      const response = await getAllOrdersAdminSide();
       if (response.status === 200) {
         setOrders(response.data.orders);
         setOrderCancelRequests(response.data.orderCancelRequests);
@@ -24,7 +24,7 @@ const OrderSection = () => {
       }
       toast.error(response.response.data.message);
     }
-    fetch_All_Orders();
+    fetchAllOrder();
   }, [update]);
 
   return (

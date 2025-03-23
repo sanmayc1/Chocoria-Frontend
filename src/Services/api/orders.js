@@ -2,7 +2,7 @@ import { chocoriaBackEnd } from "./api.js";
 
 // place order
 
-export const place_order = async (data) => {
+export const placeOrder = async (data) => {
   try {
     const res = await chocoriaBackEnd.post("user/order", data);
     return res;
@@ -12,7 +12,7 @@ export const place_order = async (data) => {
 };
 
 // get the order details
-export const get_orders = async () => {
+export const getOrders = async () => {
   try {
     const res = await chocoriaBackEnd.get(`user/order`);
     return res;
@@ -23,7 +23,7 @@ export const get_orders = async () => {
 
 // get the order details
 
-export const get_order_details = async (id) => {
+export const getOrderDetails = async (id) => {
   try {
     const res = await chocoriaBackEnd.get(`user/order/${id}`);
     return res;
@@ -34,7 +34,7 @@ export const get_order_details = async (id) => {
 
 // get all orders for admin panel
 
-export const get_all_orders = async () => {
+export const getAllOrdersAdminSide = async () => {
   try {
     const res = await chocoriaBackEnd.get(`admin/orders`);
     return res;
@@ -195,7 +195,7 @@ export const orderReturn = async (data) => {
   }
 };
 
-// return request 
+// return request
 
 export const getReturnRequest = async (id) => {
   try {
@@ -205,7 +205,6 @@ export const getReturnRequest = async (id) => {
     return error;
   }
 };
-
 
 // get all return requests for admin
 export const getAllReturnRequests = async () => {
@@ -221,6 +220,26 @@ export const getAllReturnRequests = async () => {
 export const updateReturnRequest = async (id, data) => {
   try {
     const res = await chocoriaBackEnd.patch(`/admin/orders/${id}/return`, data);
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+// add user review
+
+export const orderReview = async (data) => {
+  try {
+    const res = await chocoriaBackEnd.post("/user/order/review", data);
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const getAllReviews = async (id) => {
+  try {
+    const res = await chocoriaBackEnd.get(`/user/order/${id}/reviews`);
     return res;
   } catch (error) {
     return error;

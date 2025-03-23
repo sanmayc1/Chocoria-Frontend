@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import ProgressBar from "./ProgressBar/ProgressBar.jsx";
-import { get_all_address } from "../../../Services/api/userApi.js";
+import { getAllAddressOfUser } from "../../../Services/api/userApi.js";
 import Modal from "../../HelperComponents/Modal.jsx";
 import AddAddress from "../UserProfile/ManageAddress/AddAddress.jsx";
 import SelectAddress from "./SelectAddress/SelectAddress.jsx";
 import OrderSummary from "./OrderSummary/OrderSummary.jsx";
-import { get_cart } from "../../../Services/api/cartApi.js";
 import PaymentOptions from "./PaymentOptions/PaymentOptions.jsx";
 import { toast } from "react-toastify";
-import { place_order } from "../../../Services/api/orders.js";
+import { placeOrder } from "../../../Services/api/orders.js";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { get_product_user } from "../../../Services/api/productApi.js";
+import { getProductDetailsUserSide } from "../../../Services/api/productApi.js";
 
 const CheckoutForBuyNow = () => {
   const [index, setIndex] = useState(1);
@@ -28,7 +27,7 @@ const CheckoutForBuyNow = () => {
 
   useEffect(() => {
     async function fetchProduct() {
-      const response = await get_product_user(id);
+      const response = await getProductDetailsUserSide(id);
       if (response.status === 200) {
         const variant = response.data.product.variants.find(
           (variant) => variant._id === vId
@@ -64,7 +63,7 @@ const CheckoutForBuyNow = () => {
 
   useEffect(() => {
     async function fetchAddress() {
-      const response = await get_all_address();
+      const response = await getAllAddressOfUser();
       if (response.status === 200 && response.data.addresses.length > 0) {
         setSavedAddresses(response.data.addresses);
         setSelectedAddress(response.data.addresses[0]);
@@ -107,7 +106,7 @@ const CheckoutForBuyNow = () => {
         paymentMethod: selectedMethod,
         items: product,
       };
-      const response = await place_order(data);
+      const response = await placeOrder(data);
       if (response.status === 200) {
         const id = response.data.order._id;
         setLoading(false);

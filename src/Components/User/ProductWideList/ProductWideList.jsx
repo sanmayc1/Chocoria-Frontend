@@ -3,7 +3,7 @@ import FilterOptions from "../FilterOptions/FilterOptions.jsx";
 import ProductCard from "../ProductCard/ProductCard.jsx";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { get_cart } from "../../../Services/api/cartApi.js";
+import { getCart } from "../../../Services/api/cartApi.js";
 
 const ProductWideList = ({ data, filterData, setFilterData }) => {
   const [cart, setCart] = useState([]);
@@ -12,7 +12,7 @@ const ProductWideList = ({ data, filterData, setFilterData }) => {
 
   useEffect(() => {
     async function fetchCart() {
-      const response = await get_cart();
+      const response = await getCart();
       if (response.status === 200) {
         const data = response.data.cart.products.filter(
           (item) =>

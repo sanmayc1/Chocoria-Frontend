@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { resend_Otp } from "../../../Services/api/api";
+import { resendOtp } from "../../../Services/api/api";
 
 const Timer = ({id}) => {
   const [timeLeft, setTimeLef] = useState(70);
@@ -20,7 +20,7 @@ const Timer = ({id}) => {
   };
 
   const resendOtp = async() => {
-  const response = await resend_Otp({id})
+  const response = await resendOtp({id})
   if(response?.data?.success)
     setTimeLef(70);
   };

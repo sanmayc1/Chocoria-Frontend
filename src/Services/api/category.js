@@ -1,7 +1,7 @@
-import { chocoriaBackEnd } from "./api";
+import { chocoriaBackEnd } from "./api.js";
 
 // fetch all category
-export const get_categories = async () => {
+export const getCategories = async () => {
   try {
     const res = await chocoriaBackEnd.get("/admin/category");
     return res;
@@ -12,7 +12,7 @@ export const get_categories = async () => {
 
 // add category
 
-export const add_category = async (data) => {
+export const addCategory = async (data) => {
   try {
     const res = await chocoriaBackEnd.post("/admin/add-category", data);
     return res;
@@ -23,7 +23,7 @@ export const add_category = async (data) => {
 
 // edit category
 
-export const edit_categories = async (data) => {
+export const editCategories = async (data) => {
   try {
     const res = await chocoriaBackEnd.patch("/admin/edit-category", data);
     return res;
@@ -34,7 +34,7 @@ export const edit_categories = async (data) => {
 
 // delete category
 
-export const delete_category = async (id) => {
+export const deleteCategory = async (id) => {
   try {
     const res = await chocoriaBackEnd.delete(`/admin/delete-category/${id}`);
     return res;
@@ -44,7 +44,7 @@ export const delete_category = async (id) => {
 };
 
 // disable category 
-export const soft_delete_category = async (id) => {
+export const categoryDisable = async (id) => {
   try {
     const res = await chocoriaBackEnd.patch("/admin/category/soft-delete",{id});
     return res;

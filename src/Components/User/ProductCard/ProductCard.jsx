@@ -7,10 +7,9 @@ import {
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import { add_to_cart } from "../../../Services/api/cartApi";
+import { toast } from "react-toastify";
+import { addToCart } from "../../../Services/api/cartApi";
 import { baseUrl } from "../../../Services/api/constants";
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 
 const ProductCard = ({
   productTitle,
@@ -63,7 +62,7 @@ const ProductCard = ({
         return;
       }
       const data = { productId: id, quantity: 1, variant: availableVariant };
-      const response = await add_to_cart(data);
+      const response = await addToCart(data);
       if (response.status === 200) {
         setUpdate((prev) => !prev);
         if (response.data.message === "Go to Cart") {
@@ -132,12 +131,12 @@ const ProductCard = ({
 
             {/* Rating */}
 
-            <div className="w-2/5 pt-2 px-3">
+           {rating > 0 && <div className="w-2/5 pt-2 px-3">
               <div className="bg-gray-300 md:w-16 md:h-7 xl:w-14 xl:h-6 h-5 w-10 flex justify-center items-center xl:gap-2 gap-1">
                 <p className="font-bold text-xs">{rating}</p>
-                <Star className="xl:w-4 w-3" />
+                <Star className="xl:w-4 w-3"  />
               </div>
-            </div>
+            </div>}
           </div>
         </div>
         <button

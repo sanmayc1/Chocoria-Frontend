@@ -5,7 +5,7 @@ import Modal from "../../../../HelperComponents/Modal.jsx";
 import ImageCropper from "../ImageCroper.jsx";
 import { Crop } from "lucide-react";
 import { useRef } from "react";
-import { get_categories } from "../../../../../Services/api/category";
+import { getCategories } from "../../../../../Services/api/category";
 import { getAllBrands } from "../../../../../Services/api/brand.js";
 const AddEditForm = ({
   images,
@@ -29,7 +29,7 @@ const AddEditForm = ({
 
   useEffect(() => {
     async function fetchCategories() {
-      const response = await get_categories();
+      const response = await getCategories();
       if (response.status === 200) {
         setCategories(response.data.categories);
         return null;

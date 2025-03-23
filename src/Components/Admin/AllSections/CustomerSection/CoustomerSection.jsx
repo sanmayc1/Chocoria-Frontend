@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Search, Filter, MoreVertical, Users, RefreshCwIcon } from "lucide-react";
 import QuickStatCard from "../../HelperComponents/QuickCard";
 import { IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
-import { block_user, delete_user, fetch_users } from "../../../../Services/api/adminApi.js";
+import {blockUser,deleteUser, fetchUsers } from "../../../../Services/api/adminApi.js";
 import { toast } from "react-toastify";
 
 const CustomerSection = () => {
@@ -10,9 +10,10 @@ const CustomerSection = () => {
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [update, setUpdate] = useState(false);
   const [customers, setCustomers] = useState([]);
+  
 
   useEffect(() => {
-    fetch_users()
+    fetchUsers()
       .then((res) => {
         setCustomers(res.data.users);
       })
@@ -27,7 +28,7 @@ const CustomerSection = () => {
   //  handle block
   const handleBlock = async(e,id) => {
     
-   const response =  await block_user(id);
+   const response =  await blockUser(id);
 
     if(response.status === 200){
       setUpdate(!update)
@@ -47,7 +48,7 @@ const CustomerSection = () => {
   // delete the user
   const deleteUser = async(id) => {
     setAnchorEl(null);
-   const response =  await delete_user(id)
+   const response =  await deleteUser(id)
    if(response.status === 200){
     setUpdate(!update)
     toast.success(response.data.message, {

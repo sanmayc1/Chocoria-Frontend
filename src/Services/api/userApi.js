@@ -2,7 +2,7 @@ import { chocoriaBackEnd } from "./api.js"
 
 
 // user profile update
-export const update_profile = async (data) => {
+export const updateUserProfile = async (data) => {
     try {
         const res = await chocoriaBackEnd.patch("/user/update-profile",data)
         return res;
@@ -12,7 +12,7 @@ export const update_profile = async (data) => {
 }
 
 // add new address
-export const add_address = async (data)=>{
+export const addUserAddress = async (data)=>{
   
     try {
         const res = await chocoriaBackEnd.post("/user/address",data)
@@ -24,7 +24,7 @@ export const add_address = async (data)=>{
 
 // get all user address
 
-export const get_all_address = async ()=>{
+export const getAllAddressOfUser = async ()=>{
     try {
         const res = await chocoriaBackEnd.get("/user/address")
         return res;
@@ -34,7 +34,7 @@ export const get_all_address = async ()=>{
 }
 
 // delete address
-export const delete_address = async (id)=>{
+export const deleteUserAddress = async (id)=>{
     try {
         const res = await chocoriaBackEnd.delete(`/user/address/${id}`)
         return res;
@@ -45,7 +45,7 @@ export const delete_address = async (id)=>{
 
 // update address 
 
-export const update_address = async (data,id)=>{
+export const updateUserAddress = async (data,id)=>{
     try {
         const res = await chocoriaBackEnd.patch(`/user/address/${id}`,data)
         return res;
@@ -54,9 +54,20 @@ export const update_address = async (data,id)=>{
     }
 }
 
+// set default address 
+
+export const setDefaultAddress = async (id)=>{
+    try {
+        const res = await chocoriaBackEnd.patch(`/user/address/${id}/default`)
+        return res;
+    } catch (error) {
+        return error;
+    }
+}
+
 
 // get address by id
-export const get_address_by_id = async (id)=>{
+export const getFullAddressById = async (id)=>{
     try {
         const res = await chocoriaBackEnd.get(`/user/address/${id}`)
         return res;
@@ -66,7 +77,7 @@ export const get_address_by_id = async (id)=>{
 }
 
 // forget password
-export const forget_password = async (data)=>{
+export const forgetUserPassword = async (data)=>{
     try {
         const res = await chocoriaBackEnd.post("/user/forget-password",data)
         return res;

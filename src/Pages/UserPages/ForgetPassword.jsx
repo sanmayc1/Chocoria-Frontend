@@ -1,6 +1,6 @@
 import { useState } from "react";
 import SingleInputField from "../../Components/HelperComponents/SingleInputField.jsx";
-import { forget_password } from "../../Services/api/userApi.js";
+import { forgetUserPassword } from "../../Services/api/userApi.js";
 import { toast } from "react-toastify";
 import { CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +20,7 @@ const handleSubmit = async (e) => {
   }
   setErr("");
   setIsLoading(true)
-  const response = await forget_password({ email });
+  const response = await forgetUserPassword({ email });
   if (response.status !== 200) {
   
       setErr(response.response.data.message);

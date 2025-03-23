@@ -6,11 +6,11 @@ import { AddCircleOutline, Category } from "@mui/icons-material";
 import Modal from "../../../HelperComponents/Modal.jsx";
 import CategoryAddEditForm from "./AddEditModal/AddEditModal.jsx";
 import {
-  add_category,
-  delete_category,
-  edit_categories,
-  get_categories,
-  soft_delete_category,
+  addCategory,
+  deleteCategory,
+  editCategories,
+  getCategories,
+  categoryDisable,
 } from "../../../../Services/api/category.js";
 import { toast } from "react-toastify";
 
@@ -25,7 +25,7 @@ const CategorySection = () => {
 
   useEffect(() => {
     async function fetchCategories() {
-      const response = await get_categories();
+      const response = await getCategories();
 
       if (response.status === 200) {
         setCategories(response.data.categories);
@@ -64,7 +64,7 @@ const CategorySection = () => {
   };
   // add new category
   const categoryAdd = async () => {
-    const response = await add_category({ name: name.trim() });
+    const response = await addCategory({ name: name.trim() });
 
     if (response.status === 200) {
       toast.success(response.data.message, {
@@ -85,7 +85,7 @@ const CategorySection = () => {
   // edit category
 
   const editCategory = async () => {
-    const response = await edit_categories({ id: selectedCategory._id, name });
+    const response = await editCategories({ id: selectedCategory._id, name });
 
     if (response.status === 200) {
       toast.success(response.data.message, {
@@ -107,7 +107,7 @@ const CategorySection = () => {
 
   const deleteUser = async () => {
     setAnchorEl(null);
-    const response = await delete_category(selectedCategory._id);
+    const response = await deleteCategory(selectedCategory._id);
 
     if (response.status === 200) {
       toast.success(response.data.message, {
@@ -129,7 +129,7 @@ const CategorySection = () => {
 
   // disable category
   const disableCategory = async(e,id)=>{
-    const response =  await soft_delete_category(id)
+    const response =  await categoryDisable(id)
    
        if(response.status === 200){
          setUpdate(!update)

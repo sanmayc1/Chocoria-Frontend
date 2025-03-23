@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { add_to_cart } from "../../../Services/api/cartApi.js";
+import { addToCart } from "../../../Services/api/cartApi.js";
 import { useEffect, useState } from "react";
 import {
   addOrRemoveFromWhishlist,
@@ -23,6 +23,7 @@ const ProductDetails = ({
   id,
   actualPrice,
   offer,
+  rating
 }) => {
   const auth = useSelector((state) => state.auth.auth);
   const [quantity, setQuantity] = useState(1);
@@ -67,7 +68,7 @@ const ProductDetails = ({
 
     const data = { productId: id, quantity, variant: selectedVariant };
 
-    const response = await add_to_cart(data);
+    const response = await addToCart(data);
     if (response.status === 200) {
       if (response.data.message === "Go to Cart") {
         navigate("/user/cart");
@@ -156,10 +157,10 @@ const ProductDetails = ({
       <h2 className="xl:text-xl md:py-3 py-2 xl:py-5 ">{productName}</h2>
       {/* Rating */}
 
-      <div className="bg-gray-300 md:w-16 md:h-7 xl:w-16 xl:h-8 h-5 w-10 flex justify-center items-center xl:gap-2 gap-1">
-        <p className="font-bold text-xs xl:text-base">4.5</p>
+      {rating > 0 && <div className="bg-gray-300 md:w-16 md:h-7 xl:w-16 xl:h-8 h-5 w-10 flex justify-center items-center xl:gap-2 gap-1">
+        <p className="font-bold text-xs xl:text-base">{rating}</p>
         <Star className="xl:w-4 w-3" />
-      </div>
+      </div>}
       {/* Price */}
 
       <h1 className="font-bold xl:text-3xl text-2xl pt-5 xl:pt-7 flex gap-2 items-center">

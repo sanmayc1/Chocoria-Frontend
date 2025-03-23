@@ -5,9 +5,9 @@ import { Search, Archive, Tag, Package, MoreVertical, Eye } from "lucide-react";
 import { IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
-  delete_Product,
-  get_product,
-  soft_Delete_Product,
+  deleteProduct,
+  getAllProductsAdminSide,
+  disableProduct,
 } from "../../../../Services/api/productApi.js";
 import { toast } from "react-toastify";
 import { baseUrl } from "../../../../Services/api/constants.js";
@@ -23,8 +23,8 @@ const ProductSection = () => {
   const [totalProducts, setTotalProducts] = useState(0);
 
   useEffect(() => {
-    async function fetch_All_Products() {
-      const response = await get_product();
+    async function fetchAllProducts() {
+      const response = await getAllProductsAdminSide();
       if (response.status === 200) {
         const data = response.data.products;
         setTotalProducts(data.length);
@@ -38,7 +38,7 @@ const ProductSection = () => {
 
       toast.error(response.response.data.message);
     }
-    fetch_All_Products();
+    fetchAllProducts();
   }, [update, currentPage]);
 
   const handlePageChange = (e, value) => {
@@ -46,7 +46,7 @@ const ProductSection = () => {
   };
 
   const handleChange = async (e, id) => {
-    const response = await soft_Delete_Product({ id });
+    const response = await disableProduct({ id });
 
     if (response.status === 200) {
       setUpdate(!update);
@@ -84,7 +84,7 @@ const ProductSection = () => {
 
   const deleteProduct = async () => {
     setAnchorEl(null);
-    const response = await delete_Product(selectedProduct._id);
+    const response = await deleteProduct(selectedProduct._id);
 
     if (response.status === 200) {
       toast.success(response.data.message, {

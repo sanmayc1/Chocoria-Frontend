@@ -7,7 +7,7 @@ import CustomerReviews from "../../Components/User/CustomerReview/CustomerReview
 import ProductDescription from "../../Components/User/ProductDescription/ProductDescription.jsx";
 import CardListingHeading from "../../Components/User/CardListingHeading/CardListingHeading.jsx";
 import CardListing from "../../Components/User/CardListing/CardListing.jsx";
-import { get_product_user, getRecommendedProducts } from "../../Services/api/productApi.js";
+import { getProductDetailsUserSide, getRecommendedProducts } from "../../Services/api/productApi.js";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { baseUrl } from "../../Services/api/constants.js";
@@ -25,17 +25,13 @@ const ProductDetailedPage = () => {
   const [selectedVariant, setSelectedVariant] = useState(null);
   const navigate = useNavigate();
 
-
-
-
   useEffect(() => {
-    async function fetch_All_Products() {
-      const response = await get_product_user(id);
+    async function fetchProduct() {
+      const response = await getProductDetailsUserSide(id);
       const recommendedResponse = await getRecommendedProducts(id);
       if (response.status === 200 && recommendedResponse.status === 200) {
         setProduct(response.data.product);
         setRecommendation(recommendedResponse.data.recommendation);
-        console.log(recommendedResponse)
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
@@ -45,7 +41,7 @@ const ProductDetailedPage = () => {
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-    fetch_All_Products();
+    fetchProduct();
   }, [location.pathname]);
 
   useEffect(()=>{
@@ -55,7 +51,7 @@ const ProductDetailedPage = () => {
    
   },[selectedVariant])
 
-console.log(recommendation)
+
 
 
   if (!product) {
@@ -89,9 +85,9 @@ console.log(recommendation)
           <ProductDetails
             brand={product.brand.name}
             productName={product.name}
+            rating={product.averageRating}
             price={selectedVariant?.price}
-            actualPrice={selectedVariant?.actualPrice
-            }
+            actualPrice={selectedVariant?.actualPrice}
             offer={product?.offer}
             stock={selectedVariant?.quantity}
             varients={product.variants}
@@ -104,7 +100,7 @@ console.log(recommendation)
           description={product.description}
           ingredients={product.ingredients}
         />
-        <CustomerReviews />
+        <CustomerReviews id={id} averageRating={product.averageRating} />
         <CardListingHeading heading={"Recommendation"} />
         <CardListing products={recommendation} />
       </motion.div>

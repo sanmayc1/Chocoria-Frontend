@@ -2,7 +2,7 @@ import { chocoriaBackEnd } from "./api.js";
 
 // fetch all products
 
-export const get_product = async () => {
+export const getAllProductsAdminSide = async () => {
   try {
     const res = await chocoriaBackEnd.get("/admin/products");
     return res;
@@ -12,7 +12,7 @@ export const get_product = async () => {
 };
 
 // add product
-export const add_product = async (data) => {
+export const addProduct = async (data) => {
   try {
     const res = await chocoriaBackEnd.post("/admin/products", data, {
       headers: {
@@ -25,7 +25,7 @@ export const add_product = async (data) => {
   }
 };
 // soft delete
-export const soft_Delete_Product = async (data) => {
+export const disableProduct = async (data) => {
   try {
     const res = await chocoriaBackEnd.patch(
       "/admin/products/soft-delete",
@@ -39,7 +39,7 @@ export const soft_Delete_Product = async (data) => {
 
 // delete product
 
-export const delete_Product = async (data) => {
+export const deleteProduct = async (data) => {
   try {
     const res = await chocoriaBackEnd.delete(`/admin/products/${data}`);
     return res;
@@ -61,7 +61,7 @@ export const getProductsUser = async () => {
 
 // one product details user side
 
-export const get_product_user = async (id) => {
+export const getProductDetailsUserSide = async (id) => {
   try {
     const res = await chocoriaBackEnd.get(`/user/products/${id}`);
     return res;
@@ -70,7 +70,7 @@ export const get_product_user = async (id) => {
   }
 };
 
-export const get_product_details = async (id) => {
+export const getProductDetailsAdminSide = async (id) => {
   try {
     const res = await chocoriaBackEnd.get(`/admin/products/${id}`);
     return res;
@@ -81,7 +81,7 @@ export const get_product_details = async (id) => {
 
 // edit product
 
-export const edit_product = async (data, id) => {
+export const editProductDetails = async (data, id) => {
   try {
     const res = await chocoriaBackEnd.patch(`/admin/products/${id}`, data, {
       headers: {

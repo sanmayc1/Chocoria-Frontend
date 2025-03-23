@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import AddEditForm from "./Add-Edit-Form.jsx";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-toastify";
-import {  edit_product, get_product_details } from "../../../../../Services/api/productApi.js";
+import {  editProductDetails, getProductDetailsAdminSide } from "../../../../../Services/api/productApi.js";
 import { useNavigate, useParams } from "react-router-dom";
 import { baseUrl } from "../../../../../Services/api/constants.js";
 
@@ -33,7 +33,7 @@ const EditProduct = () => {
 
   useEffect(() => {
     async function fetchProduct() {
-      const response = await get_product_details(params.id);
+      const response = await getProductDetailsAdminSide(params.id);
       if (response.status === 200) {
         setProductDetails(response.data.product);
         
@@ -126,7 +126,7 @@ const EditProduct = () => {
     });
 
     // send to backend
-    const response = await edit_product(formData, params.id);
+    const response = await editProductDetails(formData, params.id);
     if (response.status === 200) {
       toast.success(response.data.message, {
         position: "top-center",

@@ -20,8 +20,8 @@ import {
 import SidebarItem from "../HelperComponents/SidebarItems.jsx";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { user_logout } from "../../../Services/api/api.js";
-import { auth_False } from "../../../Store/Slice/authSlice.jsx";
+import { userLogout } from "../../../Services/api/api.js";
+import { authFalse } from "../../../Store/Slice/authSlice.jsx";
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -68,8 +68,8 @@ const AdminLayout = () => {
   ];
 
   const logout = async() => {
-   await user_logout()
-   dispatch(auth_False())
+   await userLogout()
+   dispatch(authFalse())
   };
 
   return (

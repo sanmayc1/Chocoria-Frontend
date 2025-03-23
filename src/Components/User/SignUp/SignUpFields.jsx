@@ -2,7 +2,7 @@ import { useState } from "react";
 import CommonBtn from "../button/CommonBtn.jsx";
 import SingleInputField from "../../HelperComponents/SingleInputField.jsx";
 import yupSchema from "../../../utils/yupSchema.jsx";
-import { sign_up } from "../../../Services/api/api.js";
+import { signUp } from "../../../Services/api/api.js";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -44,7 +44,7 @@ const SignUpFields = () => {
       await yupSchema.validate(formData, { abortEarly: false });
       setErr({});
       //  if validation is verified send data to backend
-      const response = await sign_up(formData);
+      const response = await signUp(formData);
 
       if (response.status !== 200) {
         if (response.response.data?.validationErr) {

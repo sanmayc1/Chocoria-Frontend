@@ -6,8 +6,8 @@ import io from "socket.io-client";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { auth_False } from "./Store/Slice/authSlice.jsx";
-import { user_logout } from "./Services/api/api.js";
+import { authFalse } from "./Store/Slice/authSlice.jsx";
+import { userLogout} from "./Services/api/api.js";
 
 function App() {
   const auth = useSelector((state) => state.auth);
@@ -28,8 +28,8 @@ function App() {
           autoClose: 2000,
           style:{width:"100%"}
         });
-        await user_logout();
-        dispatch(auth_False());  
+        await userLogout();
+        dispatch(authFalse());  
       });
 
       

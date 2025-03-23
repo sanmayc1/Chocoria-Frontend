@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import OrderItems from "./OrderItems/OrderItems.jsx";
 import { Pagination } from "@mui/material";
-import { get_orders } from "../../../../Services/api/orders.js";
+import { getOrders } from "../../../../Services/api/orders.js";
 import Breadcrumbs from "../../Breadcrumbs/Breadcrumbs.jsx";
 
 const Orders = () => {
@@ -12,8 +12,8 @@ const Orders = () => {
 
   
   useEffect(() => {
-    async function fetch_orders() {
-      const response = await get_orders();
+    async function fetchOrders() {
+      const response = await getOrders();
       if (response.status === 200) {
         const data = response.data.orders
         setTotalPages(Math.ceil(data.length / ordersPerPage));
@@ -24,7 +24,7 @@ const Orders = () => {
         return;
       }
     }
-    fetch_orders();
+    fetchOrders();
   }, [currentPage]);
 
   const handlePageChange = (event, page) => {

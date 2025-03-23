@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   cancelOrder,
   createRazorpayOrder,
-  get_order_details,
+  getOrderDetails,
   getCancelRequest,
   getReturnRequest,
   orderReturn,
@@ -17,7 +17,6 @@ import Modal from "../../../../HelperComponents/Modal.jsx";
 import OrderCancelRequest from "./OrderCancelRequest";
 import { toast } from "react-toastify";
 import jsPDF from "jspdf";
-import { TurnLeft } from "@mui/icons-material";
 import OrderReturnRequest from "./OrderReturnRequest.jsx";
 import CancelReturnReason from "./CancelReturnReason.jsx";
 import ReviewRatingModal from "./ReviewRatingModal.jsx";
@@ -36,15 +35,17 @@ const OrderDetailed = () => {
   const [update, setUpdate] = useState(false);
   const [cancelRequest, setCancelRequest] = useState(null);
   const [returnRequest, setReturnRequest] = useState(null);
-  const [isOpenReview,setIsOpenReview] = useState(false)
-  
+  const [isOpenReview, setIsOpenReview] = useState(false);
+  const [review, setReview] = useState(null);
+
   const navigate = useNavigate();
   useEffect(() => {
-    async function fetch_order() {
-      const response = await get_order_details(id);
+    async function fetchOrder() {
+      const response = await getOrderDetails(id);
       if (response.status === 200) {
         setOrderItems(response.data.orderItem);
         setOrder(response.data.order);
+        setReview(response.data.review);
         response.data.orderItem.status === "Pending" && setIndex(1);
         response.data.orderItem.status === "Shipped" && setIndex(2);
         response.data.orderItem.status === "Delivered" && setIndex(3);
@@ -54,7 +55,7 @@ const OrderDetailed = () => {
         return;
       }
     }
-    fetch_order();
+    fetchOrder();
   }, [id, update]);
 
   useEffect(() => {
@@ -226,13 +227,13 @@ const OrderDetailed = () => {
     doc.save(`invoice.pdf`);
   };
 
-  const openReviewModal = ()=>{
-    setIsOpenReview(true)
-  }
+  const openReviewModal = () => {
+    setIsOpenReview(true);
+  };
 
-  const closeReviewModal = ()=>{
-    setIsOpenReview(false)
-  }
+  const closeReviewModal = () => {
+    setIsOpenReview(false);
+  };
 
   if (!order && !orderItems) {
     return (
@@ -380,9 +381,15 @@ const OrderDetailed = () => {
                     >
                       Return
                     </Button>
-                    <Button variant="outlined" color="inherit" onClick={openReviewModal}>
-                      Rate & Review
-                    </Button>
+                    {!review && (
+                      <Button
+                        variant="outlined"
+                        color="inherit"
+                        onClick={openReviewModal}
+                      >
+                        Rate & Review
+                      </Button>
+                    )}
                   </div>
                 ) : orderItems.status === "Cancelled" ? (
                   <p className="text-sm font-medium">Order Cancelled</p>
@@ -419,9 +426,16 @@ const OrderDetailed = () => {
                   reason={returnRequest}
                   title={"Return Request"}
                 />
-               { returnRequest.status !=="approved"? <Button variant="outlined" color="inherit" className="h-10" onClick={openReviewModal} >
-                  Rate & Review
-                </Button> :null}
+                {returnRequest.status !== "approved" && !review ? (
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    className="h-10"
+                    onClick={openReviewModal}
+                  >
+                    Rate & Review
+                  </Button>
+                ) : null}
               </div>
             )
           ) : (
@@ -477,7 +491,13 @@ const OrderDetailed = () => {
         />
       </Modal>
       <Modal isOpen={isOpenReview} onClose={closeReviewModal}>
-     <ReviewRatingModal/>
+        <ReviewRatingModal
+          onClose={closeReviewModal}
+          userId={order.userId}
+          productId={orderItems.productId._id}
+          orderItemId={orderItems._id}
+          setUpdate={setUpdate}
+        />
       </Modal>
     </>
   );

@@ -5,7 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 import settings from "../../../utils/slickSettings.jsx";
 import "./cardlisting.css";
 import { useEffect, useState } from "react";
-import { get_cart } from "../../../Services/api/cartApi.js";
+import { getCart } from "../../../Services/api/cartApi.js";
 import { useSelector } from "react-redux";
 const CardListing = ({ products }) => {
   const [cart, setCart] = useState([]);
@@ -13,7 +13,7 @@ const CardListing = ({ products }) => {
   const auth = useSelector((state) => state.auth.auth);
   useEffect(() => {
     async function fetchCart() {
-      const response = await get_cart();
+      const response = await getCart();
       if (response.status === 200) {
         const data = response.data.cart.products.filter(
           (item) =>
@@ -42,7 +42,7 @@ const CardListing = ({ products }) => {
                 productTitle={product.name}
                 offer={product.offer}
                 imageUrl={product.images[0]}
-                rating={"4.0"}
+                rating={product.averageRating}
                 id={product._id}
                 variants={product.variants}
                 cart={cart}

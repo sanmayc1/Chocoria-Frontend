@@ -2,8 +2,9 @@ import { Button, Pagination } from "@mui/material";
 import Modal from "../../../HelperComponents/Modal.jsx";
 import { useEffect, useState } from "react";
 import {
-  delete_address,
-  get_all_address,
+  deleteUserAddress,
+  getAllAddressOfUser,
+  setDefaultAddress,
 } from "../../../../Services/api/userApi.js";
 import { toast } from "react-toastify";
 import DeleteDailog from "../../../HelperComponents/DeleteDailog.jsx";
@@ -23,7 +24,7 @@ const ManageAddress = () => {
   // fetch the address data
   useEffect(() => {
     async function fetchAddressData() {
-      const response = await get_all_address();
+      const response = await getAllAddressOfUser();
       if (response.status === 200) {
         const startIndex = (currentPage - 1) * 2;
         const endIndex = startIndex + 2;
@@ -31,13 +32,11 @@ const ManageAddress = () => {
         const pageCount = Math.ceil(data.length / 2);
         if (pageCount < currentPage) {
           setCurrentPage(pageCount);
-          
         }
-         
-          setPageCount(pageCount); // Calculate the total number of pages
-          setAddresses(data.slice(startIndex, endIndex));
-          return;
-        
+
+        setPageCount(pageCount); // Calculate the total number of pages
+        setAddresses(data.slice(startIndex, endIndex));
+        return;
       }
       toast.error(response.response.data.message, {
         position: "top-center",
@@ -82,7 +81,7 @@ const ManageAddress = () => {
   // handle delete address
 
   const handleDelete = async () => {
-    const response = await delete_address(selectedId);
+    const response = await deleteUserAddress(selectedId);
     if (response.status === 200) {
       toast.success(response.data.message, {
         position: "top-center",
@@ -101,6 +100,23 @@ const ManageAddress = () => {
   // handle page change
   const handlePageChange = (e, value) => {
     setCurrentPage(value);
+  };
+
+  const handleSetDefault = async (id) => {
+    const response = await setDefaultAddress(id);
+
+    if (response.status === 200) {
+      toast.success(response.data.message, {
+        position: "top-center",
+        autoClose: 1000,
+      });
+      setUpdate(!update)
+      return;
+    }
+    toast.error(response.response.data.message, {
+      position: "top-center",
+      autoClose: 1000,
+    });
   };
   return (
     <>
@@ -127,7 +143,7 @@ const ManageAddress = () => {
           addresses.map((address) => (
             <div
               key={address._id}
-              className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b border-gray-900"
+              className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b group border-gray-900"
             >
               {/* Address Details */}
               <div className="w-full sm:w-2/4 mb-4 sm:mb-0">
@@ -136,15 +152,31 @@ const ManageAddress = () => {
                 <p className="text-sm">{`${address.city} ${address.state} ${address.pincode} `}</p>
                 <p className="text-sm">{address.landmark}</p>
                 <p className="text-sm">{`Phone : ${address.phone}`}</p>
+                <p className="text-sm font-medium pt-1">
+                  {address.address_type}
+                </p>
               </div>
 
               {/* Home or Office */}
               <div className="w-full sm:w-1/4 flex justify-start sm:justify-center items-center mb-4 sm:mb-0">
-                <h1 className="text-sm font-medium">{address.address_type}</h1>
+                {address.default ? (
+                  <p className="text-sm">Default</p>
+                ) : (
+                  <div className="group-hover:block hidden">
+                    <Button
+                      color="inherit"
+                      variant="outlined"
+                      size="small"
+                      onClick={()=>handleSetDefault(address._id)}
+                    >
+                      Set Default
+                    </Button>
+                  </div>
+                )}
               </div>
 
               {/* Edit and Delete Buttons */}
-              <div className="w-full sm:w-1/4 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-end">
+              <div className="w-full sm:w-1/4 flex flex-col sm:flex-row gap-2 sm:gap-3  justify-end">
                 <Button
                   color="inherit"
                   variant="outlined"
@@ -172,13 +204,11 @@ const ManageAddress = () => {
 
         {/* Pagination */}
         <div className="flex justify-center items-center p-4">
-         
-            <Pagination
-              count={pageCount}
-              page={currentPage}
-              onChange={handlePageChange}
-            />
-         
+          <Pagination
+            count={pageCount}
+            page={currentPage}
+            onChange={handlePageChange}
+          />
         </div>
       </div>
       {/* Add Address Model */}
@@ -213,7 +243,12 @@ const ManageAddress = () => {
         isOpen={openDelete}
         onClose={closeDeleteModel}
         children={
-          <DeleteDailog cancel={closeDeleteModel} title={"Delete Address"} confirm={handleDelete} message={`Are you sure you want to delete this address ?`} />
+          <DeleteDailog
+            cancel={closeDeleteModel}
+            title={"Delete Address"}
+            confirm={handleDelete}
+            message={`Are you sure you want to delete this address ?`}
+          />
         }
       />
     </>

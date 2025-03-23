@@ -2,7 +2,7 @@ import { useState } from "react";
 import AddEditForm from "./Add-Edit-Form.jsx";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-toastify";
-import { add_product } from "../../../../../Services/api/productApi.js";
+import { addProduct } from "../../../../../Services/api/productApi.js";
 import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
@@ -86,7 +86,7 @@ const AddProduct = () => {
     });
 
     // send to backend
-    const response = await add_product(formData);
+    const response = await addProduct(formData);
     if (response.status === 200) {
       toast.success(response.data.message, {
         position: "top-center",

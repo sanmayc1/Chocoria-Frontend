@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import CommonBtn from "../../User/button/CommonBtn.jsx";
 import { useNavigate } from "react-router-dom";
 import SingleInputField from "../../HelperComponents/SingleInputField.jsx";
-import { admin_login } from "../../../Services/api/api.js";
+import { adminLogin } from "../../../Services/api/api.js";
 import { useDispatch } from "react-redux";
 import { SET_AUTH } from "../../../Store/Slice/authSlice.jsx";
 const AdminLogin = () => {
@@ -33,7 +33,7 @@ const AdminLogin = () => {
     }
     setErr('')
     // send data to backend
-   const response= await admin_login(formData)
+   const response= await adminLogin(formData)
     if(response.status === 200){
       dispatch(SET_AUTH(response.data))
       navigate('/admin/dashboard')

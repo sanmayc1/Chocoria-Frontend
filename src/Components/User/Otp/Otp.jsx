@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import SquareBlack from "../button/SquareBlack.jsx";
 import Timer from "./Timer.jsx";
-import { otp_verify } from "../../../Services/api/api.js";
+import { otpVerify } from "../../../Services/api/api.js";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -27,7 +27,7 @@ const Otp = ({id}) => {
 
   const handleSubmit = async()=>{
     const otpJoin = otp.join('')
-    const response = await otp_verify({id,otp:otpJoin})
+    const response = await otpVerify({id,otp:otpJoin})
     if(response.status !== 200){
       toast.error(response.response.data.message,{position:"top-center"})
       return

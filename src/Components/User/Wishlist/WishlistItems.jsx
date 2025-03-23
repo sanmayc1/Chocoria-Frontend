@@ -6,7 +6,7 @@ import Modal from "../../HelperComponents/Modal.jsx";
 import { toast } from "react-toastify";
 import { removeWishlistItem } from "../../../Services/api/whishlistApi.js";
 import { useNavigate } from "react-router-dom";
-import { add_to_cart } from "../../../Services/api/cartApi.js";
+import { addToCart } from "../../../Services/api/cartApi.js";
 
 const WishlistItems = ({ product, setUpdateWishlist, updateWishlist }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -57,7 +57,7 @@ const WishlistItems = ({ product, setUpdateWishlist, updateWishlist }) => {
       quantity: 1,
       variant: product.variant,
     };
-    const response = await add_to_cart(data);
+    const response = await addToCart(data);
     if (response.status === 200) {
       if (response.data.message === "Go to Cart") {
         return navigate("/user/cart");

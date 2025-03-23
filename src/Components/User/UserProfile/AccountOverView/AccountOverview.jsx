@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { get_user } from "../../../../Services/api/api.js";
+import { getUser } from "../../../../Services/api/api.js";
 import { toast } from "react-toastify";
 import yupSchema from "../../../../utils/yupSchema.jsx";
-import { update_profile } from "../../../../Services/api/userApi.js";
+import { updateUserProfile } from "../../../../Services/api/userApi.js";
 
 const AccountOverview = () => {
   const [user, setUser] = useState({});
   const [updateBtn, setUpdateBtn] = useState(false);
   useEffect(() => {
     const fetchUser = async () => {
-      const response = await get_user();
+      const response = await getUser();
      if (response.status === 200) {
       setUser(response.data.user);
       return
@@ -39,7 +39,7 @@ const handleUpdate = async () => {
     
   }
 
-  const response = await update_profile(user);
+  const response = await updateUserProfile(user);
   if (response.status === 200) {
     toast.success(response.data.message, {
       position: "top-center",

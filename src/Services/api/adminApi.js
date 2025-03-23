@@ -2,7 +2,7 @@ import { chocoriaBackEnd } from "./api.js";
 
 // fecth the users
 
-export const fetch_users = async () => {
+export const fetchUsers = async () => {
   try {
     const res = await chocoriaBackEnd.get("/admin/users");
     return res;
@@ -13,7 +13,7 @@ export const fetch_users = async () => {
 
 // block the user
 
-export const block_user = async (id) => {
+export const blockUser = async (id) => {
   try {
     const res = await chocoriaBackEnd.patch(`/admin/block-user/${id}`);
     return res;
@@ -22,15 +22,13 @@ export const block_user = async (id) => {
   }
 };
 
-
 // delete the user
 
-export const delete_user = async (id) => {
+export const deleteUser = async (id) => {
   try {
     const res = await chocoriaBackEnd.delete(`/admin/delete-user/${id}`);
     return res;
   } catch (error) {
     return error;
   }
-}
-
+};

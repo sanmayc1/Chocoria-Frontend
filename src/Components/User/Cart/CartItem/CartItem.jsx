@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import {
-  delete_cart_item,
-  update_quantity,
+  deleteItemFromCart,
+  updateQuantity,
 } from "../../../../Services/api/cartApi.js";
 import { baseUrl } from "../../../../Services/api/constants.js";
 import { Trash2 } from "lucide-react";
@@ -62,7 +62,7 @@ const CartItem = ({
       quantity--;
     }
 
-    const response = await update_quantity({
+    const response = await updateQuantity({
       productId: product.productId._id,
       quantity,
       variantId: product.variant._id,
@@ -89,7 +89,7 @@ const CartItem = ({
   // delete product
   const handleDelete = async () => {
     const { id, variant_id } = selectedProduct;
-    const response = await delete_cart_item(id, variant_id);
+    const response = await deleteItemFromCart(id, variant_id);
     if (response.status === 200) {
       modalClose();
       toast.success(response.data.message, {
