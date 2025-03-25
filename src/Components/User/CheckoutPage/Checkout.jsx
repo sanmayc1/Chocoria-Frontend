@@ -93,7 +93,7 @@ const Checkout = () => {
 
   // place order
 
-  const placeOrder = async () => {
+  const handleplaceOrder = async () => {
     setLoading(true);
     const data = {
       shippingAddress: selectedAddress,
@@ -249,7 +249,7 @@ const Checkout = () => {
             <PaymentOptions
               selectedMethod={selectedMethod}
               setSelectedMethod={setSelectedMethod}
-              placeOrder={placeOrder}
+              placeOrder={handleplaceOrder}
               loading={loading}
               totalPrice={total}
             />

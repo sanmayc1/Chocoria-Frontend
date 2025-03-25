@@ -2,12 +2,15 @@ import { useState, useEffect } from "react";
 import SquareBlack from "../button/SquareBlack.jsx";
 import Timer from "./Timer.jsx";
 import { otpVerify } from "../../../Services/api/api.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
-const Otp = ({id}) => {
+const Otp = ({ id }) => {
   const [otp, setOtp] = useState(Array(4).fill(""));
- const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams()
+  const refferal = searchParams.get("referral")
+
   // handle the input filed changes
   const handleChange = (e, index) => {
     const value = e.target.value;
@@ -25,22 +28,21 @@ const Otp = ({id}) => {
     }
   };
 
-  const handleSubmit = async()=>{
-    const otpJoin = otp.join('')
-    const response = await otpVerify({id,otp:otpJoin})
-    if(response.status !== 200){
-      toast.error(response.response.data.message,{position:"top-center"})
-      return
+  const handleSubmit = async () => {
+    const otpJoin = otp.join("");
+    const response = await otpVerify({ id, otp: otpJoin,refferal });
+    if (response.status !== 200) {
+      toast.error(response.response.data.message, { position: "top-center" });
+      return;
     }
-    toast.success(response.data.message,{position:"top-center",autoClose:1000})
-    setTimeout(()=>{
-      navigate('/login')
-    },2500)
-    
-    
-
-
-  }
+    toast.success(response.data.message, {
+      position: "top-center",
+      autoClose: 1000,
+    });
+    setTimeout(() => {
+      navigate("/login");
+    }, 2500);
+  };
 
   return (
     <>
@@ -69,10 +71,9 @@ const Otp = ({id}) => {
         </div>
         {/* Timer */}
         <div className="flex justify-center pt-1">
-          <Timer id={id}  />
+          <Timer id={id} />
         </div>
       </div>
-      
     </>
   );
 };

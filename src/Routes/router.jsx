@@ -47,6 +47,7 @@ import OrderFailed from "../Components/User/CheckoutPage/OrderFailed/OrderFailed
 import BrandSection from "../Components/Admin/AllSections/Brand/BrandSection.jsx";
 import BrandListPage from "../Pages/UserPages/BrandListPage.jsx";
 import ReturnRequests from "../Components/Admin/AllSections/OrderSection/ReturnRequest.jsx";
+import Referral from "../Components/User/UserProfile/Refferal/Refferal.jsx";
 
 const router = createBrowserRouter([
   {
@@ -59,7 +60,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/signup",
-    element: <SignUpPage />,
+    element: (
+      <AuthLoginGuard>
+        <SignUpPage />
+      </AuthLoginGuard>
+    ),
   },
   {
     path: "/otp/:id",
@@ -134,6 +139,10 @@ const router = createBrowserRouter([
           {
             path: "/user/wallet",
             element: <Wallet />,
+          },
+          {
+            path: "/user/referral",
+            element: <Referral />,
           },
           {
             path: "/user/wallet/history",
@@ -236,8 +245,8 @@ const router = createBrowserRouter([
         element: <CancelRequests />,
       },
       {
-       path:"/admin/orders/return",
-       element:<ReturnRequests/>
+        path: "/admin/orders/return",
+        element: <ReturnRequests />,
       },
       {
         path: "/admin/offers",

@@ -4,7 +4,7 @@ import SingleInputField from "../../HelperComponents/SingleInputField.jsx";
 import yupSchema from "../../../utils/yupSchema.jsx";
 import { signUp } from "../../../Services/api/api.js";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const SignUpFields = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +17,9 @@ const SignUpFields = () => {
 
   const [err, setErr] = useState({});
   const navigate = useNavigate()
-
+  const [searchParams] = useSearchParams()
+  const [refferal ,setReferral] = useState(searchParams.get('referral')||"")
+  
   //   handle changes
   const handleChange = async (e) => {
     const { name, value } = e.target;
@@ -61,8 +63,12 @@ const SignUpFields = () => {
         });
         return;
       }
-
-      navigate(`/otp/${response.data.id}`)
+      if(refferal){
+        navigate(`/otp/${response.data.id}?referral=${refferal}`)
+      }else{
+        navigate(`/otp/${response.data.id}`)
+      }
+      
 
     } catch (error) {
       const validationErr = {};

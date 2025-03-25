@@ -52,6 +52,7 @@ const OrderDetailed = () => {
         response.data.orderItem.status === "Cancelled" && setIndex(4);
         response.data.orderItem.status === "Order Not Placed" && setIndex(5);
         response.data.orderItem.status === "Return" && setIndex(6);
+
         return;
       }
     }
@@ -137,9 +138,10 @@ const OrderDetailed = () => {
 
     toast.error(response.response.data.message, {
       position: "top-center",
-      autoClose: 1000,
       theme: "dark",
       style: { width: "100%" },
+      autoClose:5000
+
     });
     return;
   };
@@ -401,13 +403,16 @@ const OrderDetailed = () => {
                       Your Payment was not confirmed by the bank.
                     </p>
                     <div className="flex justify-end">
-                      <Button
-                        onClick={continuePayment}
-                        variant="contained"
-                        color="success"
-                      >
-                        Continue Payment
-                      </Button>
+                      {new Date().toISOString().split("T")[0] ==
+                        order.orderDate.split("T")[0] && (
+                        <Button
+                          onClick={continuePayment}
+                          variant="contained"
+                          color="success"
+                        >
+                          Continue Payment
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ) : (

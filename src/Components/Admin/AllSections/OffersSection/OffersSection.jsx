@@ -8,7 +8,7 @@ import {
   getAllOffers,
 } from "../../../../Services/api/offerApi.js";
 import { baseUrl } from "../../../../Services/api/constants.js";
-import { Trash2 } from "lucide-react";
+import { Info, Trash2 } from "lucide-react";
 import DeleteDailog from "../../../HelperComponents/DeleteDailog.jsx";
 
 const OffersSection = () => {
@@ -18,6 +18,8 @@ const OffersSection = () => {
   const [categoriesOffer, setCategoriesOffer] = useState([]);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [selectedOffer, setSelectedOffer] = useState(null);
+  const [referral, setReferral] = useState({ title: "", amount: "" });
+  const [EditReferral,setEditReferral] = useState(false)
 
   useEffect(() => {
     const fetchOffers = async () => {
@@ -62,9 +64,17 @@ const OffersSection = () => {
       autoClose: 1000,
     });
   };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+
+   setEditReferral(true)
+
+    setReferral((prev) => ({ ...prev, [name]: value }));
+  };
   return (
     <>
-      <div className="p-4 sm:p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-6 ">
         <div className="flex justify-end">
           <Button
             style={{ backgroundColor: "black", color: "white" }}
@@ -73,16 +83,49 @@ const OffersSection = () => {
             Add Offer
           </Button>
         </div>
-        {/* Main Customer List Card */}
+          {/* Referral offer */}
+          <div className="p-4 bg-white rounded-lg shadow">
+          <p className="text-lg font-semibold">Refferal Offer</p>
+
+          <div className="py-5 flex items-end  gap-10">
+            <label htmlFor="title" className="flex flex-col gap-4">
+              Referral Title
+              <input
+                type="text"
+                className="h-10  rounded-lg p-2"
+                placeholder="Title"
+                name="title"
+                value={referral.title}
+                onChange={handleChange}
+              />
+            </label>
+            <label htmlFor="rate" className="flex flex-col gap-4">
+              Referal Amount
+              <input
+                type="number"
+                className="h-10  rounded-lg p-2"
+                placeholder="Amount"
+                name="amount"
+                value={referral.amount}
+                onChange={handleChange}
+                min={0}
+              />
+            </label>
+            {EditReferral && <Button variant="contained" size="small" style={{backgroundColor:"black"}}>Update</Button>}
+          </div>
+          <p className="flex gap-2 items-center text-sm py-3">
+            <Info size={20} />
+            Click on the values you can edit.
+          </p>
+        </div>
+      {/* Proudct Offer */}
         <div className="bg-white rounded-lg shadow">
-          {/* Header */}
+         
           <div className="p-4 sm:p-6 border-b">
             <div className="flex flex-col sm:flex-row justify-start gap-4">
               <h2 className="text-lg font-semibold">Products Offers</h2>
             </div>
           </div>
-
-          {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50">
@@ -109,11 +152,7 @@ const OffersSection = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {productsOffer.map((offer) => (
-                  <tr
-                    key={offer._id}
-                    className={`hover:bg-gray-50`}
-                  >
-                  
+                  <tr key={offer._id} className={`hover:bg-gray-50`}>
                     <td className="px-6 py-4 ">
                       <img
                         src={`${baseUrl}${offer.specificProduct.images[0]}`}
@@ -134,12 +173,16 @@ const OffersSection = () => {
                       <span className="px-2 text-sm">{offer.percentage}%</span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                    { offer.expiresAt.split("T")[0] !==
-                      new Date().toISOString().split("T")[0] ? <span
-                        className={`px-2 inline-flex text-sm leading-5 rounded-full`}
-                      >
-                        {offer.expiresAt.split("T")[0]}
-                      </span>:<span className="text-red-500">Expired</span>}
+                      {offer.expiresAt.split("T")[0] !==
+                      new Date().toISOString().split("T")[0] ? (
+                        <span
+                          className={`px-2 inline-flex text-sm leading-5 rounded-full`}
+                        >
+                          {offer.expiresAt.split("T")[0]}
+                        </span>
+                      ) : (
+                        <span className="text-red-500">Expired</span>
+                      )}
                     </td>
 
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -225,6 +268,7 @@ const OffersSection = () => {
         <div className="flex justify-center">
           <Pagination count={1} />
         </div>
+      
       </div>
 
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>

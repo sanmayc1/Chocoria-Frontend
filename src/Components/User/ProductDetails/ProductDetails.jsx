@@ -51,7 +51,7 @@ const ProductDetails = ({
   const navigate = useNavigate();
 
   // add to cart
-  const addToCart = async () => {
+  const handleAddToCart = async () => {
     if (!auth) {
       navigate("/login");
 
@@ -213,7 +213,7 @@ const ProductDetails = ({
       <div className="pt-9 lg:pt-3 xl:pt-5 grid lg:grid-flow-col gap-3 w-full ">
         <button
           className="bg-orange-950 md:h-12  xl:h-14 xl:text-lg h-14  text-white font-semibold rounded-3xl hover:bg-orange-900  transition-colors"
-          onClick={addToCart}
+          onClick={handleAddToCart}
         >
           Add to cart
         </button>

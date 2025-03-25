@@ -94,3 +94,12 @@ export const resetPassword = async (data)=>{
         return error;
     }
 }
+
+export const getReferalUrl = async () =>{
+    try {
+        const res = await chocoriaBackEnd.get(`/user/referral`)
+        return res;
+    } catch (error) {
+        return error;
+    }
+}
