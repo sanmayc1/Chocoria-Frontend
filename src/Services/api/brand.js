@@ -41,3 +41,13 @@ export const getAllBrands = async () => {
       return error;
     }
   };
+
+
+  export const getTopSellingBrands = async () => {
+    try {
+      const res = await chocoriaBackEnd.get("/admin/brand/top-selling");
+      return res;
+    } catch (error) {
+      return error;
+    }
+  }

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { baseUrl } from "./constants.js";
 import { authFalse } from "../../Store/Slice/authSlice.jsx";
-import {store} from "../../Store/Store.jsx"
+import { store } from "../../Store/Store.jsx";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 export const chocoriaBackEnd = axios.create({
@@ -24,11 +24,10 @@ chocoriaBackEnd.interceptors.response.use(
     ) {
       await userLogout();
       store.dispatch(authFalse());
-      toast.error("Session Expired Please Login again",{position:"top-center"})
+      toast.error("Session Expired Please Login again", {
+        position: "top-center",
+      });
       io.disconnect();
-      
-     
-     
     }
     return Promise.reject(error);
   }
@@ -36,11 +35,9 @@ chocoriaBackEnd.interceptors.response.use(
 
 // Google authentication retrived access token send to backend
 
-export const googleAuth = async (accessToken) => {
+export const googleAuth = async (data) => {
   try {
-    const res = await chocoriaBackEnd.post("/user/auth/google", {
-      accessToken,
-    });
+    const res = await chocoriaBackEnd.post("/user/auth/google", data);
     return res;
   } catch (error) {
     return error;
@@ -92,7 +89,7 @@ export const authLogin = async (data) => {
 
 // logout request
 
-export const userLogout= async () => {
+export const userLogout = async () => {
   try {
     const res = await chocoriaBackEnd.post("/user/logout");
     return res;
@@ -112,7 +109,6 @@ export const getUser = async () => {
   }
 };
 
-
 // admin login
 
 export const adminLogin = async (data) => {
@@ -122,4 +118,4 @@ export const adminLogin = async (data) => {
   } catch (error) {
     return error;
   }
-}
+};

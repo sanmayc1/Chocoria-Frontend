@@ -103,3 +103,13 @@ export const getReferalUrl = async () =>{
         return error;
     }
 }
+
+
+export const getReferralList = async ()=>{
+    try {
+        const res = await chocoriaBackEnd.get("/user/referral/invites")
+        return res;
+    } catch (error) {
+        return error;
+    }
+}

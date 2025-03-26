@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { getTopSellingProduct } from "../../../Services/api/productApi.js";
 import { getTopSellingCategories } from "../../../Services/api/category.js";
 import { toast } from "react-toastify";
+import { getTopSellingBrands } from "../../../Services/api/brand.js";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -21,8 +22,10 @@ const Dashboard = () => {
       try {
         const productResponse = await getTopSellingProduct();
         const categoryResponse = await getTopSellingCategories();
+        const brandResponse = await getTopSellingBrands();
 
-        if (productResponse.status === 200 && categoryResponse.status === 200) {
+        if (productResponse.status === 200 && categoryResponse.status === 200 && brandResponse.status === 200) {
+          setTopSellingBrands(brandResponse.data.brands);
           setTopSellingProducts(productResponse.data.products);
           setTopSellingCategories(categoryResponse.data.categories);
           return;
@@ -199,7 +202,7 @@ const Dashboard = () => {
                   topSellingBrands.map((brand) => (
                     <tr key={brand._id}>
                       <td className="px-3 sm:px-6 py-2 sm:py-3">
-                        {brand.name}
+                        {brand.name.charAt(0).toUpperCase() + brand.name.slice(1)}
                       </td>
                       <td className="px-3 sm:px-10 py-2 sm:py-3 text-right">
                         {brand.buyCount}

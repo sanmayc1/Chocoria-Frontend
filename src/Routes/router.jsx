@@ -48,6 +48,7 @@ import BrandSection from "../Components/Admin/AllSections/Brand/BrandSection.jsx
 import BrandListPage from "../Pages/UserPages/BrandListPage.jsx";
 import ReturnRequests from "../Components/Admin/AllSections/OrderSection/ReturnRequest.jsx";
 import Referral from "../Components/User/UserProfile/Refferal/Refferal.jsx";
+import Invites from "../Components/User/UserProfile/Refferal/Invites.jsx";
 
 const router = createBrowserRouter([
   {
@@ -143,6 +144,10 @@ const router = createBrowserRouter([
           {
             path: "/user/referral",
             element: <Referral />,
+          },
+          {
+            path: "/user/referral/invites",
+            element: <Invites />,
           },
           {
             path: "/user/wallet/history",

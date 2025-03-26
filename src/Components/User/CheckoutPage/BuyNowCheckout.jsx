@@ -7,7 +7,7 @@ import SelectAddress from "./SelectAddress/SelectAddress.jsx";
 import OrderSummary from "./OrderSummary/OrderSummary.jsx";
 import PaymentOptions from "./PaymentOptions/PaymentOptions.jsx";
 import { toast } from "react-toastify";
-import { placeOrder } from "../../../Services/api/orders.js";
+import { placeOrder, updateOrderStatus, verifyPayment } from "../../../Services/api/orders.js";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { getProductDetailsUserSide } from "../../../Services/api/productApi.js";
 
@@ -24,6 +24,14 @@ const CheckoutForBuyNow = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { id, vId } = useParams();
+
+
+    // 
+
+    const [appliedCoupon, setAppliedCoupon] = useState(null);
+    const [couponDiscount, setCouponDiscount] = useState(0);
+    const [total, setTotal] = useState(0);
+    // 
 
   useEffect(() => {
     async function fetchProduct() {
@@ -90,22 +98,110 @@ const CheckoutForBuyNow = () => {
 
   // place order
 
-  const placeOrder = async () => {
-    if (selectedMethod === "googlepay") {
-      toast.error("Payment not available now", {
+const handlePlaceOrder = async () => {
+    setLoading(true);
+    const data = {
+      shippingAddress: selectedAddress,
+      paymentMethod: selectedMethod,
+      items: product,
+      coupon: appliedCoupon,
+      couponDiscount: couponDiscount,
+    };
+    if (selectedMethod === "razorpay") {
+      const response = await placeOrder(data);
+  
+      if (response.status === 200) {
+        const order = response.data.razorpayOrder;
+        const user = response.data.user;
+        const key = import.meta.env.VITE_RAZORPAY_KEY_ID;
+        const options = {
+          key,
+          amount: order.amount,
+          currency: order.currency,
+          name: "Chocoria",
+          description: "Test Transaction",
+          order_id: order.id,
+          handler: async function (response) {
+            const data = {
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpayOrderId: order.id,
+              razorpaySignature: response.razorpay_signature,
+            };
+            const res = await verifyPayment(data);
+            if (res.status === 200) {
+              const id = res.data.order._id;
+              navigate(`/user/checkout/success/${id}`);
+            }
+          },
+          prefill: {
+            name: selectedAddress.name,
+            email: user.email,
+            contact: selectedAddress.phone,
+          },
+          notes: {
+            address: selectedAddress.detailed_address,
+          },
+          theme: {
+            color: "#080808",
+          },
+          modal: {
+            ondismiss: async function () {
+              
+              try {
+                const data = {
+                  razorpayOrderId: order.id,
+                };
+                const res = await updateOrderStatus(data);
+                
+                if (res.status === 200) {
+                  navigate(`/checkout/failed/${res.data.order._id}`);
+                  return;
+                }
+              } catch (error) {
+                console.log(error);
+              }
+            },
+          },
+        };
+
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.open();
+        paymentObject.on("payment.failed", async function (response) {
+          try {
+            const data = {
+              razorpayOrderId: response.error.metadata.order_id,
+            };
+            const res = await updateOrderStatus(data);
+
+            if (res.status === 200) {
+              navigate(`/checkout/failed/${res.data.order._id}`);
+             
+              return;
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        });
+
+        setLoading(false);
+        return;
+      }
+
+      toast.error(response.response.data.message, {
         position: "top-center",
         autoClose: 1000,
+        theme: "dark",
+        style: { width: "100%" },
       });
-
+      setLoading(false);
+      console.log(response);
+      if (response.status === 409) {
+        navigate("/user/cart");
+      }
       return;
     }
-    setLoading(true);
+
     if (selectedMethod === "COD") {
-      const data = {
-        shippingAddress: selectedAddress,
-        paymentMethod: selectedMethod,
-        items: product,
-      };
       const response = await placeOrder(data);
       if (response.status === 200) {
         const id = response.data.order._id;
@@ -114,12 +210,18 @@ const CheckoutForBuyNow = () => {
       }
       toast.error(response.response.data.message, {
         position: "top-center",
-        autoClose: 1000,
+        autoClose: 2000,
+        theme: "dark",
+        style: { width: "100%" },
       });
       setLoading(false);
+
+      if (response.status === 409) {
+        navigate("/user/cart");
+      }
+      return;
     }
   };
-
   return (
     <>
       <div className="min-h-screen  p-4">
@@ -135,18 +237,25 @@ const CheckoutForBuyNow = () => {
             />
           )}
           {index === 2 && (
-            <OrderSummary
-              selectedAddress={selectedAddress}
-              cart={product}
-              continueToPayment={continueToPayment}
-            />
+               <OrderSummary
+               total={total}
+               setTotal={setTotal}
+               appliedCoupon={appliedCoupon}
+               setAppliedCoupon={setAppliedCoupon}
+               selectedAddress={selectedAddress}
+               cart={product}
+               continueToPayment={continueToPayment}
+               couponDiscount={couponDiscount}
+               setCouponDiscount={setCouponDiscount}
+             />
           )}
           {index === 3 && (
             <PaymentOptions
-              selectedMethod={selectedMethod}
-              setSelectedMethod={setSelectedMethod}
-              placeOrder={placeOrder}
-              loading={loading}
+            selectedMethod={selectedMethod}
+            setSelectedMethod={setSelectedMethod}
+            placeOrder={handlePlaceOrder}
+            loading={loading}
+            totalPrice={total}
             />
           )}
         </div>

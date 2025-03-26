@@ -1,18 +1,21 @@
 import React from "react";
 import { FcGoogle } from "react-icons/fc";
 import CommonBtn from "../button/CommonBtn.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { googleAuth } from "../../../Services/api/api.js";
-import { toast} from "react-toastify";
+import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { SET_AUTH } from "../../../Store/Slice/authSlice.jsx";
 
 const CommonForm = ({ heading, pageName, fields }) => {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
- const dispatch = useDispatch()
-  // sign in or signOut navigate
-
+  const dispatch = useDispatch();
+  const referral = searchParams.get("referral") || "";
+  console.log(referral);
+  
+ 
   const signInOrSignOut = () => {
     if (pageName === "LOG IN") {
       navigate("/signup");
@@ -23,33 +26,34 @@ const CommonForm = ({ heading, pageName, fields }) => {
 
   const redirectToHome = () => {
     navigate("/");
-  }
+  };
 
   // google login get the access token
 
   const login = useGoogleLogin({
-
     onSuccess: async (tokenResponse) => {
       try {
-        const response = await googleAuth(tokenResponse.access_token);
+        const response = await googleAuth({
+          accessToken: tokenResponse.access_token,
+          referral,
+        });
         if (response?.data?.success) {
-          dispatch(SET_AUTH(response.data))
+          dispatch(SET_AUTH(response.data));
           navigate("/");
-          return
+          return;
         } else {
           toast.error(response.response.data.message, {
             position: "top-center",
             autoClose: 2000,
-            style:{width: "100%"},
+            style: { width: "100%" },
           });
-          return
+          return;
         }
-      } catch (error) {;
-        toast.error("Something went wrong")
+      } catch (error) {
+        toast.error("Something went wrong");
       }
     },
-    onError: (err) => console.error(err), 
-  
+    onError: (err) => console.error(err),
   });
 
   return (
@@ -100,11 +104,14 @@ const CommonForm = ({ heading, pageName, fields }) => {
               Sign In
             </span>
           </p>
-          
         )}
-        <p className="text-center pb-6 pt-2 cursor-pointer text-sm font-semibold " onClick={redirectToHome}>Back to Home</p>
+        <p
+          className="text-center pb-6 pt-2 cursor-pointer text-sm font-semibold "
+          onClick={redirectToHome}
+        >
+          Back to Home
+        </p>
       </div>
-      
     </>
   );
 };

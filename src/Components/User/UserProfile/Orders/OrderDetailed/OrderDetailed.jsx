@@ -140,8 +140,7 @@ const OrderDetailed = () => {
       position: "top-center",
       theme: "dark",
       style: { width: "100%" },
-      autoClose:5000
-
+      autoClose: 5000,
     });
     return;
   };
@@ -196,35 +195,81 @@ const OrderDetailed = () => {
   const downloadInvoice = async () => {
     const doc = new jsPDF();
 
+ 
+
+    // Background and border
+    doc.setFillColor(245, 245, 245);
+    doc.rect(10, 10, 190, 277, "F");
+    doc.setDrawColor(224, 224, 224);
+    doc.rect(15, 15, 180, 267, "D");
+
+    // Invoice Header
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.text("INVOICE", 10, 25);
+    doc.setFontSize(18);
+    doc.setTextColor(51, 51, 51);
+    doc.text("INVOICE", 105, 25, { align: "center" });
 
+    // Separator Line
+    doc.setLineWidth(0.5);
+    doc.line(50, 30, 160, 30);
+
+    // Invoice Details Section
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setLineHeightFactor(0.1);
-    doc.text(`Order ID: ${order.uniqueOrderId}`, 10, 40);
-    doc.text(`Date: ${order.orderDate.split("T")[0]}`, 10, 45);
-    doc.text(`Customer: ${order.shippingAddress.name}`, 10, 50);
-    doc.text(`Phone: ${order.shippingAddress.phone}`, 10, 55);
-    doc.text(`Address: ${order.shippingAddress.detailed_address}`, 10, 60);
-    doc.text(`Payment Method: ${order.paymentMethod}`, 10, 65);
+    doc.setFontSize(10);
+    doc.text(`Order ID: ${order.uniqueOrderId}`, 20, 40);
+    doc.text(`Date: ${order.orderDate.split("T")[0]}`, 20, 47);
+    doc.text(`Customer: ${order.shippingAddress.name}`, 20, 54);
+    doc.text(`Phone: ${order.shippingAddress.phone}`, 20, 61);
+    doc.text(`Address: ${order.shippingAddress.detailed_address}`, 20, 68);
+    doc.text(`Payment Method: ${order.paymentMethod}`, 20, 75);
 
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setLineHeightFactor(0.1);
-    doc.text(`${orderItems.productId?.name}`, 10, 80);
-    doc.text(`Quantity :${orderItems.quantity}`, 10, 85);
-
-    doc.text(`Total Price `, 10, 105);
-    doc.text(`${orderItems.totalPrice.toFixed(2)}`, 50, 105);
-    doc.text(`Discount `, 10, 110);
-    doc.text(`${orderItems.offerDiscount.toFixed(2)}`, 50, 110);
-    doc.text(`Coupon `, 10, 115);
-    doc.text(`${orderItems.couponDiscount.toFixed(2)}`, 50, 115);
+    // Table Header
     doc.setFont("helvetica", "bold");
-    doc.text(`Price`, 10, 125);
-    doc.text(`${orderItems.totalAmountAfterDiscount.toFixed(2)}`, 50, 125);
+    doc.setFillColor(52, 152, 219);
+    doc.setTextColor(255, 255, 255);
+    doc.rect(20, 90, 170, 10, "F");
+    doc.text("Product", 25, 97);
+    doc.text("Quantity", 100, 97);
+    doc.text("Total", 170, 97, { align: "right" });
+
+    // Table Row
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(51, 51, 51);
+    doc.text(`${orderItems.productId?.name}`, 25, 107);
+    doc.text(`${orderItems.quantity}`, 100, 107);
+    doc.text(`${orderItems.totalPrice.toFixed(2)}`, 170, 107, {
+      align: "right",
+    });
+
+    // Calculation Section
+    doc.setFont("helvetica", "bold");
+    doc.text("Total Price", 100, 130, { align: "right" });
+    doc.text(`${orderItems.totalPrice.toFixed(2)}`, 170, 130, {
+      align: "right",
+    });
+
+    doc.text("Discount", 100, 137, { align: "right" });
+    doc.text(`${orderItems.offerDiscount.toFixed(2)}`, 170, 137, {
+      align: "right",
+    });
+
+    doc.text("Coupon", 100, 144, { align: "right" });
+    doc.text(`${orderItems.couponDiscount.toFixed(2)}`, 170, 144, {
+      align: "right",
+    });
+
+    // Total Amount
+    doc.setLineWidth(0.5);
+    doc.line(100, 150, 170, 150);
+    doc.text("Price", 100, 157, { align: "right" });
+    doc.text(`${orderItems.totalAmountAfterDiscount.toFixed(2)}`, 170, 157, {
+      align: "right",
+    });
+
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    doc.text("Thank you !", 105, 270, { align: "center" });
 
     doc.save(`invoice.pdf`);
   };

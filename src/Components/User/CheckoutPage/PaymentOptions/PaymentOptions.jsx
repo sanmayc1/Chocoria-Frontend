@@ -24,7 +24,7 @@ const PaymentOptions = ({
         {/* COD Option */}
         <div
           onClick={() =>
-            setSelectedMethod(totalPrice > 1000 ? "razorpay" : "COD")
+            setSelectedMethod(totalPrice > 1000 ? selectedMethod : "COD")
           }
           className={`relative p-4 border rounded-lg  transition-all ${
             totalPrice > 1000 ? "cursor-not-allowed  text-gray-500 " : "cursor-pointer"
@@ -66,6 +66,30 @@ const PaymentOptions = ({
               <h3 className="font-medium">Razorpay</h3>
               <p className="text-sm text-gray-600">
                 Fast, secure payment with Razorpay
+              </p>
+            </div>
+          </div>
+        </div>
+        {/* Wallet */}
+        <div
+          onClick={() => setSelectedMethod("wallet")}
+          className={`relative p-4 border rounded-lg cursor-pointer transition-all ${
+            selectedMethod === "wallet"
+              ? "border-blue-500 bg-blue-50"
+              : "border-gray-200 hover:border-gray-300"
+          }`}
+        >
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 mt-1">
+              <Wallet className="w-6 h-6 text-gray-600" />
+            </div>
+            <div>
+              <h3 className="font-medium">Wallet</h3>
+              <p className="text-sm text-gray-600">
+                Made payment with your wallet
+              </p>
+              <p className="text-sm font-semibold text-gray-600">
+                Balance : ₹1000
               </p>
             </div>
           </div>

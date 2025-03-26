@@ -27,3 +27,22 @@ export const deleteOffer = async (id) => {
         return error;
     }
 }
+
+export const defaultReferralOffer = async () => {
+    try {
+        const res = await chocoriaBackEnd.get("/admin/default-referral-offer");
+        return res;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const editDefaultReferralOffer = async (data) => {
+    try {
+        const res = await chocoriaBackEnd.patch("/admin/default-referral-offer",data);
+        
+        return res;
+    } catch (error) {
+        return error;
+    }
+}

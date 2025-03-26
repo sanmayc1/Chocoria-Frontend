@@ -8,35 +8,32 @@ import { useNavigate } from "react-router-dom";
 const ForgetPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [err, setErr] = useState("");
-  const[isLoading,setIsLoading] = useState(false)
-  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-const handleSubmit = async (e) => {
-  
-  e.preventDefault();
-  if (!email.trim()) {
-    setErr("Please enter your email");
-    return;
-  }
-  setErr("");
-  setIsLoading(true)
-  const response = await forgetUserPassword({ email });
-  if (response.status !== 200) {
-  
-      setErr(response.response.data.message);
-      setIsLoading(false)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email.trim()) {
+      setErr("Please enter your email");
       return;
-    
-  }
-  setErr("");
-  toast.success(response.data.message, {
-    position: "top-center",
-    autoClose: 2000,
-    style: {width: "100%"}
-  });
-  setIsLoading(false)
-  navigate("/login");
-}
+    }
+    setErr("");
+    setIsLoading(true);
+    const response = await forgetUserPassword({ email });
+    if (response.status !== 200) {
+      setErr(response.response.data.message);
+      setIsLoading(false);
+      return;
+    }
+    setErr("");
+    toast.success(response.data.message, {
+      position: "top-center",
+      autoClose: 2000,
+      style: { width: "100%" },
+    });
+    setIsLoading(false);
+    navigate("/login");
+  };
 
   return (
     <div className="flex justify-center h-screen items-center ">
@@ -55,8 +52,18 @@ const handleSubmit = async (e) => {
           {err && <p className="text-red-500 text-xs pt-2 px-1 ">{err}</p>}
         </div>
         <div className="flex justify-center items-center w-full px-10 pb-5">
-          <button className={`${isLoading ? "opacity-80 cursor-not-allowed" : ""} w-full bg-black text-white py-3 rounded-2xl flex justify-center  items-center`} disabled={isLoading} onClick={handleSubmit}>
-            {isLoading ? <CircularProgress color="inherit" size={20} /> : "Send Reset Link"}
+          <button
+            className={`${
+              isLoading ? "opacity-80 cursor-not-allowed" : ""
+            } w-full bg-black text-white py-3 rounded-2xl flex justify-center  items-center`}
+            disabled={isLoading}
+            onClick={handleSubmit}
+          >
+            {isLoading ? (
+              <CircularProgress color="inherit" size={20} />
+            ) : (
+              "Send Reset Link"
+            )}
           </button>
         </div>
       </div>

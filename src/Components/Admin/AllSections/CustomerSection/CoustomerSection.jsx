@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { Search, Filter, MoreVertical, Users, RefreshCwIcon } from "lucide-react";
+import { Search, Filter,Users, RefreshCwIcon, Trash2 } from "lucide-react";
 import QuickStatCard from "../../HelperComponents/QuickCard";
-import { IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
+import {  Pagination, Switch } from "@mui/material";
 import {blockUser,deleteUser, fetchUsers } from "../../../../Services/api/adminApi.js";
 import { toast } from "react-toastify";
 
 const CustomerSection = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [update, setUpdate] = useState(false);
   const [customers, setCustomers] = useState([]);
@@ -46,8 +45,7 @@ const CustomerSection = () => {
   };
 
   // delete the user
-  const deleteUser = async(id) => {
-    setAnchorEl(null);
+  const deleteUserData = async(id) => {
    const response =  await deleteUser(id)
    if(response.status === 200){
     setUpdate(!update)
@@ -62,16 +60,6 @@ const CustomerSection = () => {
     });
   }
 
-    
-  };
-  // setCustomers(customers)
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
   };
 
   return (
@@ -204,33 +192,7 @@ const CustomerSection = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <IconButton
-                      size="large"
-                      aria-label="account of current user"
-                      aria-controls="menu-appbar"
-                      aria-haspopup="true"
-                      onClick={handleMenu}
-                      color="inherit"
-                    >
-                      <MoreVertical size={20} />
-                    </IconButton>
-                    <Menu
-                      id="menu-appbar"
-                      anchorEl={anchorEl}
-                      anchorOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                      }}
-                      keepMounted
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                      }}
-                      open={Boolean(anchorEl)}
-                      onClose={handleClose}
-                    >
-                      <MenuItem onClick={()=>deleteUser(customer._id)}>Delete</MenuItem>
-                    </Menu>
+                   <Trash2 size={20} className="text-red-600" onClick={()=>deleteUserData(customer._id)} />
                   </td>
                 </tr>
               ))}

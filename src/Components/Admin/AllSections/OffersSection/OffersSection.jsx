@@ -4,7 +4,9 @@ import { toast } from "react-toastify";
 import Modal from "../../../HelperComponents/Modal.jsx";
 import AddOffer from "./AddOffer.jsx";
 import {
+  defaultReferralOffer,
   deleteOffer,
+  editDefaultReferralOffer,
   getAllOffers,
 } from "../../../../Services/api/offerApi.js";
 import { baseUrl } from "../../../../Services/api/constants.js";
@@ -19,11 +21,12 @@ const OffersSection = () => {
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [referral, setReferral] = useState({ title: "", amount: "" });
-  const [EditReferral,setEditReferral] = useState(false)
+  const [EditReferral, setEditReferral] = useState(false);
 
   useEffect(() => {
     const fetchOffers = async () => {
       const response = await getAllOffers();
+      const referralResponse = await defaultReferralOffer();
       if (response.status === 200) {
         const productsOfferData = response.data.productsOffers.filter(
           (offer) => offer.specificProduct !== null
@@ -34,6 +37,10 @@ const OffersSection = () => {
 
         setProductsOffer(productsOfferData);
         setCategoriesOffer(categoriesOfferData);
+      }
+      if (referralResponse.status === 200) {
+        setReferral(referralResponse.data.defaultReferral);
+        
       }
     };
     fetchOffers();
@@ -66,11 +73,27 @@ const OffersSection = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
 
-   setEditReferral(true)
+    setEditReferral(true);
 
     setReferral((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const editReferral = async () => {
+    const response = await editDefaultReferralOffer(referral);
+    if (response.status === 200) {
+      toast.success(response.data.message, {
+        position: "top-center",
+        autoClose: 1000,
+      });
+      setEditReferral(false);
+      return;
+    }
+    toast.error(response.response.data.message, {
+      position: "top-center",
+      autoClose: 1000,
+    });
   };
   return (
     <>
@@ -83,8 +106,8 @@ const OffersSection = () => {
             Add Offer
           </Button>
         </div>
-          {/* Referral offer */}
-          <div className="p-4 bg-white rounded-lg shadow">
+        {/* Referral offer */}
+        <div className="p-4 bg-white rounded-lg shadow">
           <p className="text-lg font-semibold">Refferal Offer</p>
 
           <div className="py-5 flex items-end  gap-10">
@@ -111,16 +134,24 @@ const OffersSection = () => {
                 min={0}
               />
             </label>
-            {EditReferral && <Button variant="contained" size="small" style={{backgroundColor:"black"}}>Update</Button>}
+            {EditReferral && (
+              <Button
+                variant="contained"
+                size="small"
+                style={{ backgroundColor: "black" }}
+                onClick={editReferral}
+              >
+                Update
+              </Button>
+            )}
           </div>
           <p className="flex gap-2 items-center text-sm py-3">
             <Info size={20} />
             Click on the values you can edit.
           </p>
         </div>
-      {/* Proudct Offer */}
+        {/* Proudct Offer */}
         <div className="bg-white rounded-lg shadow">
-         
           <div className="p-4 sm:p-6 border-b">
             <div className="flex flex-col sm:flex-row justify-start gap-4">
               <h2 className="text-lg font-semibold">Products Offers</h2>
@@ -268,7 +299,6 @@ const OffersSection = () => {
         <div className="flex justify-center">
           <Pagination count={1} />
         </div>
-      
       </div>
 
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>

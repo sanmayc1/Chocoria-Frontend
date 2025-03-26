@@ -9,7 +9,7 @@ const Otp = ({ id }) => {
   const [otp, setOtp] = useState(Array(4).fill(""));
   const navigate = useNavigate();
   const [searchParams] = useSearchParams()
-  const refferal = searchParams.get("referral")
+  const referral = searchParams.get("referral")
 
   // handle the input filed changes
   const handleChange = (e, index) => {
@@ -30,7 +30,7 @@ const Otp = ({ id }) => {
 
   const handleSubmit = async () => {
     const otpJoin = otp.join("");
-    const response = await otpVerify({ id, otp: otpJoin,refferal });
+    const response = await otpVerify({ id, otp: otpJoin,referral });
     if (response.status !== 200) {
       toast.error(response.response.data.message, { position: "top-center" });
       return;
