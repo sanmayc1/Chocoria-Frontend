@@ -11,8 +11,6 @@ const CustomerReviews = ({ id, averageRating }) => {
       const response = await getAllReviews(id);
       if (response.status === 200) {
         setReviews(response.data.reviews);
-        console.log(response);
-
         return;
       }
       toast.error(response.response.data.message, {

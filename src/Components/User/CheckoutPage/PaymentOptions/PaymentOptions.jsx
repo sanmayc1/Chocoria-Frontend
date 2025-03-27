@@ -1,13 +1,8 @@
-import React, { useState } from "react";
-import {
-  CreditCard,
-  Plus,
-  CreditCardIcon,
-  ChevronRight,
-  Wallet,
-} from "lucide-react";
-import { SipOutlined } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
+import { ChevronRight, Wallet } from "lucide-react";
+
 import { CircularProgress } from "@mui/material";
+import { getWallet } from "../../../../Services/api/walletApi";
 
 const PaymentOptions = ({
   selectedMethod,
@@ -16,6 +11,23 @@ const PaymentOptions = ({
   loading,
   totalPrice,
 }) => {
+
+  const [walletBalance, setWalletBalance] = useState(0);
+
+  useEffect(() => {
+    const fetchWalletBalance = async () => {
+      try {
+        const res = await getWallet();
+        if (res.status === 200) {
+          setWalletBalance(res.data.wallet.balance);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    fetchWalletBalance();
+  },[])
   return (
     <div className="w-full max-w-2xl mx-auto p-4">
       <h2 className="text-xl font-semibold mb-6">Payment Method</h2>
@@ -27,7 +39,9 @@ const PaymentOptions = ({
             setSelectedMethod(totalPrice > 1000 ? selectedMethod : "COD")
           }
           className={`relative p-4 border rounded-lg  transition-all ${
-            totalPrice > 1000 ? "cursor-not-allowed  text-gray-500 " : "cursor-pointer"
+            totalPrice > 1000
+              ? "cursor-not-allowed  text-gray-500 "
+              : "cursor-pointer"
           } ${
             selectedMethod === "COD"
               ? "border-blue-500 bg-blue-50"
@@ -52,7 +66,7 @@ const PaymentOptions = ({
         {/* Razorpay Option */}
         <div
           onClick={() => setSelectedMethod("razorpay")}
-          className={`relative p-4 border rounded-lg cursor-pointer transition-all ${
+          className={`relative p-4 border rounded-lg  cursor-pointer transition-all ${
             selectedMethod === "razorpay"
               ? "border-blue-500 bg-blue-50"
               : "border-gray-200 hover:border-gray-300"
@@ -72,8 +86,9 @@ const PaymentOptions = ({
         </div>
         {/* Wallet */}
         <div
-          onClick={() => setSelectedMethod("wallet")}
-          className={`relative p-4 border rounded-lg cursor-pointer transition-all ${
+          onClick={() => setSelectedMethod(totalPrice > walletBalance ?selectedMethod:"wallet")}
+          className={`relative p-4 border rounded-lg transition-all ${totalPrice > walletBalance ? "cursor-not-allowed  text-gray-500 "
+            : "cursor-pointer"} ${
             selectedMethod === "wallet"
               ? "border-blue-500 bg-blue-50"
               : "border-gray-200 hover:border-gray-300"
@@ -89,14 +104,16 @@ const PaymentOptions = ({
                 Made payment with your wallet
               </p>
               <p className="text-sm font-semibold text-gray-600">
-                Balance : ₹1000
+                Balance : ₹{walletBalance}
+ 
               </p>
+             {totalPrice > walletBalance && <p className="text-sm text-red-400" >Insufficient balance</p>}
             </div>
           </div>
         </div>
         <div className="flex justify-between font-semibold px-2">
-        <p>Total Price</p>
-        <p>₹{totalPrice}</p>
+          <p>Total Price</p>
+          <p>₹{totalPrice}</p>
         </div>
 
         {/* Continue Button */}

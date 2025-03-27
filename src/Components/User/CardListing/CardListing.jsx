@@ -32,7 +32,7 @@ const CardListing = ({ products }) => {
 
   
   return (
-    <div className="w-[88%] m-auto md:py-10 py-6">
+    <div className="w-[88%] m-auto md:py-10 py-6 hover:scale-105 transition-all duration-500">
       <Slider {...settings}>
         {products?.map((product) => {
           return (

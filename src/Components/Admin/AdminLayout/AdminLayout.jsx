@@ -133,27 +133,7 @@ const AdminLayout = () => {
             onClick={() => navigate("/admin/offers")}
             active={select.includes("/admin/offers") ? true : false}
           />
-          {/* Reviews  */}
-          <SidebarItem
-            icon={<Star size={20} />}
-            text="Reviews"
-            onClick={() => navigate("/admin/reviews")}
-            active={select.includes("/admin/reviews") ? true : false}
-          />
-          {/* Notification */}
-          <SidebarItem
-            icon={<Bell size={20} />}
-            text="Notification"
-            onClick={() => navigate("/admin/notification")}
-            active={select.includes("/admin/notification") ? true : false}
-          />
-          {/* Contact Us */}
-          <SidebarItem
-            icon={<MessageCircle size={20} />}
-            text="Contact Us"
-            onClick={() => navigate("/admin/contact-us")}
-            active={select.includes("/admin/contact-us") ? true : false}
-          />
+        
 
           <div className="my-4 border-t" />
           {/* Coupon */}

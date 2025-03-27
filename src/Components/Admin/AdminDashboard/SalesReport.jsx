@@ -37,7 +37,7 @@ const OrderSection = () => {
     }
     fetchAllOrders();
   }, []);
-  console.log(selectedFilter);
+
   const handleChange = (e) => {
     if (e.target.name === "fromDate") {
       if (filterOrders.toDate && e.target.value > filterOrders.toDate) {
@@ -543,10 +543,7 @@ const OrderSection = () => {
           </div>
         </div>
 
-        {/* Pagination */}
-        <div className="flex justify-center">
-          {orders.length > 5 && <Pagination count={1} />}
-        </div>
+     
       </div>
     </>
   );

@@ -1,27 +1,32 @@
 import { useEffect, useState } from "react";
-import { Search, RefreshCwIcon, Layers, Trash } from "lucide-react";
+import { Search, Layers, Trash } from "lucide-react";
 import QuickStatCard from "../../HelperComponents/QuickCard";
 import { Pagination } from "@mui/material";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import Modal from "../../../HelperComponents/Modal.jsx";
-import CouponAddEditForm from "./CouponForm.jsx";
 import AddCoupon from "./AddCoupon.jsx";
-import { deleteCoupon, getAllCoupons } from "../../../../Services/api/coupon.js";
+import {
+  deleteCoupon,
+  getAllCoupons,
+} from "../../../../Services/api/coupon.js";
 import DeleteDailog from "../../../HelperComponents/DeleteDailog.jsx";
 
 const CouponSection = () => {
   const [update, setUpdate] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [coupons, setCoupons] = useState([]);
+  const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
+  const [pageCount, setPageCount] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchOrders = async () => {
       const response = await getAllCoupons();
       if (response.status === 200) {
-        setCoupons(response.data.coupons);
+        setData(response.data.coupons);
         return;
       }
       toast.error(response.response.data.message, {
@@ -32,6 +37,18 @@ const CouponSection = () => {
     };
     fetchOrders();
   }, [update]);
+
+  useEffect(() => {
+    const results = data.filter(
+      (coupon) =>
+        coupon.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        coupon.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setPageCount(Math.ceil(results.length / 5));
+    const startIndex = (currentPage - 1) * 5;
+    const endIndex = startIndex + 5;
+    setCoupons(results.slice(startIndex, endIndex));
+  }, [searchTerm, data,currentPage]);
 
   const openDeleteModal = (coupon) => {
     setSelectedCoupon(coupon);
@@ -62,6 +79,9 @@ const CouponSection = () => {
     });
   };
 
+  const handlePageChange = (e, value) => {
+    setCurrentPage(value);
+  };
   return (
     <>
       <div className="p-4 sm:p-6 space-y-6">
@@ -93,7 +113,9 @@ const CouponSection = () => {
                 />
                 <input
                   type="text"
-                  placeholder="Search orders..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search Coupons"
                   className="w-full pl-10 pr-4 py-2 border rounded-lg"
                 />
               </div>
@@ -136,10 +158,7 @@ const CouponSection = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {coupons.map((coupon) => (
-                  <tr
-                    key={coupon._id}
-                    className="hover:bg-gray-50"
-                  >
+                  <tr key={coupon._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm  text-gray-900">
                         {coupon.code}
@@ -167,15 +186,25 @@ const CouponSection = () => {
                         ₹{coupon.minPurchaseAmount}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
-                      <span
-                        className={`px-2 inline-flex text-sm leading-5 rounded-full`}
-                      >
-                        {coupon.expiresAt.split("T")[0]}
-                      </span>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {coupon.expiresAt.split("T")[0] >=
+                      new Date().toISOString().split("T")[0] ? (
+                        <span
+                          className={`px-2 inline-flex text-sm leading-5 rounded-full`}
+                        >
+                          {coupon.expiresAt.split("T")[0]}
+                        </span>
+                      ) : (
+                        <span className="text-red-500">Expired</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap ">
-                      <Trash size={14} color="red" className="cursor-pointer" onClick={() => openDeleteModal(coupon)} />
+                      <Trash
+                        size={14}
+                        color="red"
+                        className="cursor-pointer"
+                        onClick={() => openDeleteModal(coupon)}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -185,9 +214,11 @@ const CouponSection = () => {
         </div>
         {/* Pagination */}
         <div className="flex justify-center">
-          {coupons.length > 5 && (
-            <Pagination count={Math.max(coupons.length / 5)} />
-          )}
+          <Pagination
+            count={pageCount}
+            page={currentPage}
+            onChange={handlePageChange}
+          />
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>

@@ -27,7 +27,6 @@ const Home = () => {
       const trendingResponse = await getTrendingProducts();
       const brandResponse = await getAllBrandsUser();
       const categoryResponse = await getCategoriesUserSide();
-      console.log(brandResponse);
       if (
         response.status === 200 &&
         popularResponse.status === 200 &&
@@ -48,6 +47,7 @@ const Home = () => {
       });
     }
     fetchAll();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   useEffect(() => {

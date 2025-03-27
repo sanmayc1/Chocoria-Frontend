@@ -9,15 +9,20 @@ import { useNavigate } from "react-router-dom";
 const OrderSection = () => {
   const [update, setUpdate] = useState(false);
   const [orders, setOrders] = useState([]);
+  const [data, setData] = useState([]);
   const [orderCancelRequests, setOrderCancelRequests] = useState(0);
   const [OrderReturnRequest,setOrderReturnRequests] = useState(0)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [pageCount, setPageCount] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchAllOrder() {
       const response = await getAllOrdersAdminSide();
       if (response.status === 200) {
-        setOrders(response.data.orders);
+        setData(response.data.orders);
         setOrderCancelRequests(response.data.orderCancelRequests);
         setOrderReturnRequests(response.data.returnRequests)
         return;
@@ -27,6 +32,22 @@ const OrderSection = () => {
     fetchAllOrder();
   }, [update]);
 
+  useEffect(() => {
+    const results = data.filter((order) =>
+      order.uniqueOrderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.shippingAddress.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setPageCount(Math.ceil(results.length / 6));
+    const startIndex = (currentPage - 1) * 6;
+    const endIndex = startIndex + 6;
+    setOrders(results.slice(startIndex, endIndex));
+  }, [searchTerm, data, currentPage]);
+
+  const handlePageChange = (e,value) => {
+    setCurrentPage(value);
+  
+  }
+
   return (
     <>
       <div className="p-4 sm:p-6 space-y-6">
@@ -34,7 +55,7 @@ const OrderSection = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <QuickStatCard
             title="Total Orders"
-            value={orders.length}
+            value={data.length}
             icon={<Layers />}
           />
           {/* <QuickStatCard title="New This Month" value="1" /> */}
@@ -58,6 +79,8 @@ const OrderSection = () => {
                 <input
                   type="text"
                   placeholder="Search orders..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border rounded-lg"
                 />
               </div>
@@ -173,7 +196,7 @@ const OrderSection = () => {
         </div>
         {/* Pagination */}
         <div className="flex justify-center">
-          {orders.length > 5 && <Pagination count={1} />}
+          {orders.length > 5 && <Pagination count={pageCount} page={currentPage} onChange={handlePageChange}  />}
         </div>
       </div>
     </>

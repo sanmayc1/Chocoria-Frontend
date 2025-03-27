@@ -1,4 +1,5 @@
 import { Check, Plus } from "lucide-react";
+import { use, useEffect } from "react";
 
 const SelectAddress = ({
   savedAddresses,
@@ -10,6 +11,9 @@ const SelectAddress = ({
   const handleAddressSelect = (address) => {
     setSelectedAddress(address);
   };
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
   return (
     <div className="w-full max-w-2xl mx-auto">
       <div className="space-y-4">

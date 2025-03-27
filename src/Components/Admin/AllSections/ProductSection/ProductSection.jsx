@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import QuickStatCard from "../../HelperComponents/QuickCard.jsx";
 import { AddCircleOutline } from "@mui/icons-material";
-import { Search, Archive, Tag, Package, MoreVertical, Eye } from "lucide-react";
+import { Search, Package, MoreVertical } from "lucide-react";
 import { IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
@@ -15,31 +15,38 @@ const ProductSection = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [products, setProducts] = useState([]);
+  const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [update, setUpdate] = useState(false);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalProducts, setTotalProducts] = useState(0);
+  
 
   useEffect(() => {
     async function fetchAllProducts() {
       const response = await getAllProductsAdminSide();
       if (response.status === 200) {
-        const data = response.data.products;
-        setTotalProducts(data.length);
-        setTotalPages(Math.ceil(data.length / 4));
-
-        const startIndex = (currentPage - 1) * 4;
-        const endIndex = startIndex + 4;
-        setProducts(data.slice(startIndex, endIndex));
+        setData(response.data.products);
         return;
       }
 
       toast.error(response.response.data.message);
     }
     fetchAllProducts();
-  }, [update, currentPage]);
+  }, [update]);
+
+  useEffect(() => {
+    const results = data.filter((product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setTotalPages(Math.ceil(results.length / 4));
+
+    const startIndex = (currentPage - 1) * 4;
+    const endIndex = startIndex + 4;
+    setProducts(results.slice(startIndex, endIndex));
+  }, [searchTerm, data, currentPage]);
 
   const handlePageChange = (e, value) => {
     setCurrentPage(value);
@@ -82,7 +89,7 @@ const ProductSection = () => {
     navigate(`/admin/product/edit-product/${selectedProduct._id}`);
   };
 
-  const deleteProduct = async () => {
+  const deleteProductData = async () => {
     setAnchorEl(null);
     const response = await deleteProduct(selectedProduct._id);
 
@@ -99,8 +106,8 @@ const ProductSection = () => {
     toast.error(response.response.data.message, {
       position: "top-center",
       autoClose: 2000,
-      theme:"dark",
-      style:{width:"100%"}
+      theme: "dark",
+      style: { width: "100%" },
     });
   };
 
@@ -111,9 +118,8 @@ const ProductSection = () => {
         <QuickStatCard
           icon={<Package className="text-blue-500" />}
           title="Total Products"
-          value={totalProducts}
+          value={data.length}
         />
-       
       </div>
 
       {/* Product Table */}
@@ -133,7 +139,9 @@ const ProductSection = () => {
               />
               <input
                 type="text"
-                placeholder="Search customers..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search Products"
                 className="w-full pl-10 pr-4 py-2 border rounded-lg"
               />
             </div>
@@ -259,7 +267,7 @@ const ProductSection = () => {
                       onClose={handleClose}
                     >
                       <MenuItem onClick={editProduct}>Edit</MenuItem>
-                      <MenuItem onClick={deleteProduct}>Delete</MenuItem>
+                      <MenuItem onClick={deleteProductData}>Delete</MenuItem>
                     </Menu>
                   </td>
                 </tr>

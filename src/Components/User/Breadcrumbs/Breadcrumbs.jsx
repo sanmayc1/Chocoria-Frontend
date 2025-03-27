@@ -12,7 +12,8 @@ const Breadcrumbs = ({second,third}) => {
         <h6 className="xl:text-base  text-sm  flex items-center select-none">
           <span className="cursor-pointer hover:font-medium " onClick={navigateToHome} >Home</span>
           <ChevronRight className="w-4 h-4 inline mx-1" />
-          <span className="cursor-pointer hover:font-medium "> {second}</span>
+          <span className="cursor-pointer hover:font-medium sm:block hidden"> {second}</span>
+          <span className="cursor-pointer hover:font-medium sm:hidden block "> {second.length > 30 ? `${second.slice(0,30)}...`:second}</span>
           <ChevronRight className="w-4 h-4 inline mx-1" />
           <span className="cursor-pointer hover:font-medium ">
            {third}

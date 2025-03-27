@@ -90,7 +90,6 @@ const OrderDetailed = () => {
 
     if (response.status === 200) {
       const order = response.data.order;
-      console.log(order);
       const key = import.meta.env.VITE_RAZORPAY_KEY_ID;
       const options = {
         key,

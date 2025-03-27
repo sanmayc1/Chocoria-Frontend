@@ -13,8 +13,6 @@ const CommonForm = ({ heading, pageName, fields }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const referral = searchParams.get("referral") || "";
-  console.log(referral);
-  
  
   const signInOrSignOut = () => {
     if (pageName === "LOG IN") {

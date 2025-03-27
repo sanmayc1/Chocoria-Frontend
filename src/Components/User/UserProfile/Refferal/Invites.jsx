@@ -10,6 +10,7 @@ const Invites = () => {
       setInvites(response.data.invites)
     }
    }
+   window.scrollTo({ top: 0, behavior: "smooth" });
    fetchInvites();
   },[])
   return (

@@ -204,7 +204,7 @@ const OffersSection = () => {
                       <span className="px-2 text-sm">{offer.percentage}%</span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {offer.expiresAt.split("T")[0] !==
+                      {offer.expiresAt.split("T")[0] >=
                       new Date().toISOString().split("T")[0] ? (
                         <span
                           className={`px-2 inline-flex text-sm leading-5 rounded-full`}
@@ -280,7 +280,16 @@ const OffersSection = () => {
                       <span className="px-2 text-sm">{offer.percentage}%</span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {offer.expiresAt.split("T")[0]}
+                      {offer.expiresAt.split("T")[0] >=
+                      new Date().toISOString().split("T")[0] ? (
+                        <span
+                          className={`px-2 inline-flex text-sm leading-5 rounded-full`}
+                        >
+                          {offer.expiresAt.split("T")[0]}
+                        </span>
+                      ) : (
+                        <span className="text-red-500">Expired</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <Trash2

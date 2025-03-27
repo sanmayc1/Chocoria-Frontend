@@ -14,6 +14,7 @@ const BrandListPage = () => {
       }
     };
     fetchAllBrand();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   return (

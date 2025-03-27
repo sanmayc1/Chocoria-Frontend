@@ -12,10 +12,11 @@ const OrderFailed = () => {
     window.onpopstate = function () {
       window.history.pushState(null, '', window.location.href);
     };
-
+    window.scrollTo({ top: 0, behavior: "smooth" });
     return () => {
       window.onpopstate = null;
     };
+    
   }, []);
 
   const handleBackToOrders = () => {

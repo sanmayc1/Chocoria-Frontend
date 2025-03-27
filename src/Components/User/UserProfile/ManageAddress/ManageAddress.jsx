@@ -42,6 +42,7 @@ const ManageAddress = () => {
         position: "top-center",
       });
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
     fetchAddressData();
   }, [update, currentPage]);
 

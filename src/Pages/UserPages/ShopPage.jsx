@@ -40,7 +40,7 @@ const ShopPage = () => {
     fetchProducts();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [query, filterData]);
-  console.log(filterData)
+ 
 
   useEffect(() => {
     if (query) {

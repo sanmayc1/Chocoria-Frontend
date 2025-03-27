@@ -9,25 +9,34 @@ const ProductWideList = ({ data, filterData, setFilterData }) => {
   const [cart, setCart] = useState([]);
   const [update, setUpdate] = useState(false);
   const auth = useSelector((state) => state.auth.auth);
-
+  const [products, setProducts] = useState([]);
+  const [pageCount, setPageCount] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     async function fetchCart() {
       const response = await getCart();
       if (response.status === 200) {
         const data = response.data.cart.products.filter(
-          (item) =>
-            item.productId !== null 
+          (item) => item.productId !== null
         );
-        
+
         setCart(data);
         return;
       }
     }
-    if(auth){
+    if (auth) {
       fetchCart();
     }
-    
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [update]);
+
+  useEffect(() => {
+    setPageCount(Math.ceil(data.length / 8));
+    const startIndex = (currentPage - 1) * 8;
+    const endIndex = startIndex + 8;
+    setProducts(data.slice(startIndex, endIndex));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [data, currentPage]);
 
   if (!data) {
     return (
@@ -38,43 +47,48 @@ const ProductWideList = ({ data, filterData, setFilterData }) => {
   }
   return (
     <>
-    <div className="w-full flex flex-col lg:flex-row">
-      {/* Filter Section - FilterOptions component handles its own responsiveness */}
-      {data && (
-        <FilterOptions filterData={filterData} setFilterData={setFilterData} />
-      )}
-      {/* Product Grid */}
-      <div className="w-full lg:w-[80%] px-12 lg:px-20 flex flex-wrap gap-4 lg:gap-4 justify-between md:justify-start ">
-        {/* Products - Using Array to map multiple ProductCards */}
-        {data.length > 0 ? (
-          data.map((item) => (
-            <div key={item?._id}>
-              <ProductCard
-                productTitle={item?.name}
-                offer={item?.offer}
-                rating={"4"}
-                imageUrl={item?.images[0]}
-                id={item._id}
-                variants={item?.variants}
-                cart={cart}
-                setUpdate={setUpdate}
-              />
+      <div className="w-full flex flex-col lg:flex-row">
+        {/* Filter Section - FilterOptions component handles its own responsiveness */}
+        {data && (
+          <FilterOptions
+            filterData={filterData}
+            setFilterData={setFilterData}
+          />
+        )}
+        {/* Product Grid */}
+        <div className="w-full lg:w-[80%] px-12 lg:px-20 flex flex-wrap gap-4 lg:gap-4 justify-between md:justify-start ">
+          {/* Products - Using Array to map multiple ProductCards */}
+          {products.length > 0 ? (
+            products.map((item) => (
+              <div key={item?._id}>
+                <ProductCard
+                  productTitle={item?.name}
+                  offer={item?.offer}
+                  rating={item.averageRating}
+                  imageUrl={item?.images[0]}
+                  id={item._id}
+                  variants={item?.variants}
+                  cart={cart}
+                  setUpdate={setUpdate}
+                />
+              </div>
+            ))
+          ) : (
+            <div className=" w-full flex justify-center items-start">
+              <h1 className="text-2xl font-semibold">No products found</h1>
             </div>
-          ))
-        ) : (
-          <div className=" w-full flex justify-center items-start">
-            <h1 className="text-2xl font-semibold">No products found</h1>
-          </div>
-        )}
-        
+          )}
+        </div>
       </div>
-      
-    </div>
-    {data.length > 0 && (
-          <div className="w-full flex justify-center items-center py-10">
-            <Pagination />
-          </div>
-        )}
+      {data.length > 0 && (
+        <div className="w-full flex justify-center items-center py-10">
+          <Pagination
+            count={pageCount}
+            page={currentPage}
+            onChange={(e, page) => setCurrentPage(page)}
+          />
+        </div>
+      )}
     </>
   );
 };

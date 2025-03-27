@@ -1,20 +1,27 @@
 import { useEffect, useState } from "react";
-import { Search, Filter,Users, RefreshCwIcon, Trash2 } from "lucide-react";
+import { Search, Filter, Users, RefreshCwIcon, Trash2 } from "lucide-react";
 import QuickStatCard from "../../HelperComponents/QuickCard";
-import {  Pagination, Switch } from "@mui/material";
-import {blockUser,deleteUser, fetchUsers } from "../../../../Services/api/adminApi.js";
+import { Pagination, Switch } from "@mui/material";
+import {
+  blockUser,
+  deleteUser,
+  fetchUsers,
+} from "../../../../Services/api/adminApi.js";
 import { toast } from "react-toastify";
 
 const CustomerSection = () => {
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [update, setUpdate] = useState(false);
   const [customers, setCustomers] = useState([]);
-  
+  const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [pageCount, setPageCount] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchUsers()
       .then((res) => {
-        setCustomers(res.data.users);
+        setData(res.data.users);
       })
       .catch((err) => {
         toast.error(err.response.data.message, {
@@ -24,50 +31,74 @@ const CustomerSection = () => {
       });
   }, [update]);
 
-  //  handle block
-  const handleBlock = async(e,id) => {
+  useEffect(() => {
+    const results = data.filter(
+      (customer) =>
+        (selectedFilter === "all"
+          ? true
+          : selectedFilter === "active"
+          ? customer.is_Blocked === false
+          : customer.is_Blocked === true) &&
+        (customer.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          customer.email.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+    setPageCount(Math.ceil(results.length / 5));
+    const startIndex = (currentPage - 1) * 5;
+    const endIndex = startIndex + 5;
+    setCustomers(results.slice(startIndex, endIndex));
     
-   const response =  await blockUser(id);
+  }, [searchTerm, data, selectedFilter,currentPage]);
 
-    if(response.status === 200){
-      setUpdate(!update)
+  //  handle block
+  const handleBlock = async (e, id) => {
+    const response = await blockUser(id);
+
+    if (response.status === 200) {
+      setUpdate(!update);
       toast.success(response.data.message, {
         position: "top-center",
         autoClose: 1000,
       });
-    }else{
+    } else {
       toast.error(response.response.data.message, {
         position: "top-center",
         autoClose: 2000,
       });
     }
-
   };
 
   // delete the user
-  const deleteUserData = async(id) => {
-   const response =  await deleteUser(id)
-   if(response.status === 200){
-    setUpdate(!update)
-    toast.success(response.data.message, {
-      position: "top-center",
-      autoClose: 1000,
-    });
-  }else{
-    toast.error(response.response.data.message, {
-      position: "top-center",
-      autoClose: 2000,
-    });
-  }
-
+  const deleteUserData = async (id) => {
+    const response = await deleteUser(id);
+    if (response.status === 200) {
+      setUpdate(!update);
+      toast.success(response.data.message, {
+        position: "top-center",
+        autoClose: 1000,
+      });
+    } else {
+      toast.error(response.response.data.message, {
+        position: "top-center",
+        autoClose: 2000,
+      });
+    }
   };
-
+  
   return (
     <div className="p-4 sm:p-6 space-y-6">
       {/* Quick Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <QuickStatCard title="Total Customers" value={customers.length} icon={<Users />} />
-        <QuickStatCard title="Active Customers" value={customers.filter((customer)=>customer.is_Blocked !== true).length} />
+        <QuickStatCard
+          title="Total Customers"
+          value={data.length}
+          icon={<Users />}
+        />
+        <QuickStatCard
+          title="Active Customers"
+          value={
+            customers.filter((customer) => customer.is_Blocked !== true).length
+          }
+        />
         {/* <QuickStatCard title="New This Month" value="1" /> */}
       </div>
 
@@ -88,6 +119,8 @@ const CustomerSection = () => {
               />
               <input
                 type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search customers..."
                 className="w-full pl-10 pr-4 py-2 border rounded-lg"
               />
@@ -107,11 +140,12 @@ const CustomerSection = () => {
                 <option value="inactive">Inactive</option>
               </select>
             </div>
-            <div className="px-4 py-2 border rounded-lg bg-white flex items-center justify-center gap-2 cursor-pointer" onClick={()=>setUpdate(!update)}>
-                <RefreshCwIcon size={16} />
-                
-              </div>
-           
+            <div
+              className="px-4 py-2 border rounded-lg bg-white flex items-center justify-center gap-2 cursor-pointer"
+              onClick={() => setUpdate(!update)}
+            >
+              <RefreshCwIcon size={16} />
+            </div>
           </div>
         </div>
 
@@ -172,7 +206,7 @@ const CustomerSection = () => {
                     <Switch
                       color="error"
                       checked={customer.is_Blocked}
-                      onChange={(e)=>handleBlock(e, customer._id)}
+                      onChange={(e) => handleBlock(e, customer._id)}
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -192,7 +226,11 @@ const CustomerSection = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                   <Trash2 size={20} className="text-red-600" onClick={()=>deleteUserData(customer._id)} />
+                    <Trash2
+                      size={20}
+                      className="text-red-600"
+                      onClick={() => deleteUserData(customer._id)}
+                    />
                   </td>
                 </tr>
               ))}
@@ -202,7 +240,9 @@ const CustomerSection = () => {
       </div>
       {/* Pagination */}
       <div className="flex justify-center">
-        {customers.length > 5 && <Pagination count={Math.max(customers.length/5)} />}
+       
+          <Pagination count={pageCount} page={currentPage} onChange={(e,page) => setCurrentPage(page)} />
+      
       </div>
     </div>
   );

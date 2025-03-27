@@ -7,8 +7,6 @@ const BrandAddEdit = ({ title ,onClose ,image,setImage,brandName,setBrandName ,c
   const handleChange = (e) => {
     setImage(e.target.files[0]);
   };
-console.log(brandName);
-
   return (
     <>
       <h1 className="text-2xl font-semibold text-center pb-6">{title}</h1>

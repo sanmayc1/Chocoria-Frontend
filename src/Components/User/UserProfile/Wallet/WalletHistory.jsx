@@ -12,6 +12,7 @@ const WalletHistory = () => {
         setWallet(res.data.wallet);
       }
     };
+    window.scrollTo({ top: 0, behavior: "smooth" });
     fetchWallet();
   }, []);
   return (

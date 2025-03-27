@@ -15,7 +15,7 @@ const CheckoutForBuyNow = () => {
   const [index, setIndex] = useState(1);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [selectedMethod, setSelectedMethod] = useState("COD");
+  const [selectedMethod, setSelectedMethod] = useState("razorpay");
   const [update, setUpdate] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [product, setProduct] = useState([]);
@@ -74,7 +74,7 @@ const CheckoutForBuyNow = () => {
       const response = await getAllAddressOfUser();
       if (response.status === 200 && response.data.addresses.length > 0) {
         setSavedAddresses(response.data.addresses);
-        setSelectedAddress(response.data.addresses[0]);
+        setSelectedAddress(response.data.addresses.find((addres)=>addres.default));
         return null;
       }
     }
@@ -194,14 +194,14 @@ const handlePlaceOrder = async () => {
         style: { width: "100%" },
       });
       setLoading(false);
-      console.log(response);
+      
       if (response.status === 409) {
         navigate("/user/cart");
       }
       return;
     }
 
-    if (selectedMethod === "COD") {
+    if (selectedMethod !== "razorpay") {
       const response = await placeOrder(data);
       if (response.status === 200) {
         const id = response.data.order._id;

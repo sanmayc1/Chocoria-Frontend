@@ -3,12 +3,14 @@ import SquareBlack from "../button/SquareBlack.jsx";
 import Timer from "./Timer.jsx";
 import { otpVerify } from "../../../Services/api/api.js";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { CircularProgress } from "@mui/material";
+import { toast } from "react-toastify";
 
 const Otp = ({ id }) => {
   const [otp, setOtp] = useState(Array(4).fill(""));
   const navigate = useNavigate();
   const [searchParams] = useSearchParams()
+  const [loading, setLoading] = useState(false);
   const referral = searchParams.get("referral")
 
   // handle the input filed changes
@@ -29,19 +31,22 @@ const Otp = ({ id }) => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     const otpJoin = otp.join("");
     const response = await otpVerify({ id, otp: otpJoin,referral });
     if (response.status !== 200) {
+      setLoading(false);
       toast.error(response.response.data.message, { position: "top-center" });
       return;
     }
+    setLoading(false);
     toast.success(response.data.message, {
       position: "top-center",
       autoClose: 1000,
     });
-    setTimeout(() => {
+    
       navigate("/login");
-    }, 2500);
+    
   };
 
   return (
@@ -67,7 +72,7 @@ const Otp = ({ id }) => {
           })}
         </div>
         <div className="w-full flex justify-center pt-7 pb-2">
-          <SquareBlack btnName={"Confirm"} clickEvent={handleSubmit} />
+          <SquareBlack btnName={loading ?  <CircularProgress color="inherit" size={20} /> :"Confirm"} clickEvent={handleSubmit} />
         </div>
         {/* Timer */}
         <div className="flex justify-center pt-1">

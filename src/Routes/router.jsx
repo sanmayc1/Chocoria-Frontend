@@ -7,9 +7,6 @@ import CustomerSection from "../Components/Admin/AllSections/CustomerSection/Cou
 import CategorySection from "../Components/Admin/AllSections/CategorySection/CategorySection.jsx";
 import OrderSection from "../Components/Admin/AllSections/OrderSection/OrderSection.jsx";
 import OfferSection from "../Components/Admin/AllSections/OffersSection/OffersSection.jsx";
-import ReviewSection from "../Components/Admin/AllSections/ReviewSection/ReviewSection.jsx";
-import NotificationSection from "../Components/Admin/AllSections/NotificationSection/NotificationSection.jsx";
-import ContactUsSection from "../Components/Admin/AllSections/ContactUs/ContactUs.jsx";
 import CouponSection from "../Components/Admin/AllSections/CouponSection/CouponSection.jsx";
 import AddProduct from "../Components/Admin/AllSections/ProductSection/Add&EditProduct/AddProduct.jsx";
 import SignUpPage from "../Pages/UserPages/SingnUpPage.jsx";
@@ -256,18 +253,6 @@ const router = createBrowserRouter([
       {
         path: "/admin/offers",
         element: <OfferSection />,
-      },
-      {
-        path: "/admin/reviews",
-        element: <ReviewSection />,
-      },
-      {
-        path: "/admin/notification",
-        element: <NotificationSection />,
-      },
-      {
-        path: "/admin/contact-us",
-        element: <ContactUsSection />,
       },
       {
         path: "/admin/coupon",

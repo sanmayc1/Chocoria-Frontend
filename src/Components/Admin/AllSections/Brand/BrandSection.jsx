@@ -16,24 +16,41 @@ import { baseUrl } from "../../../../Services/api/constants";
 import DeleteDailog from "../../../HelperComponents/DeleteDailog";
 
 const BrandSection = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
   const [brands, setBrands] = useState([]);
+  const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [image, setImage] = useState("");
   const [brandName, setBrandName] = useState("");
   const [update, setUpadate] = useState(false);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState(null);
+  const [pageCount,setPageCount] = useState(1);
+  const [currentPage,setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchBrand = async () => {
       const response = await getAllBrands();
       if (response.status === 200) {
-        setBrands(response.data.brands);
+        setData(response.data.brands);
       }
     };
     fetchBrand();
   }, [update]);
+
+  useEffect(() => {
+    const results = data.filter((brand) =>
+      brand.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setPageCount(Math.ceil(results.length / 4));
+    const startIndex = (currentPage - 1) * 4;
+    const endIndex = startIndex + 4;
+    setBrands(results.slice(startIndex, endIndex));
+  }, [searchTerm, data,currentPage]);
+
+  const handlePageChange = (e,value) => {
+    setCurrentPage(value);
+  }
 
   const addBrand = async () => {
     if (!brandName.trim()) {
@@ -124,7 +141,7 @@ const BrandSection = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <QuickStatCard
             title="Total Brands"
-            value={brands.length}
+            value={data.length}
             icon={<Crown />}
           />
         </div>
@@ -145,6 +162,8 @@ const BrandSection = () => {
                   size={20}
                 />
                 <input
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  value={searchTerm}
                   type="text"
                   placeholder="Search "
                   className="w-full pl-10 pr-4 py-2 border rounded-lg"
@@ -223,11 +242,11 @@ const BrandSection = () => {
         </div>
 
         {/* Pagination */}
-        {brands.length > 4 && (
+       
           <div className="flex justify-center">
-            <Pagination count={Math.ceil(brands.length / 4)} />
+            <Pagination count={pageCount} page={currentPage} onChange={handlePageChange} />
           </div>
-        )}
+       
       </div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <BrandAddEdit

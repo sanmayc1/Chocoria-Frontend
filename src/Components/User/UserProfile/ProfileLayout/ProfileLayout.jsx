@@ -30,6 +30,7 @@ const ProfileLayout = () => {
       }
       toast.error(response.response.data.message);
       };
+      window.scrollTo({ top: 0, behavior: "smooth" });
       fetchUser();
     },[]);
     

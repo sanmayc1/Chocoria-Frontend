@@ -22,7 +22,6 @@ const Cart = () => {
         const data = response.data.cart.products.filter(
           (item) => item.productId !== null
         );
-        console.log(response.data.cart.products);
         setCart(data);
         return;
       }

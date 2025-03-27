@@ -24,7 +24,9 @@ const OrderSummary = ({ selectedAddress, cart, continueToPayment, appliedCoupon,
         );
       }
     };
+    window.scrollTo({ top: 0, behavior: "smooth" });
     fetchCoupon();
+    
   }, []);
 
   const totalPrice = cart.reduce((acc, cur) => {

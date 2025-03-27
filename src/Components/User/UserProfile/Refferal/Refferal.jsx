@@ -16,6 +16,7 @@ const Referral = () => {
         setReferral(response.data.defaultReferral);
       }
     };
+    window.scrollTo({ top: 0, behavior: "smooth" });
     fetchUrl();
   }, []);
   const copyLink = () => {

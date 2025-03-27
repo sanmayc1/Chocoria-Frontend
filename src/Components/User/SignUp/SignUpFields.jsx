@@ -5,6 +5,7 @@ import yupSchema from "../../../utils/yupSchema.jsx";
 import { signUp } from "../../../Services/api/api.js";
 import { toast } from "react-toastify";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 
 const SignUpFields = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +15,7 @@ const SignUpFields = () => {
     password: "",
     confirmPassword: "",
   });
-
+  const [loading, setLoading] = useState(false);
   const [err, setErr] = useState({});
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -40,6 +41,7 @@ const SignUpFields = () => {
   // handle submit
 
   const handeSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     try {
       // on submit validation
@@ -47,7 +49,7 @@ const SignUpFields = () => {
       setErr({});
       //  if validation is verified send data to backend
       const response = await signUp(formData);
-
+      setLoading(false);
       if (response.status !== 200) {
         if (response.response.data?.validationErr) {
           setErr(response.response.data.validationErr);
@@ -77,7 +79,7 @@ const SignUpFields = () => {
         validationErr[path] = message;
       });
       setErr(validationErr);
-      
+      setLoading(false);
     }
   };
   return (
@@ -157,7 +159,7 @@ const SignUpFields = () => {
 
       {/* Sign Up button */}
       <div className="w-full flex justify-center py-6">
-        <CommonBtn btnName={"SIGN UP"} />
+        <CommonBtn btnName={loading ? <CircularProgress color="inherit" size={20} />:"SIGN UP"} />
       </div>
     </form>
   );

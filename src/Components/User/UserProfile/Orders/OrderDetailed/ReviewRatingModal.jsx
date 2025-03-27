@@ -44,8 +44,6 @@ const ReviewRatingModal = ({onClose,userId,productId,orderItemId,setUpdate}) => 
 
   }
 
-  console.log(rating,review,productId,userId);
-  
   return (
     <div>
       <h1 className="font-bold text-xl text-center">Review & Rating</h1>

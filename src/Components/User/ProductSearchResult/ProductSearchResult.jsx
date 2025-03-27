@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ProductWideList from "../ProductWideList/ProductWideList.jsx";
 import { searchProduct } from "../../../Services/api/productApi.js";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ProductSearchResult = () => {
   const [data, setData] = useState([]);
@@ -14,6 +15,7 @@ const ProductSearchResult = () => {
     sortBy: searchParams.get("sortBy") || "",
     rating: searchParams.get("rating") || "",
     category: searchParams.get("category") || "",
+    brand: searchParams.get("brand") || ""
   };
 
   const [filterData, setFilterData] = useState(initialFilterData);
@@ -35,12 +37,12 @@ const ProductSearchResult = () => {
     };
     fetchProducts();
   }, [query, filterData]);
-  console.log(data);
+  
 
   useEffect(() => {
     navigate({
       pathname: `/search/${query}`,
-      search: `?sortBy=${filterData.sortBy}&rating=${filterData.rating}&category=${filterData.category}`,
+      search: `?sortBy=${filterData.sortBy}&rating=${filterData.rating}&category=${filterData.category}&brand=${filterData.brand}`,
     });
   }, [filterData, navigate]);
   return (

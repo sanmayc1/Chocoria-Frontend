@@ -189,14 +189,14 @@ const Checkout = () => {
         style: { width: "100%" },
       });
       setLoading(false);
-      console.log(response);
+      
       if (response.status === 409) {
         navigate("/user/cart");
       }
       return;
     }
 
-    if (selectedMethod === "COD") {
+    if (selectedMethod !== "razorpay") {
       const response = await placeOrder(data);
       if (response.status === 200) {
         const id = response.data.order._id;

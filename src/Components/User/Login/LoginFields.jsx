@@ -6,6 +6,7 @@ import { toast} from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SET_AUTH } from "../../../Store/Slice/authSlice.jsx";
+import { CircularProgress } from "@mui/material";
 
 
 const LoginFields = () => {
@@ -13,6 +14,7 @@ const LoginFields = () => {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const [err, setErr] = useState("");
   const navigate  = useNavigate()
@@ -25,14 +27,17 @@ const LoginFields = () => {
   // handle submit
 
   const handeSubmit = async (e) => {
+    setLoading(true)
     e.preventDefault();
     if(!formData.email.trim() || !formData.password.trim()){
       setErr("Please Enter Email and Password")
+      setLoading(false)
       return
     }
     setErr("")
     const response = await authLogin(formData);
     if (response.status !== 200) {
+      setLoading(false)
       if (response.status === 401) {
        setErr(response.response.data.message)
        return
@@ -56,7 +61,7 @@ const LoginFields = () => {
       });
       return
     }
- 
+  setLoading(false)
     if(response.status === 200){
     setErr('')
     dispatch(SET_AUTH(response.data))
@@ -105,7 +110,7 @@ const LoginFields = () => {
         </div>
         {/* login button */}
         <div className="w-full flex justify-center py-6 select-none">
-          <CommonBtn btnName={"LOG IN"} clickEvent={handeSubmit} />
+          <CommonBtn btnName={loading ?  <CircularProgress color="inherit" size={30} /> :"LOG IN"} clickEvent={handeSubmit} />
         </div>
       </form>
       
