@@ -128,7 +128,7 @@ const EditProduct = () => {
     images.forEach((image, index) => {
       formData.append("images[]", image.img, `image${index}.jpg`);
     });
-
+    navigate("/admin/product");
     // send to backend
     const response = await editProductDetails(formData, params.id);
     if (response.status === 200) {
@@ -137,7 +137,7 @@ const EditProduct = () => {
         autoClose: 1500,
       });
      
-        navigate("/admin/product");
+        
    
 
       return null;
