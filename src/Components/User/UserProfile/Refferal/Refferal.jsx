@@ -3,18 +3,23 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { getReferalUrl } from "../../../../Services/api/userApi.js";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 
 const Referral = () => {
   const [referralLink, setReferralLink] = useState("");
   const [referral, setReferral] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
+
     const fetchUrl = async () => {
+      setLoading(true);
       const response = await getReferalUrl();
       if (response.status === 200) {
         setReferralLink(response.data.referralUrl);
         setReferral(response.data.defaultReferral);
       }
+      setLoading(false);
     };
     window.scrollTo({ top: 0, behavior: "smooth" });
     fetchUrl();
@@ -30,6 +35,15 @@ const Referral = () => {
       theme: "dark",
     });
   };
+
+    if (loading) {
+        return (
+          <div className="h-full w-full flex justify-center items-center">
+            <CircularProgress color="inherit" size={30} />
+          </div>
+        );
+      }
+  
 
   return (
     <>

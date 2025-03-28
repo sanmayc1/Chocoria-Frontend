@@ -1,4 +1,4 @@
-import { Button, Pagination } from "@mui/material";
+import { Button, CircularProgress, Pagination } from "@mui/material";
 import Modal from "../../../HelperComponents/Modal.jsx";
 import { useEffect, useState } from "react";
 import {
@@ -20,10 +20,12 @@ const ManageAddress = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [selectedId, setSelectedId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // fetch the address data
   useEffect(() => {
     async function fetchAddressData() {
+      setLoading(true);
       const response = await getAllAddressOfUser();
       if (response.status === 200) {
         const startIndex = (currentPage - 1) * 2;
@@ -36,6 +38,7 @@ const ManageAddress = () => {
 
         setPageCount(pageCount); // Calculate the total number of pages
         setAddresses(data.slice(startIndex, endIndex));
+        setLoading(false);
         return;
       }
       toast.error(response.response.data.message, {
@@ -82,14 +85,16 @@ const ManageAddress = () => {
   // handle delete address
 
   const handleDelete = async () => {
+    closeDeleteModel();
     const response = await deleteUserAddress(selectedId);
     if (response.status === 200) {
       toast.success(response.data.message, {
         position: "top-center",
         autoClose: 1000,
       });
+      
       setUpdate(!update);
-      closeDeleteModel();
+      
       return;
     }
     toast.error(response.response.data.message, {
@@ -119,6 +124,15 @@ const ManageAddress = () => {
       autoClose: 1000,
     });
   };
+
+    if (loading) {
+        return (
+          <div className="h-full w-full flex justify-center items-center">
+            <CircularProgress color="inherit" size={30} />
+          </div>
+        );
+      }
+  
   return (
     <>
       {/* Header Section */}

@@ -150,10 +150,10 @@ const OrderDetailed = () => {
       explanation: reason.explanation,
       orderItemId: orderItems._id,
     };
-
+    setIsOpenCancelRequest(false);
     const response = await cancelOrder(order._id, data);
     if (response.status === 200) {
-      setIsOpenCancelRequest(false);
+      
       setUpdate(!update);
       toast.success(response.data.message, {
         position: "top-center",
@@ -173,7 +173,7 @@ const OrderDetailed = () => {
       explanation: reason.explanation,
       orderItemId: orderItems._id,
     };
-
+    setIsOpenReturnRequest(false);
     const response = await orderReturn(data);
 
     if (response.status === 200) {
@@ -182,7 +182,7 @@ const OrderDetailed = () => {
         autoClose: 1000,
       });
       setUpdate(!update);
-      setIsOpenReturnRequest(false);
+     
       return;
     }
     toast.error(response.response.data.message, {

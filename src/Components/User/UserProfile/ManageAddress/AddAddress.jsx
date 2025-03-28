@@ -20,6 +20,7 @@ const AddAddress = ({ closeModel, update, setUpdate,setCurrentPage }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     try {
       await addressSchema.validate(address, { abortEarly: false });
       setErrors({});
@@ -28,6 +29,7 @@ const AddAddress = ({ closeModel, update, setUpdate,setCurrentPage }) => {
         address_type: selectedAddressType,
         pincode: parseInt(address.pincode),
       };
+      closeModel();
       const response = await addUserAddress(data);
       if (response.status === 200) {
         toast.success(response.data.message, {
@@ -38,7 +40,7 @@ const AddAddress = ({ closeModel, update, setUpdate,setCurrentPage }) => {
         if(setCurrentPage){
           setCurrentPage(1);
         }
-        closeModel();
+        
       } else {
         toast.error(response.data.message, {
           position: "top-center",

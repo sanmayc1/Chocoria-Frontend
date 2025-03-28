@@ -1,18 +1,30 @@
 import { useEffect, useState } from "react";
 import { getReferralList } from "../../../../Services/api/userApi.js";
+import { CircularProgress } from "@mui/material";
 
 const Invites = () => {
   const [invites, setInvites] = useState([]);
+  const [loading, setLoading] = useState(false);
   useEffect(()=>{
    const fetchInvites = async()=>{
+    setLoading(true);
     const response = await getReferralList();
     if(response.status === 200){
       setInvites(response.data.invites)
     }
+    setLoading(false);
    }
    window.scrollTo({ top: 0, behavior: "smooth" });
    fetchInvites();
   },[])
+    if (loading) {
+        return (
+          <div className="h-full w-full flex justify-center items-center">
+            <CircularProgress color="inherit" size={30} />
+          </div>
+        );
+      }
+  
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">Your Invited People</h1>

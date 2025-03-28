@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
 import OrderItems from "./OrderItems/OrderItems.jsx";
-import { Pagination } from "@mui/material";
+import { CircularProgress, Pagination } from "@mui/material";
 import { getOrders } from "../../../../Services/api/orders.js";
-import Breadcrumbs from "../../Breadcrumbs/Breadcrumbs.jsx";
+
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [ordersPerPage] = useState(4);
   const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   
   useEffect(() => {
     async function fetchOrders() {
+      setLoading(true);
       const response = await getOrders();
       if (response.status === 200) {
         const data = response.data.orders
@@ -21,9 +23,11 @@ const Orders = () => {
         const endIndex = startIndex + ordersPerPage;
         const currentOrders = data.slice(startIndex, endIndex);
         setOrders(currentOrders);
+        setLoading(false);
         return;
       }
     }
+    setLoading(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
     fetchOrders();
   }, [currentPage]);
@@ -32,6 +36,14 @@ const Orders = () => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+   if (loading) {
+      return (
+        <div className="h-full w-full flex justify-center items-center">
+          <CircularProgress color="inherit" size={30} />
+        </div>
+      );
+    }
 
   return (
     <>

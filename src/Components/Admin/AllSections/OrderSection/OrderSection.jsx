@@ -196,7 +196,7 @@ const OrderSection = () => {
         </div>
         {/* Pagination */}
         <div className="flex justify-center">
-          {orders.length > 5 && <Pagination count={pageCount} page={currentPage} onChange={handlePageChange}  />}
+          <Pagination count={pageCount} page={currentPage} onChange={handlePageChange}  />
         </div>
       </div>
     </>

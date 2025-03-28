@@ -13,7 +13,7 @@ const CommonForm = ({ heading, pageName, fields }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const referral = searchParams.get("referral") || "";
- 
+
   const signInOrSignOut = () => {
     if (pageName === "LOG IN") {
       navigate("/signup");
@@ -35,7 +35,7 @@ const CommonForm = ({ heading, pageName, fields }) => {
           accessToken: tokenResponse.access_token,
           referral,
         });
-        if (response?.data?.success) {
+        if (response.status === 200) {
           dispatch(SET_AUTH(response.data));
           navigate("/");
           return;

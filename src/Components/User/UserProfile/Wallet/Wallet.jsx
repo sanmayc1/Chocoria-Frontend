@@ -2,21 +2,43 @@ import { Notebook, QrCode, Tickets } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getWallet } from "../../../../Services/api/walletApi";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
+import { toast } from "react-toastify";
 
 const Wallet = () => {
   
     const [wallet, setWallet] = useState({})
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
         const fetchWallet = async () => {
+          setLoading(true)
            const res = await getWallet()
            if(res.status === 200){
             setWallet(res.data.wallet)
+
            }
+            setLoading(false)
         }
         window.scrollTo({ top: 0, behavior: "smooth" });
         fetchWallet()
     },[])
+
+    const qrPay = () => {
+      toast.info("Feature Coming Soon", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+    };
+
+      if (loading) {
+          return (
+            <div className="h-full w-full flex justify-center items-center">
+              <CircularProgress color="inherit" size={30} />
+            </div>
+          );
+        }
+    
 
   return (
     <>
@@ -29,7 +51,7 @@ const Wallet = () => {
         <h2 className="text-4xl font-bold">₹{wallet?.balance}</h2>
         <div className="flex items-center gap-6 py-3">
           <div className="cursor-pointer">
-            <div className="bg-blue-100 hover:bg-blue-200 transition-all duration-300 rounded-full h-12 w-12 flex items-center justify-center ">
+            <div className="bg-blue-100 hover:bg-blue-200 transition-all duration-300 rounded-full h-12 w-12 flex items-center justify-center" onClick={qrPay} >
               <QrCode />
             </div>
             <p className="text-sm font-medium text-center p-1">Pay </p>

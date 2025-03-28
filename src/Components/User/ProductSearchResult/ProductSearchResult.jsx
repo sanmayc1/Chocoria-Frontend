@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const ProductSearchResult = () => {
   const [data, setData] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const { query } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -26,11 +26,14 @@ const ProductSearchResult = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
       const response = await searchProduct(query, filterData);
       if (response.status === 200) {
         setData(response.data.products);
+        setLoading(false);
         return;
       }
+      setLoading(false);
       toast.error(response.response.data.message, {
         position: "top-center",
       });
@@ -49,6 +52,8 @@ const ProductSearchResult = () => {
     <ProductWideList
       data={data}
       filterData={filterData}
+      loading={loading}
+      setLoading={setLoading}
       setFilterData={setFilterData}
     />
   );

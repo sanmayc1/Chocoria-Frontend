@@ -43,6 +43,7 @@ const EditAddress = ({ closeModel ,update,setUpdate,selectedId}) => {
         address_type: selectedAddressType,
         pincode: parseInt(address.pincode),
       };
+      closeModel();
       const response = await updateUserAddress(data, selectedId);
       if (response.status === 200) {
         toast.success(response.data.message, {
@@ -50,7 +51,7 @@ const EditAddress = ({ closeModel ,update,setUpdate,selectedId}) => {
           autoClose: 2000,
         });
        setUpdate(!update);
-        closeModel();
+        
       } else {
         toast.error(response.data.message, {
           position: "top-center",

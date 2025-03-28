@@ -3,7 +3,7 @@ import { getUser } from "../../../../Services/api/api.js";
 import { toast } from "react-toastify";
 import yupSchema from "../../../../utils/yupSchema.jsx";
 import { forgetUserPassword, updateUserProfile } from "../../../../Services/api/userApi.js";
-import { Button } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 
 const AccountOverview = () => {
   const [user, setUser] = useState({});
@@ -11,11 +11,14 @@ const AccountOverview = () => {
   const [isLoading,setIsLoading] = useState(false)
   useEffect(() => {
     const fetchUser = async () => {
+      setIsLoading(true)
       const response = await getUser();
       if (response.status === 200) {
-        setUser(response.data.user);
+        setUser(response.data.user);      
+        setIsLoading(false)
         return;
       }
+      setIsLoading(false)
       toast.error(response.response.data.message);
     };
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -41,9 +44,10 @@ const AccountOverview = () => {
       });
       return;
     }
-
+    setIsLoading(true)
     const response = await updateUserProfile(user);
     if (response.status === 200) {
+      setIsLoading(false)
       toast.success(response.data.message, {
         position: "top-center",
         autoClose: 1000,
@@ -51,6 +55,7 @@ const AccountOverview = () => {
       setUpdateBtn(false);
       return;
     }
+    setIsLoading(false)
     toast.error(response.response.data.message, {
       position: "top-center",
       autoClose: 2000,
@@ -76,6 +81,15 @@ const AccountOverview = () => {
     });
     setIsLoading(false)
   };
+
+    if (isLoading) {
+        return (
+          <div className="h-full w-full flex justify-center items-center">
+            <CircularProgress color="inherit" size={30} />
+          </div>
+        );
+      }
+  
   return (
     <>
       <h2 className="text-xl font-semibold mb-6">Personal Information</h2>

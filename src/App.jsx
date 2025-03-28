@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { authFalse } from "./Store/Slice/authSlice.jsx";
 import { userLogout} from "./Services/api/api.js";
+import { baseUrl } from "./Services/api/constants.js";
 
 function App() {
   const auth = useSelector((state) => state.auth);
@@ -15,7 +16,7 @@ function App() {
   let socket = null ;
   useEffect(() => {
     if (auth.auth && !socket) {
-      socket = io("http://localhost:8080", {
+      socket = io( baseUrl, {
         withCredentials: true,
         extraHeaders: {
           "Access-Control-Allow-Credentials": true,

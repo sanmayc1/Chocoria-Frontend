@@ -5,15 +5,17 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getCart } from "../../../Services/api/cartApi.js";
 
-const ProductWideList = ({ data, filterData, setFilterData }) => {
+const ProductWideList = ({ data, filterData, setFilterData ,loading ,setLoading }) => {
   const [cart, setCart] = useState([]);
   const [update, setUpdate] = useState(false);
   const auth = useSelector((state) => state.auth.auth);
   const [products, setProducts] = useState([]);
   const [pageCount, setPageCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  
   useEffect(() => {
     async function fetchCart() {
+      setLoading(true);
       const response = await getCart();
       if (response.status === 200) {
         const data = response.data.cart.products.filter(
@@ -21,6 +23,7 @@ const ProductWideList = ({ data, filterData, setFilterData }) => {
         );
 
         setCart(data);
+        setLoading(false);
         return;
       }
     }
@@ -31,20 +34,15 @@ const ProductWideList = ({ data, filterData, setFilterData }) => {
   }, [update]);
 
   useEffect(() => {
+    setLoading(true);
     setPageCount(Math.ceil(data.length / 8));
     const startIndex = (currentPage - 1) * 8;
     const endIndex = startIndex + 8;
     setProducts(data.slice(startIndex, endIndex));
+    setLoading(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [data, currentPage]);
 
-  if (!data) {
-    return (
-      <div className="h-screen w-full flex justify-center items-center">
-        <CircularProgress color="inherit" size={40} />
-      </div>
-    );
-  }
   return (
     <>
       <div className="w-full flex flex-col lg:flex-row">
@@ -58,24 +56,30 @@ const ProductWideList = ({ data, filterData, setFilterData }) => {
         {/* Product Grid */}
         <div className="w-full lg:w-[80%] px-12 lg:px-20 flex flex-wrap gap-4 lg:gap-4 justify-between md:justify-start ">
           {/* Products - Using Array to map multiple ProductCards */}
-          {products.length > 0 ? (
-            products.map((item) => (
-              <div key={item?._id}>
-                <ProductCard
-                  productTitle={item?.name}
-                  offer={item?.offer}
-                  rating={item.averageRating}
-                  imageUrl={item?.images[0]}
-                  id={item._id}
-                  variants={item?.variants}
-                  cart={cart}
-                  setUpdate={setUpdate}
-                />
+          {!loading ? (
+            products.length > 0 ? (
+              products.map((item) => (
+                <div key={item?._id}>
+                  <ProductCard
+                    productTitle={item?.name}
+                    offer={item?.offer}
+                    rating={item.averageRating}
+                    imageUrl={item?.images[0]}
+                    id={item._id}
+                    variants={item?.variants}
+                    cart={cart}
+                    setUpdate={setUpdate}
+                  />
+                </div>
+              ))
+            ) : (
+              <div className=" w-full flex justify-center items-start">
+                <h1 className="text-2xl font-semibold">No products found</h1>
               </div>
-            ))
+            )
           ) : (
-            <div className=" w-full flex justify-center items-start">
-              <h1 className="text-2xl font-semibold">No products found</h1>
+            <div className="h-20 w-full flex justify-center items-center">
+              <CircularProgress color="inherit" size={40} />
             </div>
           )}
         </div>

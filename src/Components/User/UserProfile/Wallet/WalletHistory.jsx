@@ -1,20 +1,33 @@
 import { Tickets } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getWallet } from "../../../../Services/api/walletApi";
+import { CircularProgress } from "@mui/material";
 
 const WalletHistory = () => {
   const [wallet, setWallet] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchWallet = async () => {
+      setLoading(true);
       const res = await getWallet();
       if (res.status === 200) {
         setWallet(res.data.wallet);
       }
+      setLoading(false);
     };
     window.scrollTo({ top: 0, behavior: "smooth" });
     fetchWallet();
   }, []);
+
+    if (loading) {
+        return (
+          <div className="h-full w-full flex justify-center items-center">
+            <CircularProgress color="inherit" size={30} />
+          </div>
+        );
+      }
+  
   return (
     <div className="w-full p-8 border border-gray-400 rounded-3xl h-fit flex flex-col gap-4">
       <div className="flex items-center justify-between">

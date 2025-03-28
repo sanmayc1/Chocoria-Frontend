@@ -19,9 +19,11 @@ const Home = () => {
   const [trendingProducts, setTrendingProducts] = useState([]);
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetchAll() {
+      setLoading(true);
       const response = await getProductsUser();
       const popularResponse = await getPopularProducts();
       const trendingResponse = await getTrendingProducts();
@@ -39,6 +41,7 @@ const Home = () => {
         setTrendingProducts(trendingResponse.data.products);
         setBrands(brandResponse.data.brands);
         setCategories(categoryResponse.data.categories);
+        setLoading(false);
         return;
       }
 
@@ -72,14 +75,14 @@ const Home = () => {
         <div className="flex justify-center p-5">
           <CardListingHeading heading={"Top Brands"} />
         </div>
-        <BrandScroll brands={brands} />
-        <CardListingHeading heading={"Products"} />
-        <CardListing products={products} />
+        <BrandScroll brands={brands} loading={loading}  />
+        <CardListingHeading heading={"Products"}  />
+        <CardListing products={products} loading={loading} />
         <CardListingHeading heading={"Popular Products"} />
-        <CardListing products={popularProducts} />
-        <CategoriesList categories={categories} />
-        <CardListingHeading heading={"Trending Products"} />
-        <CardListing products={trendingProducts} />
+        <CardListing products={popularProducts} loading={loading} />
+        <CategoriesList categories={categories}  />
+        <CardListingHeading heading={"Trending Products"}  />
+        <CardListing products={trendingProducts} loading={loading} />
       </motion.div>
     </>
   );

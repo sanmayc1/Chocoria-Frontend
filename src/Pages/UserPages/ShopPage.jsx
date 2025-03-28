@@ -14,6 +14,7 @@ const ShopPage = () => {
   const [searchSuggestion, setSearchSuggestion] = useState(null);
   const [searchParams] = useSearchParams();
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const initialFilterData = {
     sortBy: searchParams.get("sortBy") || "",
     rating: searchParams.get("rating") || "",
@@ -28,11 +29,14 @@ const ShopPage = () => {
   useEffect(() => {
     setSearchTerm(query);
     const fetchProducts = async () => {
+      setLoading(true);
       const response = await searchProduct(query, filterData);
       if (response.status === 200) {
         setData(response.data.products);
+        setLoading(false);
         return;
       }
+      setLoading(false);
       toast.error(response.response.data.message, {
         position: "top-center",
       });
@@ -152,6 +156,8 @@ const ShopPage = () => {
       {/* Main Content */}
       <ProductWideList
         data={data}
+        setLoading={setLoading}
+        loading={loading}
         filterData={filterData}
         setFilterData={setFilterData}
       />

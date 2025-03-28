@@ -24,18 +24,21 @@ const ProductDetailedPage = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetchProduct() {
+      setLoading(true);
       const response = await getProductDetailsUserSide(id);
       const recommendedResponse = await getRecommendedProducts(id);
       if (response.status === 200 && recommendedResponse.status === 200) {
         setProduct(response.data.product);
         setRecommendation(recommendedResponse.data.recommendation);
+        setLoading(false);
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
-
+      setLoading(false);
       toast.error(response.response.data.message, {
         position: "top-center",
       });
@@ -102,7 +105,7 @@ const ProductDetailedPage = () => {
         />
         <CustomerReviews id={id} averageRating={product.averageRating} />
         <CardListingHeading heading={"Recommendation"} />
-        <CardListing products={recommendation} />
+        <CardListing products={recommendation} loading={loading} />
       </motion.div>
     </>
   );

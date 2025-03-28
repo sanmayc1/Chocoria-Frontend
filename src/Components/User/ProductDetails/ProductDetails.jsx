@@ -29,6 +29,7 @@ const ProductDetails = ({
   const [quantity, setQuantity] = useState(1);
   const [isWishlist, setIsWishlist] = useState(false);
   const [update, setUpdate] = useState(false);
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
     setQuantity(1);
@@ -36,17 +37,20 @@ const ProductDetails = ({
 
   useEffect(() => {
     const checkItemInWishlist = async () => {
+      
       const response = await checkIfItemIsInWishlist(id, selectedVariant?._id);
       if (response.status === 200) {
+
         setIsWishlist(response.data.exists);
         return;
       }
       setIsWishlist(false);
+      
     };
     if (auth) {
       checkItemInWishlist();
     }
-  }, [selectedVariant, update]);
+  }, [selectedVariant]);
 
   const navigate = useNavigate();
 
@@ -112,6 +116,7 @@ const ProductDetails = ({
 
   // add or remove from whishlist
   const handleWishlist = async () => {
+    if(loading)return
     if (!auth) {
       toast.error("Please Login First", {
         position: "top-center",
@@ -120,6 +125,7 @@ const ProductDetails = ({
       return;
     }
     const data = { productId: id, variant: selectedVariant._id };
+   
     const response = await addOrRemoveFromWhishlist(data);
     if (response.status === 200) {
       toast.success(response.data.message, {
@@ -128,7 +134,8 @@ const ProductDetails = ({
         style: { width: "100%" },
         theme: "dark",
       });
-      setUpdate(!update);
+    
+      setIsWishlist((prev)=>!prev)
       return;
     }
     toast.error(response.response.data.message, {

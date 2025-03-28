@@ -4,12 +4,13 @@ import { authFalse } from "../../Store/Slice/authSlice.jsx";
 import { store } from "../../Store/Store.jsx";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
+
 export const chocoriaBackEnd = axios.create({
   baseURL: baseUrl,
+  withCredentials:true,
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true,
 });
 
 // axios interceptor to token verfy to every request
@@ -22,6 +23,8 @@ chocoriaBackEnd.interceptors.response.use(
       (error.response.data.message === "Token Expired" ||
         error.response.data.message === "Unauthorized")
     ) {
+      console.log(error);
+      
       await userLogout();
       store.dispatch(authFalse());
       toast.error("Session Expired Please Login again", {
@@ -32,6 +35,8 @@ chocoriaBackEnd.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+
 
 // Google authentication retrived access token send to backend
 

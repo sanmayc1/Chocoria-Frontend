@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import CartItem from "./CartItem/CartItem.jsx";
 import { getCart, updateQuantity } from "../../../Services/api/cartApi.js";
@@ -9,6 +9,7 @@ const Cart = () => {
   const [cart, setCart] = useState([]);
   const [update, setUpdate] = useState(false);
   const navigate = useNavigate();
+  const [ loading, setLoading ] = useState(false);
 
   // navigate to product detailed page
   const navigateToProductDetailedPage = (id, variantId) => {
@@ -17,17 +18,21 @@ const Cart = () => {
 
   useEffect(() => {
     async function fetchCart() {
+      setLoading(true);
       const response = await getCart();
       if (response.status === 200) {
         const data = response.data.cart.products.filter(
           (item) => item.productId !== null
         );
         setCart(data);
+        setLoading(false);
         return;
       }
+      setLoading(false);
     }
-    fetchCart();
+    setLoading(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
+    fetchCart();
   }, [update]);
 
   // handleCheckout
@@ -79,27 +84,33 @@ const Cart = () => {
           {/* Left Column - Cart Items */}
           <div className="w-full lg:w-2/3 flex flex-col gap-4">
             <div className="bg-white rounded-2xl border border-gray-200">
-              {cart && cart.length > 0 ? (
-                cart.map((item) =>
-                  item.productId ? (
-                    <CartItem
-                      key={item._id}
-                      quantity={item.quantity}
-                      product={item.productId}
-                      cart={cart}
-                      update={update}
-                      setUpdate={setUpdate}
-                      navigateToProductDetailedPage={
-                        navigateToProductDetailedPage
-                      }
-                      id={item.productId._id}
-                      variant={item.variant}
-                    />
-                  ) : null
+              {!loading ? (
+                cart && cart.length > 0 ? (
+                  cart.map((item) =>
+                    item.productId ? (
+                      <CartItem
+                        key={item._id}
+                        quantity={item.quantity}
+                        product={item.productId}
+                        cart={cart}
+                        update={update}
+                        setUpdate={setUpdate}
+                        navigateToProductDetailedPage={
+                          navigateToProductDetailedPage
+                        }
+                        id={item.productId._id}
+                        variant={item.variant}
+                      />
+                    ) : null
+                  )
+                ) : (
+                  <div className="text-center py-10 text-gray-500">
+                    Your cart is empty
+                  </div>
                 )
               ) : (
-                <div className="text-center py-10 text-gray-500">
-                  Your cart is empty
+                <div className="h-32 w-full flex justify-center items-center">
+                  <CircularProgress color="inherit" size={30} />
                 </div>
               )}
             </div>
