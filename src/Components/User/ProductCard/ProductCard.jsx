@@ -16,7 +16,6 @@ const ProductCard = ({
   cart,
   setUpdate,
   offer,
-  
 }) => {
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth.auth);
@@ -136,10 +135,16 @@ const ProductCard = ({
 
             {/* Rating */}
 
-            {rating > 0 && (
+            {rating > 0 ? (
               <div className="w-2/5 pt-2 px-3">
                 <div className="bg-gray-300 md:w-16 md:h-7 xl:w-14 xl:h-6 h-5 w-10 flex justify-center items-center xl:gap-2 gap-1">
                   <p className="font-bold text-xs">{rating}</p>
+                  <Star className="xl:w-4 w-3" />
+                </div>
+              </div>
+            ) : (
+              <div className="w-2/5 pt-2 px-3">
+                <div className="bg-gray-300 md:w-16 md:h-7 xl:w-14 xl:h-6 h-5 w-10 flex justify-center items-center xl:gap-2 gap-1">
                   <Star className="xl:w-4 w-3" />
                 </div>
               </div>
