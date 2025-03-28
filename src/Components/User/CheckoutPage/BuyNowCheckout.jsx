@@ -41,7 +41,7 @@ const CheckoutForBuyNow = () => {
           (variant) => variant._id === vId
         );
        
-        const data =[{_id:1,productId:response.data.product,variant,quantity}]
+        const data =[{_id:1,productId:response.data.product,variant,quantity: parseInt(quantity)}]
 
         setProduct(data);
         return;

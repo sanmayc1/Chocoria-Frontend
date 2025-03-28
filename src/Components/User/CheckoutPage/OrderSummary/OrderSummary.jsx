@@ -245,7 +245,7 @@ const OrderSummary = ({ selectedAddress, cart, continueToPayment, appliedCoupon,
           </div>
           <div className="flex justify-between">
             <p className="text-gray-600">Discount</p>
-            <p>-₹{ subtotal-totalPrice}</p>
+            <p>-₹{ subtotal - totalPrice}</p>
           </div>
           <div className="flex justify-between">
             <p className="text-gray-600">Coupon Discount</p>
