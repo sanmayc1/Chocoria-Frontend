@@ -87,7 +87,6 @@ const AddProduct = () => {
     });
 
     // send to backend
-    navigate("/admin/product");
     const response = await addProduct(formData);
     if (response.status === 200) {
       toast.success(response.data.message, {
@@ -95,7 +94,7 @@ const AddProduct = () => {
         autoClose: 1000,
       });
      
-        
+        navigate("/admin/product");
      
 
       return null;
