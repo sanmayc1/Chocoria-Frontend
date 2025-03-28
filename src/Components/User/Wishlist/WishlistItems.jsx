@@ -43,7 +43,7 @@ const WishlistItems = ({ product, setUpdateWishlist, updateWishlist }) => {
     return;
   };
 
-  const addToCart = async () => {
+  const addToCartFromWishList = async () => {
     if (!product.variant.quantity) {
       toast.error("Product is out of stock", {
         position: "top-center",
@@ -114,7 +114,7 @@ const WishlistItems = ({ product, setUpdateWishlist, updateWishlist }) => {
         </p>
         <button
           className="bg-orange-800 text-white px-4 py-2 rounded"
-          onClick={addToCart}
+          onClick={addToCartFromWishList}
         >
           Add to cart
         </button>
