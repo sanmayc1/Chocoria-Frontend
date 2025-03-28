@@ -36,7 +36,6 @@ const Checkout = () => {
         const data = response.data.cart.products.filter(
           (item) => item.productId !== null
         );
-
         setCart(data);
         return;
       }
@@ -69,7 +68,9 @@ const Checkout = () => {
       const response = await getAllAddressOfUser();
       if (response.status === 200 && response.data.addresses.length > 0) {
         setSavedAddresses(response.data.addresses);
-        setSelectedAddress(response.data.addresses.find((addres)=>addres.default));
+        setSelectedAddress(
+          response.data.addresses.find((addres) => addres.default)
+        );
         return null;
       }
     }
@@ -104,7 +105,7 @@ const Checkout = () => {
     };
     if (selectedMethod === "razorpay") {
       const response = await placeOrder(data);
-  
+
       if (response.status === 200) {
         const order = response.data.razorpayOrder;
         const user = response.data.user;
@@ -141,13 +142,12 @@ const Checkout = () => {
           },
           modal: {
             ondismiss: async function () {
-              
               try {
                 const data = {
                   razorpayOrderId: order.id,
                 };
                 const res = await updateOrderStatus(data);
-                
+
                 if (res.status === 200) {
                   navigate(`/checkout/failed/${res.data.order._id}`);
                   return;
@@ -170,7 +170,7 @@ const Checkout = () => {
 
             if (res.status === 200) {
               navigate(`/checkout/failed/${res.data.order._id}`);
-             
+
               return;
             }
           } catch (error) {
@@ -189,7 +189,7 @@ const Checkout = () => {
         style: { width: "100%" },
       });
       setLoading(false);
-      
+
       if (response.status === 409) {
         navigate("/user/cart");
       }

@@ -7,7 +7,11 @@ import SelectAddress from "./SelectAddress/SelectAddress.jsx";
 import OrderSummary from "./OrderSummary/OrderSummary.jsx";
 import PaymentOptions from "./PaymentOptions/PaymentOptions.jsx";
 import { toast } from "react-toastify";
-import { placeOrder, updateOrderStatus, verifyPayment } from "../../../Services/api/orders.js";
+import {
+  placeOrder,
+  updateOrderStatus,
+  verifyPayment,
+} from "../../../Services/api/orders.js";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { getProductDetailsUserSide } from "../../../Services/api/productApi.js";
 
@@ -25,13 +29,12 @@ const CheckoutForBuyNow = () => {
   const navigate = useNavigate();
   const { id, vId } = useParams();
 
+  //
 
-    // 
-
-    const [appliedCoupon, setAppliedCoupon] = useState(null);
-    const [couponDiscount, setCouponDiscount] = useState(0);
-    const [total, setTotal] = useState(0);
-    // 
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [total, setTotal] = useState(0);
+  //
 
   useEffect(() => {
     async function fetchProduct() {
@@ -40,8 +43,15 @@ const CheckoutForBuyNow = () => {
         const variant = response.data.product.variants.find(
           (variant) => variant._id === vId
         );
-       
-        const data =[{_id:1,productId:response.data.product,variant,quantity: parseInt(quantity)}]
+
+        const data = [
+          {
+            _id: 1,
+            productId: response.data.product,
+            variant,
+            quantity: parseInt(quantity),
+          },
+        ];
 
         setProduct(data);
         return;
@@ -74,7 +84,9 @@ const CheckoutForBuyNow = () => {
       const response = await getAllAddressOfUser();
       if (response.status === 200 && response.data.addresses.length > 0) {
         setSavedAddresses(response.data.addresses);
-        setSelectedAddress(response.data.addresses.find((addres)=>addres.default));
+        setSelectedAddress(
+          response.data.addresses.find((addres) => addres.default)
+        );
         return null;
       }
     }
@@ -98,7 +110,7 @@ const CheckoutForBuyNow = () => {
 
   // place order
 
-const handlePlaceOrder = async () => {
+  const handlePlaceOrder = async () => {
     setLoading(true);
     const data = {
       shippingAddress: selectedAddress,
@@ -109,7 +121,7 @@ const handlePlaceOrder = async () => {
     };
     if (selectedMethod === "razorpay") {
       const response = await placeOrder(data);
-  
+
       if (response.status === 200) {
         const order = response.data.razorpayOrder;
         const user = response.data.user;
@@ -146,13 +158,12 @@ const handlePlaceOrder = async () => {
           },
           modal: {
             ondismiss: async function () {
-              
               try {
                 const data = {
                   razorpayOrderId: order.id,
                 };
                 const res = await updateOrderStatus(data);
-                
+
                 if (res.status === 200) {
                   navigate(`/checkout/failed/${res.data.order._id}`);
                   return;
@@ -175,7 +186,7 @@ const handlePlaceOrder = async () => {
 
             if (res.status === 200) {
               navigate(`/checkout/failed/${res.data.order._id}`);
-             
+
               return;
             }
           } catch (error) {
@@ -194,7 +205,7 @@ const handlePlaceOrder = async () => {
         style: { width: "100%" },
       });
       setLoading(false);
-      
+
       if (response.status === 409) {
         navigate("/user/cart");
       }
@@ -237,25 +248,25 @@ const handlePlaceOrder = async () => {
             />
           )}
           {index === 2 && (
-               <OrderSummary
-               total={total}
-               setTotal={setTotal}
-               appliedCoupon={appliedCoupon}
-               setAppliedCoupon={setAppliedCoupon}
-               selectedAddress={selectedAddress}
-               cart={product}
-               continueToPayment={continueToPayment}
-               couponDiscount={couponDiscount}
-               setCouponDiscount={setCouponDiscount}
-             />
+            <OrderSummary
+              total={total}
+              setTotal={setTotal}
+              appliedCoupon={appliedCoupon}
+              setAppliedCoupon={setAppliedCoupon}
+              selectedAddress={selectedAddress}
+              cart={product}
+              continueToPayment={continueToPayment}
+              couponDiscount={couponDiscount}
+              setCouponDiscount={setCouponDiscount}
+            />
           )}
           {index === 3 && (
             <PaymentOptions
-            selectedMethod={selectedMethod}
-            setSelectedMethod={setSelectedMethod}
-            placeOrder={handlePlaceOrder}
-            loading={loading}
-            totalPrice={total}
+              selectedMethod={selectedMethod}
+              setSelectedMethod={setSelectedMethod}
+              placeOrder={handlePlaceOrder}
+              loading={loading}
+              totalPrice={total}
             />
           )}
         </div>

@@ -4,43 +4,44 @@ import { baseUrl } from "../../../../Services/api/constants";
 import { getUserCoupons } from "../../../../Services/api/coupon";
 import { toast } from "react-toastify";
 
-const OrderSummary = ({ selectedAddress, cart, continueToPayment, appliedCoupon, setAppliedCoupon, setCouponDiscount, couponDiscount ,total,setTotal}) => {
+const OrderSummary = ({
+  selectedAddress,
+  cart,
+  continueToPayment,
+  appliedCoupon,
+  setAppliedCoupon,
+  setCouponDiscount,
+  couponDiscount,
+  total,
+  setTotal,
+}) => {
   const [couponCode, setCouponCode] = useState("");
   const [coupons, setCoupons] = useState([]);
   const [isApplying, setIsApplying] = useState(false);
-  
 
   useEffect(() => {
+    setTotal(
+      cart.reduce((sum, item) => sum + item.variant.price * item.quantity, 0)
+    );
     const fetchCoupon = async () => {
       const response = await getUserCoupons();
 
       if (response.status === 200) {
         setCoupons(response.data.coupons);
-        setTotal(
-          cart.reduce(
-            (sum, item) => sum + item.variant.price * item.quantity,
-            0
-          )
-        );
       }
     };
     window.scrollTo({ top: 0, behavior: "smooth" });
     fetchCoupon();
-    
-  }, []);
+  }, [cart]);
 
   const totalPrice = cart.reduce((acc, cur) => {
-    
-    return (acc += cur.variant.price* cur.quantity);
+    return (acc += cur.variant.price * cur.quantity);
   }, 0);
 
-  const subtotal = cart.reduce(
-    (sum, item) => {
-      const price = item.variant.actualPrice ?? item.variant.price;
-     return sum + price * item.quantity
-    },
-    0
-  );
+  const subtotal = cart.reduce((sum, item) => {
+    const price = item.variant.actualPrice ?? item.variant.price;
+    return sum + price * item.quantity;
+  }, 0);
 
   const handleApplyCoupon = () => {
     if (!couponCode.trim()) return;
@@ -245,7 +246,7 @@ const OrderSummary = ({ selectedAddress, cart, continueToPayment, appliedCoupon,
           </div>
           <div className="flex justify-between">
             <p className="text-gray-600">Discount</p>
-            <p>-₹{ subtotal - totalPrice}</p>
+            <p>-₹{subtotal - totalPrice}</p>
           </div>
           <div className="flex justify-between">
             <p className="text-gray-600">Coupon Discount</p>
