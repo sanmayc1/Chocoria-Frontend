@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
   const [images, setImages] = useState([]);
+  
   const navigate = useNavigate();
   const [variants, setVariants] = useState([
     { id: uuid(), weight: "", price: "", quantity: "" },
@@ -104,6 +105,8 @@ const AddProduct = () => {
       autoClose: 1500,
     });
   };
+
+ 
 
   return (
     <>

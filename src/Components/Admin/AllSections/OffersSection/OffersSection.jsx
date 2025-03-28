@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Pagination } from "@mui/material";
+import { Button, CircularProgress, Pagination } from "@mui/material";
 import { toast } from "react-toastify";
 import Modal from "../../../HelperComponents/Modal.jsx";
 import AddOffer from "./AddOffer.jsx";
@@ -22,9 +22,11 @@ const OffersSection = () => {
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [referral, setReferral] = useState({ title: "", amount: "" });
   const [EditReferral, setEditReferral] = useState(false);
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
     const fetchOffers = async () => {
+      setLoading(true)
       const response = await getAllOffers();
       const referralResponse = await defaultReferralOffer();
       if (response.status === 200) {
@@ -37,10 +39,11 @@ const OffersSection = () => {
 
         setProductsOffer(productsOfferData);
         setCategoriesOffer(categoriesOfferData);
+       
       }
       if (referralResponse.status === 200) {
         setReferral(referralResponse.data.defaultReferral);
-        
+        setLoading(false)
       }
     };
     fetchOffers();
@@ -81,13 +84,14 @@ const OffersSection = () => {
   };
 
   const editReferral = async () => {
+    setEditReferral(false);
     const response = await editDefaultReferralOffer(referral);
     if (response.status === 200) {
       toast.success(response.data.message, {
         position: "top-center",
         autoClose: 1000,
       });
-      setEditReferral(false);
+     
       return;
     }
     toast.error(response.response.data.message, {
@@ -95,6 +99,15 @@ const OffersSection = () => {
       autoClose: 1000,
     });
   };
+  
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <CircularProgress color="inherit" size={40} />
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="p-4 sm:p-6 space-y-6 ">

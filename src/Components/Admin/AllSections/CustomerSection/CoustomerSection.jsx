@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Search, Filter, Users, RefreshCwIcon, Trash2 } from "lucide-react";
 import QuickStatCard from "../../HelperComponents/QuickCard";
-import { Pagination, Switch } from "@mui/material";
+import { CircularProgress, Pagination, Switch } from "@mui/material";
 import {
   blockUser,
   deleteUser,
@@ -17,17 +17,22 @@ const CustomerSection = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [pageCount, setPageCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
+    setLoading(true)
     fetchUsers()
       .then((res) => {
+        
         setData(res.data.users);
+        setLoading(false)
       })
       .catch((err) => {
         toast.error(err.response.data.message, {
           position: "top-center",
           autoClose: 2000,
         });
+        setLoading(false)
       });
   }, [update]);
 
@@ -46,8 +51,7 @@ const CustomerSection = () => {
     const startIndex = (currentPage - 1) * 5;
     const endIndex = startIndex + 5;
     setCustomers(results.slice(startIndex, endIndex));
-    
-  }, [searchTerm, data, selectedFilter,currentPage]);
+  }, [searchTerm, data, selectedFilter, currentPage]);
 
   //  handle block
   const handleBlock = async (e, id) => {
@@ -83,7 +87,15 @@ const CustomerSection = () => {
       });
     }
   };
-  
+
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <CircularProgress color="inherit" size={40} />
+      </div>
+    );
+  }
+
   return (
     <div className="p-4 sm:p-6 space-y-6">
       {/* Quick Stats */}
@@ -175,74 +187,82 @@ const CustomerSection = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {customers.map((customer) => (
-                <tr key={customer._id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="h-10 w-10 flex-shrink-0">
-                        <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
-                          <span className="text-sm font-medium text-gray-600">
-                            {customer.username.charAt(0)}
-                          </span>
+              {customers.length > 0 ? (
+                customers.map((customer) => (
+                  <tr key={customer._id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="h-10 w-10 flex-shrink-0">
+                          <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                            <span className="text-sm font-medium text-gray-600">
+                              {customer.username.charAt(0)}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">
+                            {customer.username}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {customer.email}
+                          </div>
                         </div>
                       </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {customer.username}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {customer.email}
-                        </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
+                      <div className="text-sm text-gray-900">
+                        {customer.phone}
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
-                    <div className="text-sm text-gray-900">
-                      {customer.phone}
-                    </div>
-                  </td>
+                    </td>
 
-                  <td className="pl-4">
-                    <Switch
-                      color="error"
-                      checked={customer.is_Blocked}
-                      onChange={(e) => handleBlock(e, customer._id)}
-                    />
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        customer.is_Blocked === false
-                          ? "bg-green-100 text-green-800"
-                          : "bg-gray-100 text-gray-800"
-                      }`}
-                    >
-                      {customer.is_Blocked === false ? "Active" : "Blocked"}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
-                    <div className="text-sm text-gray-900">
-                      {customer.last_login ? customer.last_login : "N/A"}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <Trash2
-                      size={20}
-                      className="text-red-600"
-                      onClick={() => deleteUserData(customer._id)}
-                    />
-                  </td>
-                </tr>
-              ))}
+                    <td className="pl-4">
+                      <Switch
+                        color="error"
+                        checked={customer.is_Blocked}
+                        onChange={(e) => handleBlock(e, customer._id)}
+                      />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          customer.is_Blocked === false
+                            ? "bg-green-100 text-green-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {customer.is_Blocked === false ? "Active" : "Blocked"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
+                      <div className="text-sm text-gray-900">
+                        {customer.last_login ? customer.last_login : "N/A"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <Trash2
+                        size={20}
+                        className="text-red-600"
+                        onClick={() => deleteUserData(customer._id)}
+                      />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <td className="text-lg p-4 text-center w-full" colSpan={5}>
+                  No Customer Found !
+                </td>
+              )}
             </tbody>
           </table>
         </div>
       </div>
       {/* Pagination */}
       <div className="flex justify-center">
-       
-          <Pagination count={pageCount} page={currentPage} onChange={(e,page) => setCurrentPage(page)} />
-      
+        <Pagination
+          count={pageCount}
+          page={currentPage}
+          onChange={(e, page) => setCurrentPage(page)}
+        />
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import QuickStatCard from "../../HelperComponents/QuickCard.jsx";
 import { AddCircleOutline } from "@mui/icons-material";
 import { Search, Package, MoreVertical } from "lucide-react";
-import { IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
+import { CircularProgress, IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
   deleteProduct,
@@ -22,16 +22,19 @@ const ProductSection = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading,setLoading] = useState(false)
   
 
   useEffect(() => {
     async function fetchAllProducts() {
+      setLoading(true)
       const response = await getAllProductsAdminSide();
       if (response.status === 200) {
         setData(response.data.products);
+        setLoading(false)
         return;
       }
-
+      setLoading(false)
       toast.error(response.response.data.message);
     }
     fetchAllProducts();
@@ -110,6 +113,14 @@ const ProductSection = () => {
       style: { width: "100%" },
     });
   };
+
+   if (loading) {
+      return (
+        <div className="h-screen w-full flex justify-center items-center">
+          <CircularProgress color="inherit" size={40} />
+        </div>
+      );
+    }
 
   return (
     <div className="p-4 sm:p-6 space-y-6">
@@ -195,7 +206,7 @@ const ProductSection = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {products.map((product) => (
+              {products.length > 0 ? products.map((product) => (
                 <tr key={product._id} className="hover:bg-gray-50">
                   {/* Image */}
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -271,7 +282,7 @@ const ProductSection = () => {
                     </Menu>
                   </td>
                 </tr>
-              ))}
+              )): <td className="text-lg p-4 text-center w-full" colSpan={6}>No Product Found !</td>}
             </tbody>
           </table>
         </div>

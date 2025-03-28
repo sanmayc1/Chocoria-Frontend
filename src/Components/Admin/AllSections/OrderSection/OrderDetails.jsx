@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { baseUrl } from "../../../../Services/api/constants";
 import Modal from "../../../HelperComponents/Modal.jsx";
 import DeleteDailog from "../../../HelperComponents/DeleteDailog.jsx";
+import { CircularProgress } from "@mui/material";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState(null);
@@ -16,13 +17,16 @@ const OrderDetails = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [isOpenConfirmDelivered, setIsOpenConfirmDelivered] = useState(false);
+  const [loading,setLoading] = useState(false)
   const { id } = useParams();
   useEffect(() => {
     const fetchOrderDetails = async () => {
+      setLoading(true)
       const response = await adminGetOrderDetails(id);
       if (response.status === 200) {
         setOrder(response.data.order);
         setOrderItems(response.data.orderItems);
+        setLoading(false)
         return;
       }
       toast.error(response.response.data.message, {
@@ -67,7 +71,13 @@ const OrderDetails = () => {
     setIsOpenConfirmDelivered(false);
     handleStatusChange({ target: { value: "Delivered" } }, selectedId);
   };
-
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <CircularProgress color="inherit" size={40} />
+      </div>
+    );
+  }
   return (
     <>
       <div className="p-10">

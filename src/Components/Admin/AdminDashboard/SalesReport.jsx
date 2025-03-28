@@ -6,7 +6,7 @@ import {
   ChartColumnIncreasing,
 } from "lucide-react";
 import QuickStatCard from "../HelperComponents/QuickCard.jsx";
-import { Button, Pagination } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { utils, writeFile } from "xlsx";
 import { getDeliveredOrders } from "../../../Services/api/orders.js";
 import { jsPDF } from "jspdf";
@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 const OrderSection = () => {
   const initialData = { fromDate: "", toDate: "", year: "", date: "" };
   const [filterOrders, setFilterOrders] = useState(initialData);
+  const [loading,setLoading] = useState(false)
   const currentYear = new Date().getFullYear();
   const earliestYear = currentYear - 5;
   const years = Array.from(
@@ -27,11 +28,13 @@ const OrderSection = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
     async function fetchAllOrders() {
+      setLoading(true)
       const response = await getDeliveredOrders();
 
       if (response.status === 200) {
         setData(response.data.orders);
         setOrders(response.data.orders);
+        setLoading(false)
         return;
       }
     }
@@ -286,6 +289,14 @@ const OrderSection = () => {
     });
     doc.save("SalesReport.pdf");
   };
+
+   if (loading) {
+      return (
+        <div className="h-screen w-full flex justify-center items-center">
+          <CircularProgress color="inherit" size={40} />
+        </div>
+      );
+    }
 
   return (
     <>

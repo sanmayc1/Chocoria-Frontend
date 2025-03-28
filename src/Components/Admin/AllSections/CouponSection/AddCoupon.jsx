@@ -27,6 +27,7 @@ const AddCoupon = ({onClose,setUpdate}) => {
             return;
         }
        }
+       onClose();
        const response = await addCoupon(couponData);
        if(response.status === 200){
         toast.success(response.data.message, {
@@ -35,7 +36,7 @@ const AddCoupon = ({onClose,setUpdate}) => {
             theme: "dark",
         });
        setUpdate((prev) => !prev);
-        return onClose();
+        return 
        }
 
        toast.error(response.response.data.message, {

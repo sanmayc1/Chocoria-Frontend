@@ -7,6 +7,7 @@ import {
 import { Eye } from "lucide-react";
 import CancelReturnModal from "./CancelReturnModal.jsx";
 import { toast } from "react-toastify";
+import { CircularProgress } from "@mui/material";
 
 const ReturnRequests = () => {
   const [returnRequest, setReturnRequests] = useState([]);
@@ -15,14 +16,18 @@ const ReturnRequests = () => {
   const [isOpenReject, setIsOpenReject] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [update, setUpdate] = useState(false);
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
     const fetchReturnRequests = async () => {
+      setLoading(true)
       const response = await getAllReturnRequests()
       if (response.status === 200) {
         setReturnRequests(response.data.returnRequests);
+        setLoading(false)
         return;
       }
+      setLoading(false)
     };
     fetchReturnRequests();
   }, [update]);
@@ -49,7 +54,7 @@ const ReturnRequests = () => {
       });
       return;
     }
-     
+    closeModal();
     const response = await updateReturnRequest(requestId, {
       status: action,
       response: reason,
@@ -60,7 +65,7 @@ const ReturnRequests = () => {
         position: "top-center",
         autoClose: 1000,
       });
-      closeModal();
+      
       return;
     }
 
@@ -75,6 +80,13 @@ const ReturnRequests = () => {
     setIsOpenReject(true);
     setIsOpen(false);
   };
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <CircularProgress color="inherit" size={40} />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -106,7 +118,7 @@ const ReturnRequests = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {returnRequest?.map((request) => (
+                  {returnRequest.length > 0 ? returnRequest?.map((request) => (
                     <tr className="bg-white border-b  " key={request._id}>
                       <td className="px-6 py-4 font-medium ">
                         {request.orderId.uniqueOrderId}
@@ -128,7 +140,7 @@ const ReturnRequests = () => {
                         </button>
                       </td>
                     </tr>
-                  ))}
+                  )): <td className="text-lg p-4 text-center w-full" colSpan={5}>No Return Request Found !</td>}
                 </tbody>
               </table>
             </div>

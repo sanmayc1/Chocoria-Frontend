@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Search, Layers, Trash } from "lucide-react";
 import QuickStatCard from "../../HelperComponents/QuickCard";
-import { Pagination } from "@mui/material";
+import { CircularProgress, Pagination } from "@mui/material";
 import { toast } from "react-toastify";
 import Modal from "../../../HelperComponents/Modal.jsx";
 import AddCoupon from "./AddCoupon.jsx";
@@ -21,14 +21,18 @@ const CouponSection = () => {
   const [selectedCoupon, setSelectedCoupon] = useState(null);
   const [pageCount, setPageCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
     const fetchOrders = async () => {
+      setLoading(true)
       const response = await getAllCoupons();
       if (response.status === 200) {
         setData(response.data.coupons);
+        setLoading(false)
         return;
       }
+      setLoading(false)
       toast.error(response.response.data.message, {
         position: "top-center",
         autoClose: 2000,
@@ -61,10 +65,11 @@ const CouponSection = () => {
   };
 
   const handleDelete = async () => {
+    closeDeleteModal();
     const response = await deleteCoupon(selectedCoupon._id);
     if (response.status === 200) {
       setUpdate(!update);
-      closeDeleteModal();
+      
       toast.success(response.data.message, {
         position: "top-center",
         autoClose: 2000,
@@ -82,6 +87,14 @@ const CouponSection = () => {
   const handlePageChange = (e, value) => {
     setCurrentPage(value);
   };
+
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <CircularProgress color="inherit" size={40} />
+      </div>
+    );
+  }
   return (
     <>
       <div className="p-4 sm:p-6 space-y-6">
@@ -157,7 +170,7 @@ const CouponSection = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {coupons.map((coupon) => (
+                {coupons.length > 0 ? coupons.map((coupon) => (
                   <tr key={coupon._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm  text-gray-900">
@@ -207,7 +220,7 @@ const CouponSection = () => {
                       />
                     </td>
                   </tr>
-                ))}
+                )): <td className="text-lg p-4 text-center w-full" colSpan={6}>No Coupon Found !</td>}
               </tbody>
             </table>
           </div>

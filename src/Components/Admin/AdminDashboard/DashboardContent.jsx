@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import QuickStatCard from "../HelperComponents/QuickCard.jsx";
 import { ChevronRight } from "lucide-react";
@@ -16,9 +16,11 @@ const Dashboard = () => {
   const [topSellingProducts, setTopSellingProducts] = useState([]);
   const [topSellingCategories, setTopSellingCategories] = useState([]);
   const [topSellingBrands, setTopSellingBrands] = useState([]);
+  const [loading,setLoading] =useState(false)
 
   useEffect(() => {
     async function fetchTopSellingProducts() {
+      setLoading(true)
       try {
         const productResponse = await getTopSellingProduct();
         const categoryResponse = await getTopSellingCategories();
@@ -28,6 +30,7 @@ const Dashboard = () => {
           setTopSellingBrands(brandResponse.data.brands);
           setTopSellingProducts(productResponse.data.products);
           setTopSellingCategories(categoryResponse.data.categories);
+          setLoading(false)
           return;
         }
         toast.error("Failed to fetch data");
@@ -41,7 +44,13 @@ const Dashboard = () => {
   const navigateToSalesReport = () => {
     navigate("/admin/sales-report");
   };
-
+ if (loading) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <CircularProgress color="inherit" size={40} />
+      </div>
+    );
+  }
   return (
     <div className="p-2 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
       {/* Quick Stats */}

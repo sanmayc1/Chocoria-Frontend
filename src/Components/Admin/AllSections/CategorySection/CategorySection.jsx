@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Search,MoreVertical, FolderTree } from "lucide-react";
 import QuickStatCard from "../../HelperComponents/QuickCard";
-import { IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
+import { CircularProgress, IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
 import { AddCircleOutline  } from "@mui/icons-material";
 import Modal from "../../../HelperComponents/Modal.jsx";
 import CategoryAddEditForm from "./AddEditModal/AddEditModal.jsx";
@@ -26,15 +26,20 @@ const CategorySection = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [pageCount, setPageCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
     async function fetchCategories() {
+      setLoading(true)
       const response = await getCategories();
 
       if (response.status === 200) {
+
         setData(response.data.categories);
+        setLoading(false)
         return;
       }
+      setLoading(false)
       toast.error(response.response.data.message, {
         position: "top-center",
         autoClose: 1000,
@@ -78,6 +83,7 @@ const CategorySection = () => {
   };
   // add new category
   const categoryAdd = async () => {
+    setIsOpen(false);
     const response = await addCategory({ name: name.trim() });
 
     if (response.status === 200) {
@@ -85,7 +91,7 @@ const CategorySection = () => {
         position: "top-center",
         autoClose: 1000,
       });
-      setIsOpen(false);
+    
       setName("");
       setUpdate(!update);
       return null;
@@ -171,6 +177,14 @@ const CategorySection = () => {
     setAnchorEl(null);
   };
 
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <CircularProgress color="inherit" size={40} />
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="p-4 sm:p-6 space-y-6">
@@ -240,7 +254,7 @@ const CategorySection = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {categories.map((category,index) => (
+                {categories.length > 0 ? categories.map((category,index) => (
                   <tr key={category._id} className="hover:bg-gray-50">
                     {/* numbrer */}
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -308,7 +322,7 @@ const CategorySection = () => {
                       </Menu>
                     </td>
                   </tr>
-                ))}
+                )): <td className="text-lg p-4 text-center w-full" colSpan={5}>No Category Found !</td>}
               </tbody>
             </table>
           </div>

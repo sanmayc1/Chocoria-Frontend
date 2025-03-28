@@ -5,9 +5,11 @@ import { toast } from "react-toastify";
 import {  editProductDetails, getProductDetailsAdminSide } from "../../../../../Services/api/productApi.js";
 import { useNavigate, useParams } from "react-router-dom";
 import { baseUrl } from "../../../../../Services/api/constants.js";
+import { CircularProgress } from "@mui/material";
 
 const EditProduct = () => {
   const [images, setImages] = useState([]);
+  const [loading,setLoading] = useState(false)
   const navigate = useNavigate();
   const [variants, setVariants] = useState([
     { _id: uuid(), weight: "", price: "", quantity: "" },
@@ -33,6 +35,7 @@ const EditProduct = () => {
 
   useEffect(() => {
     async function fetchProduct() {
+      setLoading(true)
       const response = await getProductDetailsAdminSide(params.id);
       if (response.status === 200) {
         setProductDetails(response.data.product);
@@ -50,9 +53,10 @@ const EditProduct = () => {
         fetchImages();
         // setImages(response.data.product.images);
         setVariants(response.data.product.variants);
-
+        setLoading(false)
         return null;
       }
+      setLoading(false)
       toast.error(response.response.data.message);
     }
     fetchProduct();
@@ -144,6 +148,14 @@ const EditProduct = () => {
       autoClose: 1500,
     });
   };
+
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <CircularProgress color="inherit" size={40} />
+      </div>
+    );
+  }
 
   return (
     <>

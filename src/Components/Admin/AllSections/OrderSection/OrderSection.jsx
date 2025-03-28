@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Search, RefreshCwIcon, Layers } from "lucide-react";
 import QuickStatCard from "../../HelperComponents/QuickCard";
-import { Pagination } from "@mui/material";
+import { CircularProgress, Pagination } from "@mui/material";
 import { toast } from "react-toastify";
 import { getAllOrdersAdminSide } from "../../../../Services/api/orders.js";
 import { useNavigate } from "react-router-dom";
@@ -15,16 +15,20 @@ const OrderSection = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [pageCount, setPageCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading,setLoading] = useState(false)
+
 
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchAllOrder() {
+      setLoading(true)
       const response = await getAllOrdersAdminSide();
       if (response.status === 200) {
         setData(response.data.orders);
         setOrderCancelRequests(response.data.orderCancelRequests);
         setOrderReturnRequests(response.data.returnRequests)
+        setLoading(false)
         return;
       }
       toast.error(response.response.data.message);
@@ -46,6 +50,14 @@ const OrderSection = () => {
   const handlePageChange = (e,value) => {
     setCurrentPage(value);
   
+  }
+
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <CircularProgress color="inherit" size={40} />
+      </div>
+    );
   }
 
   return (
@@ -146,7 +158,7 @@ const OrderSection = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {orders.map((order) => (
+                {orders.length > 0 ? orders.map((order) => (
                   <tr
                     key={order._id}
                     className="hover:bg-gray-50 cursor-pointer"
@@ -189,7 +201,7 @@ const OrderSection = () => {
                       </span>
                     </td>
                   </tr>
-                ))}
+                )): <td className="text-lg p-4 text-center w-full" colSpan={6}>No Orders Found !</td>}
               </tbody>
             </table>
           </div>

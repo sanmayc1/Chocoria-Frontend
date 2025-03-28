@@ -7,6 +7,7 @@ import { Crop } from "lucide-react";
 import { useRef } from "react";
 import { getCategories } from "../../../../../Services/api/category";
 import { getAllBrands } from "../../../../../Services/api/brand.js";
+import { CircularProgress } from "@mui/material";
 const AddEditForm = ({
   images,
   setImages,
@@ -23,6 +24,7 @@ const AddEditForm = ({
   const [isOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [brands ,setBrand] = useState([])
+  const [loading,setLoading] = useState(false)
   const inputFileRef = useRef(null);
 
   // fetch the available categories
@@ -45,9 +47,10 @@ const AddEditForm = ({
       }
       toast.error(response.response.data.message);
     }
-
+    setLoading(true)
     fetchCategories();
     fetchBrand()
+    setLoading(false)
 
   }, []);
 
@@ -116,6 +119,14 @@ const AddEditForm = ({
       )
     );
   };
+
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <CircularProgress color="inherit" size={40} />
+      </div>
+    );
+  }
 
   return (
     <>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Search, MoreVertical, Crown, Trash, Trash2 } from "lucide-react";
 import QuickStatCard from "../../HelperComponents/QuickCard";
-import { IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
+import { CircularProgress, IconButton, Menu, MenuItem, Pagination, Switch } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 
 import { toast } from "react-toastify";
@@ -27,12 +27,15 @@ const BrandSection = () => {
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [pageCount,setPageCount] = useState(1);
   const [currentPage,setCurrentPage] = useState(1);
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
     const fetchBrand = async () => {
+      setLoading(true)
       const response = await getAllBrands();
       if (response.status === 200) {
         setData(response.data.brands);
+        setLoading(false)
       }
     };
     fetchBrand();
@@ -75,7 +78,7 @@ const BrandSection = () => {
     const formData = new FormData();
     formData.append("name", brandName.trim());
     formData.append("image", image);
-
+    setIsOpen(false);
     const response = await createBrand(formData);
     if (response.status === 200) {
       toast.success("Brand Created Successfully", {
@@ -98,7 +101,7 @@ const BrandSection = () => {
   };
 
   const onClose = () => {
-    setIsOpen(false);
+   
     setImage("");
     setBrandName("");
   };
@@ -113,8 +116,10 @@ const BrandSection = () => {
   };
 
   const confirmDelete = async () => {
+    closeDeleteConfirmation();
     const response = await deleteBrand(selectedBrand._id);
     if (response.status === 200) {
+      
       toast.success(response.data.message, {
         position: "top-center",
         style: { width: "100%" },
@@ -122,7 +127,7 @@ const BrandSection = () => {
         autoClose: 1000,
       });
       setUpadate(!update);
-      closeDeleteConfirmation();
+      
       return;
     }
     closeDeleteConfirmation();
@@ -133,6 +138,14 @@ const BrandSection = () => {
       autoClose: 1000,
     });
   };
+
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <CircularProgress color="inherit" size={40} />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -201,7 +214,7 @@ const BrandSection = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {brands.map((brand, index) => (
+                {brands.length >0 ? brands.map((brand, index) => (
                   <tr key={brand._id} className="hover:bg-gray-50">
                     {/* numbrer */}
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -235,7 +248,7 @@ const BrandSection = () => {
                       </div>
                     </td>
                   </tr>
-                ))}
+                )): <td className="text-lg p-4 text-center w-full" colSpan={4}>No Brand Found !</td>}
               </tbody>
             </table>
           </div>

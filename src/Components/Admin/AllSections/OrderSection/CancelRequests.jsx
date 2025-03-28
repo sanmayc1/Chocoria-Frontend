@@ -7,6 +7,7 @@ import {
 import { Eye } from "lucide-react";
 import CancelReturnModal from "./CancelReturnModal.jsx";
 import { toast } from "react-toastify";
+import { CircularProgress } from "@mui/material";
 
 const CancelRequests = () => {
   const [cancelRequests, setCancelRequests] = useState([]);
@@ -15,12 +16,15 @@ const CancelRequests = () => {
   const [isOpenReject, setIsOpenReject] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [update, setUpdate] = useState(false);
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
     const fetchCancelRequests = async () => {
+      setLoading(true)
       const response = await getAllCancelRequests();
       if (response.status === 200) {
         setCancelRequests(response.data.cancelRequests);
+        setLoading(false)
         return;
       }
     };
@@ -49,7 +53,7 @@ const CancelRequests = () => {
       });
       return;
     }
-     
+    closeModal();
     const response = await updateCancelRequest(requestId, {
       status: action,
       response: reason,
@@ -60,7 +64,7 @@ const CancelRequests = () => {
         position: "top-center",
         autoClose: 1000,
       });
-      closeModal();
+      
       return;
     }
 
@@ -75,7 +79,13 @@ const CancelRequests = () => {
     setIsOpenReject(true);
     setIsOpen(false);
   };
-
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <CircularProgress color="inherit" size={40} />
+      </div>
+    );
+  }
   return (
     <>
       <div className="p-10">
@@ -106,7 +116,7 @@ const CancelRequests = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {cancelRequests?.map((request) => (
+                  {cancelRequests.length > 0 ? cancelRequests?.map((request) => (
                     <tr className="bg-white border-b  " key={request._id}>
                       <td className="px-6 py-4 font-medium ">
                         #{request.orderId.uniqueOrderId}
@@ -128,7 +138,7 @@ const CancelRequests = () => {
                         </button>
                       </td>
                     </tr>
-                  ))}
+                  )): <td className="text-lg p-4 text-center w-full" colSpan={5}>No Cancel Request Found !</td>}
                 </tbody>
               </table>
             </div>
