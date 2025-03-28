@@ -54,7 +54,7 @@ const ProductWideList = ({ data, filterData, setFilterData ,loading ,setLoading 
           />
         )}
         {/* Product Grid */}
-        <div className="w-full lg:w-[80%] px-12 lg:px-20 flex flex-wrap gap-4 lg:gap-4 justify-between md:justify-start ">
+        <div className="w-full lg:w-[80%] px-12 lg:px-20 grid grid-cols-2 xl:grid-cols-4 justify-between md:grid-cols-3 ">
           {/* Products - Using Array to map multiple ProductCards */}
           {!loading ? (
             products.length > 0 ? (
